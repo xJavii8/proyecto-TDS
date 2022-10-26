@@ -20,12 +20,13 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.JCheckBox;
 
 public class LoginWindow {
 
 	private JFrame frmPhototdsLogin;
 	private JPasswordField passwordField;
-	private JTextField txtNombreDeUsuarioemail;
+	private JTextField txtUsername;
 
 	/**
 	 * Launch the application.
@@ -57,7 +58,7 @@ public class LoginWindow {
 		frmPhototdsLogin = new JFrame();
 		frmPhototdsLogin.setIconImage(Toolkit.getDefaultToolkit().getImage(LoginWindow.class.getResource("/images/ig64.png")));
 		frmPhototdsLogin.setTitle("PhotoTDS - Login");
-		frmPhototdsLogin.setBounds(100, 100, 450, 300);
+		frmPhototdsLogin.setBounds(100, 100, 450, 299);
 		frmPhototdsLogin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JPanel panelNorte = new JPanel();
@@ -79,65 +80,83 @@ public class LoginWindow {
 		labelBienvenidoTDS.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		panel.add(labelBienvenidoTDS);
 		
-		JPanel panelSur = new JPanel();
-		frmPhototdsLogin.getContentPane().add(panelSur, BorderLayout.SOUTH);
-		
-		JButton loginButton = new JButton("Iniciar sesi\u00F3n");
-		panelSur.add(loginButton);
-		
-		JButton registerButton = new JButton("Registrar");
-		/*registerButton.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				frmPhototdsLogin.
-			}
-		});*/
-		panelSur.add(registerButton);
-		
 		JPanel panelCentral = new JPanel();
 		frmPhototdsLogin.getContentPane().add(panelCentral, BorderLayout.CENTER);
 		GridBagLayout gbl_panelCentral = new GridBagLayout();
-		gbl_panelCentral.columnWidths = new int[]{0, 0, 0, 15, 0};
-		gbl_panelCentral.rowHeights = new int[]{0, 0, 0};
-		gbl_panelCentral.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
-		gbl_panelCentral.rowWeights = new double[]{1.0, 1.0, Double.MIN_VALUE};
+		gbl_panelCentral.columnWidths = new int[]{15, 0, 0, 15, 15, 0};
+		gbl_panelCentral.rowHeights = new int[]{0, 0, 0, 15, 0, 0, 15, 0};
+		gbl_panelCentral.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panelCentral.rowWeights = new double[]{1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panelCentral.setLayout(gbl_panelCentral);
 		
-		JLabel lblNewLabel = new JLabel("Usuario:");
-		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
-		gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel.anchor = GridBagConstraints.SOUTHEAST;
-		gbc_lblNewLabel.gridx = 1;
-		gbc_lblNewLabel.gridy = 0;
-		panelCentral.add(lblNewLabel, gbc_lblNewLabel);
+		JLabel labelUser = new JLabel("Usuario:");
+		GridBagConstraints gbc_labelUser = new GridBagConstraints();
+		gbc_labelUser.insets = new Insets(0, 0, 5, 5);
+		gbc_labelUser.anchor = GridBagConstraints.SOUTHEAST;
+		gbc_labelUser.gridx = 1;
+		gbc_labelUser.gridy = 0;
+		panelCentral.add(labelUser, gbc_labelUser);
 		
-		txtNombreDeUsuarioemail = new JTextField();
-		txtNombreDeUsuarioemail.setToolTipText("nombre de usuario/email");
-		GridBagConstraints gbc_txtNombreDeUsuarioemail = new GridBagConstraints();
-		gbc_txtNombreDeUsuarioemail.anchor = GridBagConstraints.SOUTH;
-		gbc_txtNombreDeUsuarioemail.insets = new Insets(0, 0, 5, 5);
-		gbc_txtNombreDeUsuarioemail.fill = GridBagConstraints.HORIZONTAL;
-		gbc_txtNombreDeUsuarioemail.gridx = 2;
-		gbc_txtNombreDeUsuarioemail.gridy = 0;
-		panelCentral.add(txtNombreDeUsuarioemail, gbc_txtNombreDeUsuarioemail);
-		txtNombreDeUsuarioemail.setColumns(10);
+		txtUsername = new JTextField();
+		txtUsername.setToolTipText("nombre de usuario/email");
+		GridBagConstraints gbc_txtUsername = new GridBagConstraints();
+		gbc_txtUsername.gridwidth = 2;
+		gbc_txtUsername.anchor = GridBagConstraints.SOUTH;
+		gbc_txtUsername.insets = new Insets(0, 0, 5, 5);
+		gbc_txtUsername.fill = GridBagConstraints.HORIZONTAL;
+		gbc_txtUsername.gridx = 2;
+		gbc_txtUsername.gridy = 0;
+		panelCentral.add(txtUsername, gbc_txtUsername);
+		txtUsername.setColumns(10);
 		
-		JLabel lblNewLabel_1 = new JLabel("Contrase\u00F1a:");
-		GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
-		gbc_lblNewLabel_1.insets = new Insets(0, 0, 0, 5);
-		gbc_lblNewLabel_1.anchor = GridBagConstraints.NORTHEAST;
-		gbc_lblNewLabel_1.gridx = 1;
-		gbc_lblNewLabel_1.gridy = 1;
-		panelCentral.add(lblNewLabel_1, gbc_lblNewLabel_1);
+		JLabel labelPassword = new JLabel("Contrase\u00F1a:");
+		GridBagConstraints gbc_labelPassword = new GridBagConstraints();
+		gbc_labelPassword.insets = new Insets(0, 0, 5, 5);
+		gbc_labelPassword.anchor = GridBagConstraints.NORTHEAST;
+		gbc_labelPassword.gridx = 1;
+		gbc_labelPassword.gridy = 1;
+		panelCentral.add(labelPassword, gbc_labelPassword);
 		
 		passwordField = new JPasswordField();
 		GridBagConstraints gbc_passwordField = new GridBagConstraints();
 		gbc_passwordField.anchor = GridBagConstraints.NORTH;
-		gbc_passwordField.insets = new Insets(0, 0, 0, 5);
+		gbc_passwordField.insets = new Insets(0, 0, 5, 5);
 		gbc_passwordField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_passwordField.gridx = 2;
 		gbc_passwordField.gridy = 1;
 		panelCentral.add(passwordField, gbc_passwordField);
+		
+		JCheckBox chckbxVisiblePassword = new JCheckBox("Visible");
+		GridBagConstraints gbc_chckbxVisiblePassword = new GridBagConstraints();
+		gbc_chckbxVisiblePassword.anchor = GridBagConstraints.NORTH;
+		gbc_chckbxVisiblePassword.insets = new Insets(0, 0, 5, 5);
+		gbc_chckbxVisiblePassword.gridx = 3;
+		gbc_chckbxVisiblePassword.gridy = 1;
+		panelCentral.add(chckbxVisiblePassword, gbc_chckbxVisiblePassword);
+		
+		JButton loginButton = new JButton("Iniciar sesi\u00F3n");
+		GridBagConstraints gbc_loginButton = new GridBagConstraints();
+		gbc_loginButton.gridwidth = 5;
+		gbc_loginButton.insets = new Insets(0, 0, 5, 5);
+		gbc_loginButton.gridx = 0;
+		gbc_loginButton.gridy = 2;
+		panelCentral.add(loginButton, gbc_loginButton);
+		
+		JLabel labelNotRegistered = new JLabel("\u00BFA\u00FAn no tienes una cuenta?");
+		GridBagConstraints gbc_labelNotRegistered = new GridBagConstraints();
+		gbc_labelNotRegistered.gridwidth = 5;
+		gbc_labelNotRegistered.insets = new Insets(0, 0, 5, 5);
+		gbc_labelNotRegistered.gridx = 0;
+		gbc_labelNotRegistered.gridy = 4;
+		panelCentral.add(labelNotRegistered, gbc_labelNotRegistered);
+		
+		JButton registerButton = new JButton("Registrar");
+		GridBagConstraints gbc_registerButton = new GridBagConstraints();
+		gbc_registerButton.gridwidth = 5;
+		gbc_registerButton.insets = new Insets(0, 0, 5, 5);
+		gbc_registerButton.gridx = 0;
+		gbc_registerButton.gridy = 5;
+		panelCentral.add(registerButton, gbc_registerButton);
 	}
 
 }
