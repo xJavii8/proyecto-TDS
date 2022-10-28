@@ -24,6 +24,7 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
 import javax.swing.JTextField;
+import javax.swing.LookAndFeel;
 import javax.swing.JPasswordField;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -270,9 +271,19 @@ public class RegisterWindow {
 		btnSelectPhoto.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				JFileChooser chooser = new JFileChooser();
+				LookAndFeel actualLF = UIManager.getLookAndFeel();
+				JFileChooser chooser = null;
+				try {
+					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+					chooser = new JFileChooser();
+					UIManager.setLookAndFeel(actualLF);
+				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+						| UnsupportedLookAndFeelException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				chooser.showOpenDialog(frmRegisterPhotoTDS);
-				File currentFile = chooser.getSelectedFile();
+				File currentFile = chooser.getSelectedFile();				
 			}
 		});
 		GridBagConstraints gbc_btnSelectPhoto = new GridBagConstraints();
