@@ -16,9 +16,9 @@ import java.awt.Font;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JMenuBar;
-import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JSeparator;
+import javax.swing.JOptionPane;
+
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -26,9 +26,7 @@ import java.awt.Insets;
 import javax.swing.JTextField;
 import javax.swing.LookAndFeel;
 import javax.swing.JPasswordField;
-import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
-import javax.swing.DefaultComboBoxModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -44,9 +42,9 @@ import java.awt.Color;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
-import com.toedter.calendar.JCalendar;
-import com.toedter.calendar.JCalendarBeanInfo;
 import com.toedter.calendar.JDateChooser;
+
+import beans.Entidad;
 
 public class RegisterWindow {
 
@@ -283,7 +281,7 @@ public class RegisterWindow {
 					e1.printStackTrace();
 				}
 				chooser.showOpenDialog(frmRegisterPhotoTDS);
-				File currentFile = chooser.getSelectedFile();				
+				File currentFile = chooser.getSelectedFile();
 			}
 		});
 		GridBagConstraints gbc_btnSelectPhoto = new GridBagConstraints();
@@ -294,6 +292,18 @@ public class RegisterWindow {
 		panelCentral.add(btnSelectPhoto, gbc_btnSelectPhoto);
 
 		JButton registerButton = new JButton("Registrar");
+		registerButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (textEmail.getText().isEmpty() || textFullname.getText().isEmpty()
+						|| textUsername.getText().isEmpty() || passwordField.getPassword().length == 0
+						|| dateChooser.getDate() == null) {
+					JOptionPane.showMessageDialog(frmRegisterPhotoTDS, "Faltan campos por rellenar. Revísalo", null, JOptionPane.ERROR_MESSAGE);
+				} else {
+					JOptionPane.showMessageDialog(frmRegisterPhotoTDS, "Registrado con éxito", null, JOptionPane.INFORMATION_MESSAGE);
+				}
+			}
+		});
 		GridBagConstraints gbc_registerButton = new GridBagConstraints();
 		gbc_registerButton.gridwidth = 5;
 		gbc_registerButton.insets = new Insets(0, 0, 5, 5);

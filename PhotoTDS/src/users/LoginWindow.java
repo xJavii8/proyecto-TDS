@@ -9,7 +9,6 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
@@ -24,7 +23,6 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.JPasswordField;
 import java.awt.Toolkit;
-import java.awt.Window;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Date;
@@ -32,9 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import javax.swing.JCheckBox;
-import java.awt.Color;
 import javax.swing.JMenuBar;
-import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 public class LoginWindow {
