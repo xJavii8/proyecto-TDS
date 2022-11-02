@@ -9,6 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.border.MatteBorder;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
@@ -32,6 +33,9 @@ import java.util.Locale;
 import javax.swing.JCheckBox;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+
+import java.awt.Color;
 
 public class LoginWindow {
 
@@ -201,28 +205,50 @@ public class LoginWindow {
 
 		JMenuBar menuBar = new JMenuBar();
 		frmPhototdsLogin.setJMenuBar(menuBar);
-
-		JMenuItem mntmNewMenuItem = new JMenuItem();
+		JMenuItem mntmModoClaroOscuro = new JMenuItem();
+		
+		menuBar.setBorder(new MatteBorder(1, 1, 1, 1, Color.black));
+		mntmModoClaroOscuro.setBorder(new MatteBorder(0, 0, 0, 1,  Color.black));
+		
+		
 		if (UIManager.getLookAndFeel().getName() == "FlatLaf Light") {
-			mntmNewMenuItem.setText("Modo oscuro");
+			mntmModoClaroOscuro.setText("Modo oscuro");
 		} else if (UIManager.getLookAndFeel().getName() == "FlatLaf Dark") {
-			mntmNewMenuItem.setText("Modo claro");
+			mntmModoClaroOscuro.setText("Modo claro");
 		}
-		mntmNewMenuItem.addMouseListener(new MouseAdapter() {
+		mntmModoClaroOscuro.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (mntmNewMenuItem.getText() == "Modo oscuro") {
+				if (mntmModoClaroOscuro.getText() == "Modo oscuro") {
 					FlatDarkLaf.setup();
 					SwingUtilities.updateComponentTreeUI(frmPhototdsLogin);
-					mntmNewMenuItem.setText("Modo claro");
-				} else if (mntmNewMenuItem.getText() == "Modo claro") {
+					
+					menuBar.setBorder(new MatteBorder(1, 1, 1, 1, Color.black));
+					mntmModoClaroOscuro.setBorder(new MatteBorder(0, 0, 0, 1, Color.black));
+					mntmModoClaroOscuro.setText("Modo claro");
+				} else if (mntmModoClaroOscuro.getText() == "Modo claro") {
 					FlatLightLaf.setup();
 					SwingUtilities.updateComponentTreeUI(frmPhototdsLogin);
-					mntmNewMenuItem.setText("Modo oscuro");
+					mntmModoClaroOscuro.setText("Modo oscuro");
+					Color color = new Color(230, 230, 230, 230);
+					menuBar.setBorder(new MatteBorder(1, 1, 1, 1, color));
+					mntmModoClaroOscuro.setBorder(new MatteBorder(0, 0, 0, 1, color));
+					
 				}
 			}
 		});
-		menuBar.add(mntmNewMenuItem);
+		menuBar.add(mntmModoClaroOscuro);
+		
+		JMenuItem mntmHelp = new JMenuItem("Ayuda");
+		mntmHelp.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				JFrame ventanaAyuda = new JFrame();
+				JOptionPane.showMessageDialog(ventanaAyuda, "Para iniciar sesión introduzca su nombre de usuario o correo electrónico en el campo usuario\n"
+						+ "En el campo contraseña debe escribir su contraseña\nPara más ayuda contacte con el soporte");
+			}
+		});
+		menuBar.add(mntmHelp);
 	}
 
 }

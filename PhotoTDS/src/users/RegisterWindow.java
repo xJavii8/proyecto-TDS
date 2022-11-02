@@ -4,15 +4,24 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import java.awt.Toolkit;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDropEvent;
+
 import javax.swing.JPanel;
+import javax.swing.JEditorPane;
 import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.border.MatteBorder;
 
 import java.awt.Font;
+import java.awt.Graphics;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JMenuBar;
@@ -20,6 +29,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
@@ -29,11 +39,14 @@ import javax.swing.JPasswordField;
 import javax.swing.JFileChooser;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Locale;
 
+import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JTextArea;
@@ -123,10 +136,10 @@ public class RegisterWindow {
 		JPanel panelCentral = new JPanel();
 		frmRegisterPhotoTDS.getContentPane().add(panelCentral, BorderLayout.CENTER);
 		GridBagLayout gbl_panelCentral = new GridBagLayout();
-		gbl_panelCentral.columnWidths = new int[] { 15, 0, 0, 15, 15 };
+		gbl_panelCentral.columnWidths = new int[] { 15, 0, 0, 15, 0, 15 };
 		gbl_panelCentral.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 15, 0, 0, 0, 0, 0 };
-		gbl_panelCentral.columnWeights = new double[] { 0.0, 0.0, 1.0, 0.0, 0.0 };
-		gbl_panelCentral.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0,
+		gbl_panelCentral.columnWeights = new double[] { 0.0, 0.0, 1.0, 0.0, 0.0, 0.0 };
+		gbl_panelCentral.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0,
 				Double.MIN_VALUE };
 		panelCentral.setLayout(gbl_panelCentral);
 
@@ -265,6 +278,22 @@ public class RegisterWindow {
 		gbc_labelProfilePhoto.gridy = 6;
 		panelCentral.add(labelProfilePhoto, gbc_labelProfilePhoto);
 
+		JButton registerButton = new JButton("Registrar");
+		registerButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (textEmail.getText().isEmpty() || textFullname.getText().isEmpty()
+						|| textUsername.getText().isEmpty() || passwordField.getPassword().length == 0
+						|| dateChooser.getDate() == null) {
+					JOptionPane.showMessageDialog(frmRegisterPhotoTDS, "Faltan campos por rellenar. Revísalo", null,
+							JOptionPane.ERROR_MESSAGE);
+				} else {
+					JOptionPane.showMessageDialog(frmRegisterPhotoTDS, "Registrado con éxito", null,
+							JOptionPane.INFORMATION_MESSAGE);
+				}
+			}
+		});
+
 		JButton btnSelectPhoto = new JButton("Seleccionar");
 		btnSelectPhoto.addMouseListener(new MouseAdapter() {
 			@Override
@@ -284,29 +313,45 @@ public class RegisterWindow {
 				File currentFile = chooser.getSelectedFile();
 			}
 		});
-		GridBagConstraints gbc_btnSelectPhoto = new GridBagConstraints();
-		gbc_btnSelectPhoto.anchor = GridBagConstraints.WEST;
-		gbc_btnSelectPhoto.insets = new Insets(0, 0, 5, 5);
-		gbc_btnSelectPhoto.gridx = 2;
-		gbc_btnSelectPhoto.gridy = 6;
-		panelCentral.add(btnSelectPhoto, gbc_btnSelectPhoto);
 
-		JButton registerButton = new JButton("Registrar");
-		registerButton.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (textEmail.getText().isEmpty() || textFullname.getText().isEmpty()
-						|| textUsername.getText().isEmpty() || passwordField.getPassword().length == 0
-						|| dateChooser.getDate() == null) {
-					JOptionPane.showMessageDialog(frmRegisterPhotoTDS, "Faltan campos por rellenar. Revísalo", null, JOptionPane.ERROR_MESSAGE);
-				} else {
-					JOptionPane.showMessageDialog(frmRegisterPhotoTDS, "Registrado con éxito", null, JOptionPane.INFORMATION_MESSAGE);
+		
+		JPanel contentPane = new JPanel();
+		JEditorPane editorPane = new JEditorPane();
+		editorPane.setBorder(new MatteBorder(1, 1, 1, 1, Color.white));
+		contentPane.add(editorPane);
+		editorPane.setContentType("text/html");
+		editorPane.setText("<h2>Agregar Foto</h2>");
+		editorPane.setEditable(false);
+		editorPane.setDropTarget(new DropTarget() {
+			public synchronized void drop(DropTargetDropEvent evt) {
+				try {
+					evt.acceptDrop(DnDConstants.ACTION_COPY);
+					List<File> droppedFiles = (List<File>) evt.getTransferable()
+							.getTransferData(DataFlavor.javaFileListFlavor);
+					for (File file : droppedFiles) {
+						System.out.println(file.getPath());
+						editorPane.setText(file.getName());
+					}
+				} catch (Exception ex) {
+					ex.printStackTrace();
 				}
 			}
 		});
+		GridBagConstraints gbc_contentPane = new GridBagConstraints();
+		gbc_contentPane.insets = new Insets(0, 0, 5, 5);
+		gbc_contentPane.fill = GridBagConstraints.HORIZONTAL;
+		gbc_contentPane.gridx = 2;
+		gbc_contentPane.gridy = 6;
+		panelCentral.add(contentPane, gbc_contentPane);
+		GridBagConstraints gbc_btnSelectPhoto = new GridBagConstraints();
+		gbc_btnSelectPhoto.anchor = GridBagConstraints.WEST;
+		gbc_btnSelectPhoto.insets = new Insets(0, 0, 5, 5);
+		gbc_btnSelectPhoto.gridx = 3;
+		gbc_btnSelectPhoto.gridy = 6;
+		panelCentral.add(btnSelectPhoto, gbc_btnSelectPhoto);
 		GridBagConstraints gbc_registerButton = new GridBagConstraints();
-		gbc_registerButton.gridwidth = 5;
-		gbc_registerButton.insets = new Insets(0, 0, 5, 5);
+		gbc_registerButton.gridwidth = 6;
+		gbc_registerButton.insets = new Insets(0, 0, 5, 0);
 		gbc_registerButton.gridx = 0;
 		gbc_registerButton.gridy = 8;
 		panelCentral.add(registerButton, gbc_registerButton);
@@ -314,8 +359,8 @@ public class RegisterWindow {
 		JLabel labelMandatoryFields = new JLabel("Los campos con * son obligatorios");
 		labelMandatoryFields.setForeground(Color.RED);
 		GridBagConstraints gbc_labelMandatoryFields = new GridBagConstraints();
-		gbc_labelMandatoryFields.gridwidth = 5;
-		gbc_labelMandatoryFields.insets = new Insets(0, 0, 5, 5);
+		gbc_labelMandatoryFields.gridwidth = 6;
+		gbc_labelMandatoryFields.insets = new Insets(0, 0, 5, 0);
 		gbc_labelMandatoryFields.gridx = 0;
 		gbc_labelMandatoryFields.gridy = 9;
 		panelCentral.add(labelMandatoryFields, gbc_labelMandatoryFields);
@@ -323,8 +368,8 @@ public class RegisterWindow {
 		JLabel labelAlreadyRegistered = new JLabel("\u00BFYa tienes una cuenta?");
 		GridBagConstraints gbc_labelAlreadyRegistered = new GridBagConstraints();
 		gbc_labelAlreadyRegistered.anchor = GridBagConstraints.SOUTH;
-		gbc_labelAlreadyRegistered.gridwidth = 5;
-		gbc_labelAlreadyRegistered.insets = new Insets(0, 0, 5, 5);
+		gbc_labelAlreadyRegistered.gridwidth = 6;
+		gbc_labelAlreadyRegistered.insets = new Insets(0, 0, 5, 0);
 		gbc_labelAlreadyRegistered.gridx = 0;
 		gbc_labelAlreadyRegistered.gridy = 10;
 		panelCentral.add(labelAlreadyRegistered, gbc_labelAlreadyRegistered);
@@ -337,9 +382,8 @@ public class RegisterWindow {
 			}
 		});
 		GridBagConstraints gbc_loginButton = new GridBagConstraints();
-		gbc_loginButton.insets = new Insets(0, 0, 0, 5);
 		gbc_loginButton.anchor = GridBagConstraints.NORTH;
-		gbc_loginButton.gridwidth = 5;
+		gbc_loginButton.gridwidth = 6;
 		gbc_loginButton.gridx = 0;
 		gbc_loginButton.gridy = 11;
 		panelCentral.add(loginButton, gbc_loginButton);
@@ -347,27 +391,50 @@ public class RegisterWindow {
 		JMenuBar menuBar = new JMenuBar();
 		frmRegisterPhotoTDS.setJMenuBar(menuBar);
 
-		JMenuItem mntmNewMenuItem = new JMenuItem();
+		JMenuItem mntmModoClaroOscuro = new JMenuItem();
 		if (UIManager.getLookAndFeel().getName() == "FlatLaf Light") {
-			mntmNewMenuItem.setText("Modo oscuro");
+			mntmModoClaroOscuro.setText("Modo oscuro");
 		} else if (UIManager.getLookAndFeel().getName() == "FlatLaf Dark") {
-			mntmNewMenuItem.setText("Modo claro");
+			mntmModoClaroOscuro.setText("Modo claro");
 		}
-		mntmNewMenuItem.addMouseListener(new MouseAdapter() {
+
+		menuBar.setBorder(new MatteBorder(1, 1, 1, 1, Color.black));
+		mntmModoClaroOscuro.setBorder(new MatteBorder(0, 0, 0, 1, Color.black));
+
+		mntmModoClaroOscuro.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (mntmNewMenuItem.getText() == "Modo oscuro") {
+				if (mntmModoClaroOscuro.getText() == "Modo oscuro") {
 					FlatDarkLaf.setup();
 					SwingUtilities.updateComponentTreeUI(frmRegisterPhotoTDS);
-					mntmNewMenuItem.setText("Modo claro");
-				} else if (mntmNewMenuItem.getText() == "Modo claro") {
+					mntmModoClaroOscuro.setText("Modo claro");
+					menuBar.setBorder(new MatteBorder(1, 1, 1, 1, Color.black));
+					mntmModoClaroOscuro.setBorder(new MatteBorder(0, 0, 0, 1, Color.black));
+					editorPane.setBorder(new MatteBorder(1, 1, 1, 1, Color.white));
+				} else if (mntmModoClaroOscuro.getText() == "Modo claro") {
 					FlatLightLaf.setup();
 					SwingUtilities.updateComponentTreeUI(frmRegisterPhotoTDS);
-					mntmNewMenuItem.setText("Modo oscuro");
+					mntmModoClaroOscuro.setText("Modo oscuro");
+					Color color = new Color(230, 230, 230, 230);
+					menuBar.setBorder(new MatteBorder(1, 1, 1, 1, color));
+					mntmModoClaroOscuro.setBorder(new MatteBorder(0, 0, 0, 1, color));
+					editorPane.setBorder(new MatteBorder(1, 1, 1, 1, Color.black));
 				}
 			}
 		});
-		menuBar.add(mntmNewMenuItem);
+		menuBar.add(mntmModoClaroOscuro);
+
+		JMenuItem mntmAyuda = new JMenuItem("Ayuda");
+		mntmAyuda.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				JFrame ventanaAyuda = new JFrame();
+				JOptionPane.showMessageDialog(ventanaAyuda,
+						"Para iniciar sesión introduzca su nombre de usuario o correo electrónico en el campo usuario\n"
+								+ "En el campo contraseña debe escribir su contraseña\nPara más ayuda contacte con el soporte");
+			}
+		});
+		menuBar.add(mntmAyuda);
 	}
 
 }
