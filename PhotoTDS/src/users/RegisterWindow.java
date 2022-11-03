@@ -43,6 +43,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
@@ -66,6 +68,8 @@ public class RegisterWindow {
 	private JTextField textEmail;
 	private JTextField textUsername;
 	private JPasswordField passwordField;
+	private static boolean profilePicture = false;
+	private static int indexProfilePicture = 0;
 
 	/**
 	 * Launch the application.
@@ -294,49 +298,72 @@ public class RegisterWindow {
 			}
 		});
 
-		JButton btnSelectPhoto = new JButton("Seleccionar");
+		
+
+		
+		JPanel contentPane = new JPanel();
+		
+		JScrollPane scrollPane_1 = new JScrollPane();
+		contentPane.add(scrollPane_1);
+		JEditorPane editorPane = new JEditorPane();
+		scrollPane_1.setViewportView(editorPane);
+		editorPane.setBorder(new MatteBorder(1, 1, 1, 1, Color.white));
+		editorPane.setContentType("text/html");
+		editorPane.setText("<h2>Agregar Foto</h2>");
+		editorPane.setEditable(false);
+		
+		
+		
+		editorPane.setDropTarget(new DropTarget() {
+			public synchronized void drop(DropTargetDropEvent evt) {
+				if (!profilePicture) {
+					try {
+						evt.acceptDrop(DnDConstants.ACTION_COPY);
+						List<File> droppedFiles = (List<File>) evt.getTransferable()
+								.getTransferData(DataFlavor.javaFileListFlavor);
+						
+						editorPane.setText(droppedFiles.get(0).getName());
+						profilePicture = true;
+						indexProfilePicture++;
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
+				}else {
+					JFrame ventanaProfilePictureError = new JFrame();
+					JOptionPane.showMessageDialog(ventanaProfilePictureError, "Ya tienes una foto de perfil seleccionada");
+				}
+				
+			}
+		});
+		
+		JButton btnSelectPhoto = new JButton("Seleccionar/Borrar");
 		btnSelectPhoto.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				LookAndFeel actualLF = UIManager.getLookAndFeel();
 				JFileChooser chooser = null;
-				try {
-					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-					chooser = new JFileChooser();
-					UIManager.setLookAndFeel(actualLF);
-				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-						| UnsupportedLookAndFeelException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				chooser.showOpenDialog(frmRegisterPhotoTDS);
-				File currentFile = chooser.getSelectedFile();
-			}
-		});
-
-		
-		JPanel contentPane = new JPanel();
-		JEditorPane editorPane = new JEditorPane();
-		editorPane.setBorder(new MatteBorder(1, 1, 1, 1, Color.white));
-		contentPane.add(editorPane);
-		editorPane.setContentType("text/html");
-		editorPane.setText("<h2>Agregar Foto</h2>");
-		editorPane.setEditable(false);
-		editorPane.setDropTarget(new DropTarget() {
-			public synchronized void drop(DropTargetDropEvent evt) {
-				try {
-					evt.acceptDrop(DnDConstants.ACTION_COPY);
-					List<File> droppedFiles = (List<File>) evt.getTransferable()
-							.getTransferData(DataFlavor.javaFileListFlavor);
-					for (File file : droppedFiles) {
-						System.out.println(file.getPath());
-						editorPane.setText(file.getName());
+				if (!profilePicture) {
+					try {
+						UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+						chooser = new JFileChooser();
+						UIManager.setLookAndFeel(actualLF);
+					} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+							| UnsupportedLookAndFeelException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
 					}
-				} catch (Exception ex) {
-					ex.printStackTrace();
+					chooser.showOpenDialog(frmRegisterPhotoTDS);
+					File currentFile = chooser.getSelectedFile();
+				}else {
+					profilePicture = false;
+					editorPane.setText("");
 				}
+				
 			}
 		});
+		
+		
+		
 		GridBagConstraints gbc_contentPane = new GridBagConstraints();
 		gbc_contentPane.insets = new Insets(0, 0, 5, 5);
 		gbc_contentPane.fill = GridBagConstraints.HORIZONTAL;
