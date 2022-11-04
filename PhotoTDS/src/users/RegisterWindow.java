@@ -34,6 +34,7 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 import javax.swing.LookAndFeel;
 import javax.swing.JPasswordField;
 import javax.swing.JFileChooser;
@@ -299,44 +300,16 @@ public class RegisterWindow {
 		});
 
 		
-
-		
 		JPanel contentPane = new JPanel();
-		
-		JScrollPane scrollPane_1 = new JScrollPane();
-		contentPane.add(scrollPane_1);
 		JEditorPane editorPane = new JEditorPane();
-		scrollPane_1.setViewportView(editorPane);
+		contentPane.add(editorPane);
 		editorPane.setBorder(new MatteBorder(1, 1, 1, 1, Color.white));
 		editorPane.setContentType("text/html");
 		editorPane.setText("<h2>Agregar Foto</h2>");
 		editorPane.setEditable(false);
 		
 		
-		
-		editorPane.setDropTarget(new DropTarget() {
-			public synchronized void drop(DropTargetDropEvent evt) {
-				if (!profilePicture) {
-					try {
-						evt.acceptDrop(DnDConstants.ACTION_COPY);
-						List<File> droppedFiles = (List<File>) evt.getTransferable()
-								.getTransferData(DataFlavor.javaFileListFlavor);
-						
-						editorPane.setText(droppedFiles.get(0).getName());
-						profilePicture = true;
-						indexProfilePicture++;
-					} catch (Exception ex) {
-						ex.printStackTrace();
-					}
-				}else {
-					JFrame ventanaProfilePictureError = new JFrame();
-					JOptionPane.showMessageDialog(ventanaProfilePictureError, "Ya tienes una foto de perfil seleccionada");
-				}
-				
-			}
-		});
-		
-		JButton btnSelectPhoto = new JButton("Seleccionar/Borrar");
+		JButton btnSelectPhoto = new JButton("Seleccionar");
 		btnSelectPhoto.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -354,15 +327,53 @@ public class RegisterWindow {
 					}
 					chooser.showOpenDialog(frmRegisterPhotoTDS);
 					File currentFile = chooser.getSelectedFile();
+					editorPane.setText("<html><img src=file:\"" + currentFile.getAbsolutePath() + "\"" + " " + "width=100 height=100></img>");
+					profilePicture = true;
+					btnSelectPhoto.setText("Borrar");
 				}else {
 					profilePicture = false;
-					editorPane.setText("");
+					editorPane.setText("<h2>Agregar Foto</h2>");
+					btnSelectPhoto.setText("Seleccionar");
+					
 				}
 				
 			}
 		});
 		
 		
+		editorPane.setDropTarget(new DropTarget() {
+			public synchronized void drop(DropTargetDropEvent evt) {
+				if (!profilePicture) {
+					try {
+						evt.acceptDrop(DnDConstants.ACTION_COPY);
+						List<File> droppedFiles = (List<File>) evt.getTransferable()
+								.getTransferData(DataFlavor.javaFileListFlavor);
+						
+						
+						if (droppedFiles.size() == 1) {
+							for (File file : droppedFiles) {
+								editorPane.setText("<html><img src=file:\"" + file.getCanonicalPath() + "\"" + " " + "width=100 height=100></img>");
+								
+							}
+							profilePicture = true;
+							indexProfilePicture++;
+							btnSelectPhoto.setText("Borrar");
+						}else {
+							JFrame ventanaMultipleProfilePicture = new JFrame();
+							JOptionPane.showMessageDialog(ventanaMultipleProfilePicture, "Has seleccionado más de dos imágenes\nSolo puedes añadir una imagen a tu foto de perfil");
+						}
+						
+						
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
+				}else {
+					JFrame ventanaProfilePictureError = new JFrame();
+					JOptionPane.showMessageDialog(ventanaProfilePictureError, "Ya tienes una foto de perfil seleccionada");
+				}
+				
+			}
+		});
 		
 		GridBagConstraints gbc_contentPane = new GridBagConstraints();
 		gbc_contentPane.insets = new Insets(0, 0, 5, 5);
