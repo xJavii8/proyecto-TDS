@@ -327,9 +327,15 @@ public class RegisterWindow {
 					}
 					chooser.showOpenDialog(frmRegisterPhotoTDS);
 					File currentFile = chooser.getSelectedFile();
-					editorPane.setText("<html><img src=file:\"" + currentFile.getAbsolutePath() + "\"" + " " + "width=100 height=100></img>");
-					profilePicture = true;
-					btnSelectPhoto.setText("Borrar");
+					if (currentFile.getAbsolutePath().contains(".png") || currentFile.getAbsolutePath().contains(".jpg") ) {
+						editorPane.setText("<html><img src=file:\"" + currentFile.getAbsolutePath() + "\"" + " " + "width=100 height=100></img>");
+						profilePicture = true;
+						btnSelectPhoto.setText("Borrar");
+					}else {
+						JFrame ventanaMultipleProfilePicture = new JFrame();
+						JOptionPane.showMessageDialog(ventanaMultipleProfilePicture, "La imagen debe ser formato .png o .jpg");
+					}
+					
 				}else {
 					profilePicture = false;
 					editorPane.setText("<h2>Agregar Foto</h2>");
@@ -350,20 +356,21 @@ public class RegisterWindow {
 								.getTransferData(DataFlavor.javaFileListFlavor);
 						
 						
-						if (droppedFiles.size() == 1) {
-							for (File file : droppedFiles) {
-								editorPane.setText("<html><img src=file:\"" + file.getCanonicalPath() + "\"" + " " + "width=100 height=100></img>");
+						if (droppedFiles.size() == 1 && 
+								(droppedFiles.get(0).getCanonicalPath().contains(".png") ||droppedFiles.get(0).getCanonicalPath().contains(".jpg"))) {
+							
+							editorPane.setText("<html><img src=file:\"" + droppedFiles.get(0).getCanonicalPath() + "\"" + " " + "width=100 height=100></img>");
 								
-							}
 							profilePicture = true;
 							indexProfilePicture++;
 							btnSelectPhoto.setText("Borrar");
-						}else {
+						}else if (droppedFiles.size() > 1) {
 							JFrame ventanaMultipleProfilePicture = new JFrame();
 							JOptionPane.showMessageDialog(ventanaMultipleProfilePicture, "Has seleccionado más de dos imágenes\nSolo puedes añadir una imagen a tu foto de perfil");
+						}else {
+							JFrame ventanaMultipleProfilePicture = new JFrame();
+							JOptionPane.showMessageDialog(ventanaMultipleProfilePicture, "La imagen debe ser formato .png o .jpg");
 						}
-						
-						
 					} catch (Exception ex) {
 						ex.printStackTrace();
 					}
