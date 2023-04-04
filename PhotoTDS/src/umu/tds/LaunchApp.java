@@ -1,6 +1,6 @@
 package umu.tds;
 
-import umu.tds.users.StartWindow;
+import umu.tds.view.StartWindow;
 
 public class LaunchApp {
 
