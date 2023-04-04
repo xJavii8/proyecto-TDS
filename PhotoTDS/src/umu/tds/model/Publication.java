@@ -5,12 +5,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Publication {
-	private int code;
+	private int codigo;
 	private String title;
 	private Date datePublication;
 	private String description;
 	private int likes;
-	private List<HashTag> hashtags;
+	private List<Hashtag> hashtags;
 	private List<Comment> comments;
 
 	// MÉTODO CONSTRUCTOR
@@ -20,7 +20,7 @@ public class Publication {
 		this.datePublication = datePublication;
 		this.description = description;
 		this.likes = likes;
-		this.hashtags = new LinkedList<HashTag>();
+		this.hashtags = new LinkedList<Hashtag>();
 		this.comments = new LinkedList<Comment>();
 	}
 
@@ -57,11 +57,11 @@ public class Publication {
 		this.likes = likes;
 	}
 
-	public List<HashTag> getHashtags() {
-		return new LinkedList<HashTag>(this.hashtags);
+	public List<Hashtag> getHashtags() {
+		return new LinkedList<Hashtag>(this.hashtags);
 	}
 
-	public void setHashtags(List<HashTag> hashtags) {
+	public void setHashtags(List<Hashtag> hashtags) {
 		this.hashtags = hashtags;
 	}
 
@@ -73,12 +73,12 @@ public class Publication {
 		this.comments = comments;
 	}
 
-	public int getCode() {
-		return code;
+	public int getCodigo() {
+		return codigo;
 	}
 
-	public void setCode(int code) {
-		this.code = code;
+	public void setCodigo(int codigo) {
+		this.codigo = codigo;
 	}
 
 }
