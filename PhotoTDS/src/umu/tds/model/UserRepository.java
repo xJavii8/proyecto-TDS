@@ -1,6 +1,7 @@
 package umu.tds.model;
 
 import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,8 @@ import java.util.Map;
 import umu.tds.persistence.DAOException;
 import umu.tds.persistence.DAOFactory;
 import umu.tds.persistence.IAdaptadorUserDAO;
+import umu.tds.persistence.DAOFactory;
+
 
 public class UserRepository {
 	private Map<String, User> users;
@@ -18,14 +21,16 @@ public class UserRepository {
 
 	private UserRepository() {
 		try {
-			// dao = FactoriaDAO.getInstancia(FactoriaDAO.DAO_TDS)
+			dao = DAOFactory.getInstancia(DAOFactory.DAO_TDS);
 			userAdapter = dao.getUserDAO();
 			users = new HashMap<String, User>();
-			// this.uploadRepository
+			this.uploadRepository();
 		} catch (DAOException eDAO) {
 			eDAO.printStackTrace();
 		}
 	}
+
+	
 
 	// Obtener la única instancia de la clase ---> SINGLETONE
 	public static UserRepository getUniqueInstance() {
@@ -52,4 +57,11 @@ public class UserRepository {
 		return null;
 	}
 
+	private void uploadRepository() {
+		List<User> userDB = userAdapter.readAllUsers();
+		for (User u : userDB) {
+			users.put(u.getFullName(), u);
+		}
+		
+	}
 }
