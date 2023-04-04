@@ -7,8 +7,9 @@ import java.util.List;
 public class User {
 	// ATRIBUTOS
 	private int codigo;
-	private String name;
+	private String username;
 	private String email;
+	private String password;
 	private String fullName;
 	private Date birthDay;
 	private boolean isPremium;
@@ -17,10 +18,11 @@ public class User {
 	private List<Publication> publications;
 
 	// MÉTODO CONSTRUCTOR
-	public User(String name, String email, String fullName, Date birthDay, boolean isPremium) {
+	public User(String username, String email, String password, String fullName, Date birthDay, boolean isPremium) {
 		super();
-		this.name = name;
+		this.username = username;
 		this.email = email;
+		this.password = password;
 		this.fullName = fullName;
 		this.birthDay = birthDay;
 		this.isPremium = isPremium;
@@ -30,9 +32,7 @@ public class User {
 		this.publications = new LinkedList<Publication>();
 	}
 
-	
-	
-	//GETS AND SETS
+	// GETS AND SETS
 	public int getCodigo() {
 		return codigo;
 	}
@@ -41,12 +41,20 @@ public class User {
 		this.codigo = codigo;
 	}
 
-	public String getName() {
-		return name;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public String getEmail() {
@@ -104,8 +112,5 @@ public class User {
 	public void setPublications(List<Publication> publications) {
 		this.publications = publications;
 	}
-	
-	
-	
 
 }
