@@ -4,8 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>umu.tds</groupId>
 	<artifactId>PhotoTDS</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>Test Maven y Git en clase</name>
+	<version>0.1.0-SNAPSHOT</version>
+	<name>PhotoTDS</name>
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/junit/junit -->
 		<dependency>
@@ -24,6 +24,12 @@
 		  <groupId>com.formdev</groupId>
 		  <artifactId>flatlaf</artifactId>
 		  <version>3.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.toedter/jcalendar -->
+		<dependency>
+			<groupId>com.toedter</groupId>
+			<artifactId>jcalendar</artifactId>
+			<version>1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>umu.tds</groupId>

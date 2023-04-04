@@ -372,18 +372,18 @@ public class StartWindow {
 		gbc_labelProfilePhoto_Register.gridy = 6;
 		panelRegister.add(labelProfilePhoto_Register, gbc_labelProfilePhoto_Register);
 
-		JPanel contentPane = new JPanel();
-		GridBagConstraints gbc_contentPane = new GridBagConstraints();
-		gbc_contentPane.fill = GridBagConstraints.HORIZONTAL;
-		gbc_contentPane.insets = new Insets(0, 0, 5, 5);
-		gbc_contentPane.gridx = 2;
-		gbc_contentPane.gridy = 6;
-		panelRegister.add(contentPane, gbc_contentPane);
+		JPanel photoPicPanel = new JPanel();
+		GridBagConstraints gbc_photoPicPanel = new GridBagConstraints();
+		gbc_photoPicPanel.fill = GridBagConstraints.HORIZONTAL;
+		gbc_photoPicPanel.insets = new Insets(0, 0, 5, 5);
+		gbc_photoPicPanel.gridx = 2;
+		gbc_photoPicPanel.gridy = 6;
+		panelRegister.add(photoPicPanel, gbc_photoPicPanel);
 
 		JEditorPane editorPane = new JEditorPane();
 		editorPane.setEditable(false);
 		editorPane.setContentType("text/html");
-		contentPane.add(editorPane);
+		photoPicPanel.add(editorPane);
 
 		JButton btnSelectPhoto_Register = new JButton("Seleccionar");
 		btnSelectPhoto_Register.addMouseListener(new MouseAdapter() {
