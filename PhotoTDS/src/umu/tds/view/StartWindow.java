@@ -1,4 +1,4 @@
-package umu.tds.users;
+package umu.tds.view;
 
 import java.awt.EventQueue;
 
