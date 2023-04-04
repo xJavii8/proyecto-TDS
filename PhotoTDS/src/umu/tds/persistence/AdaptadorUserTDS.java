@@ -5,6 +5,7 @@ import java.util.List;
 import beans.Entidad;
 import tds.driver.FactoriaServicioPersistencia;
 import tds.driver.ServicioPersistencia;
+import umu.tds.model.User;
 
 public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 	private static ServicioPersistencia serverPersistencia;

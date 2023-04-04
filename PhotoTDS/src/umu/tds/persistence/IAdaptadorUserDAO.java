@@ -2,6 +2,8 @@ package umu.tds.persistence;
 
 import java.util.List;
 
+import umu.tds.model.User;
+
 public interface IAdaptadorUserDAO {
 	public void createUser(User user);
 	public void readUser(int userCode);
