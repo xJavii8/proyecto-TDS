@@ -5,14 +5,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import modelo.Cliente;
+import umu.tds.persistence.DAOException;
+import umu.tds.persistence.DAOFactory;
+import umu.tds.persistence.IAdaptadorUserDAO;
 
 public class UserRepository {
 	private Map<String, User> users;
 	private static UserRepository uniqueInstance;
 
 	private DAOFactory dao;
-	private IUserDAO userAdapter;
+	private IAdaptadorUserDAO userAdapter;
 
 	private UserRepository() {
 		try {
