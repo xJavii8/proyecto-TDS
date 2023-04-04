@@ -11,12 +11,8 @@ import java.util.StringTokenizer;
 
 import beans.Entidad;
 import beans.Propiedad;
-import modelo.Cliente;
-import modelo.Venta;
-import persistencia.PoolDAO;
 import tds.driver.FactoriaServicioPersistencia;
 import tds.driver.ServicioPersistencia;
-import umu.tds.app.PhotoTDS.model.Utils;
 import umu.tds.model.Publication;
 import umu.tds.model.User;
 
