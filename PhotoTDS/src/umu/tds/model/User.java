@@ -31,6 +31,10 @@ public class User {
 		this.usersFollowed = new LinkedList<User>();
 		this.publications = new LinkedList<Publication>();
 	}
+	
+	public User(String username, String email, String password, String fullName, Date birthDay) {
+		this(username, email, password, fullName, birthDay, false);
+	}
 
 	// GETS AND SETS
 	public int getCodigo() {

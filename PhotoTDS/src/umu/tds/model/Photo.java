@@ -5,7 +5,7 @@ import java.util.Date;
 public class Photo extends Publication {
 	private String path;
 
-	// MÃ©todo Constructor
+	// Método constructor
 	public Photo(String title, Date datePublication, String description, int likes, String path) {
 		super(title, datePublication, description, likes);
 		this.path = path;

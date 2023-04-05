@@ -29,26 +29,32 @@ public class UserRepository {
 			eDAO.printStackTrace();
 		}
 	}
-
 	
+	// Comprobamos si el usuario existe por su username
+	public boolean userExist(String username) {
+		User user = users.get(username);
+		if(user != null) return true;
+		
+		return false;
+	}
 
-	// Obtener la Ãºnica instancia de la clase ---> SINGLETONE
-	public static UserRepository getUniqueInstance() {
+	// Obtener la única instancia de la clase ---> SINGLETONE
+	public static UserRepository getInstancia() {
 		if (uniqueInstance == null) {
 			uniqueInstance = new UserRepository();
 		}
 		return uniqueInstance;
 	}
 
-	// Devolver todos los clientes
-	public List<User> getClientes() {
+	// Devolver todos los usuarios
+	public List<User> getUser() {
 		ArrayList<User> lista = new ArrayList<User>();
 		for (User c : users.values())
 			lista.add(c);
 		return lista;
 	}
 
-	// Obtener cliente
+	// Obtener uusario
 	public User getUser(int codigo) {
 		for (User c : users.values()) {
 			if (c.getCodigo() == codigo)
@@ -56,11 +62,18 @@ public class UserRepository {
 		}
 		return null;
 	}
+	
+	// Añadimos el usuario tanto a la lista de usuarios como al adaptador
+	public void addUser(User user) {
+		userAdapter.createUser(user);
+		users.put(user.getUsername(), user);
+	}
 
+	// Actualizamos el repositorio
 	private void uploadRepository() {
 		List<User> userDB = userAdapter.readAllUsers();
 		for (User u : userDB) {
-			users.put(u.getFullName(), u);
+			users.put(u.getUsername(), u);
 		}
 		
 	}
