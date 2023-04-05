@@ -33,6 +33,8 @@ import java.io.File;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JCheckBox;
 import javax.swing.JMenuBar;
@@ -63,6 +65,11 @@ public class StartWindow {
 	private JTextField userField_Register;
 	private JPasswordField passwordField_Register;
 	private boolean profilePicture = false;
+
+	private static final int MIN_PASSWORD_LENGTH = 8;
+	private static final String VALID_EMAIL_REGEX = "^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$";
+	
+	private Pattern emailPat = Pattern.compile(VALID_EMAIL_REGEX);
 
 	/**
 	 * Launch the application.
@@ -136,7 +143,7 @@ public class StartWindow {
 		gbl_panelLogin.rowWeights = new double[] { 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		panelLogin.setLayout(gbl_panelLogin);
 
-		JLabel labelUser_Login = new JLabel("Usuario:");
+		JLabel labelUser_Login = new JLabel("Usuario/Email:");
 		GridBagConstraints gbc_labelUser_Login = new GridBagConstraints();
 		gbc_labelUser_Login.anchor = GridBagConstraints.SOUTHEAST;
 		gbc_labelUser_Login.insets = new Insets(0, 0, 5, 5);
@@ -194,9 +201,44 @@ public class StartWindow {
 		JButton loginButton_Login = new JButton("Iniciar sesi\u00F3n");
 		loginButton_Login.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (userField_Login.getText().isEmpty() || passwordField_Login.getPassword().length == 0) {
-					JOptionPane.showMessageDialog(frmPhototdsLogin, "Faltan campos por rellenar. Revísalo", null,
+				if (userField_Login.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(frmPhototdsLogin, "El campo \"Usuario\" no puede estar vacío.", null,
 							JOptionPane.ERROR_MESSAGE);
+				} else if (passwordField_Login.getPassword().length == 0) {
+					JOptionPane.showMessageDialog(frmPhototdsLogin, "El campo \"Contraseña\" no puede estar vacío.",
+							null, JOptionPane.ERROR_MESSAGE);
+				} else if (passwordField_Login.getPassword().length < MIN_PASSWORD_LENGTH) {
+					JOptionPane.showMessageDialog(frmPhototdsLogin,
+							"La contraseña ha de tener mínimo " + MIN_PASSWORD_LENGTH + " caracteres.", null,
+							JOptionPane.ERROR_MESSAGE);
+				} else {
+					Matcher loginEmailMatch = emailPat.matcher(userField_Login.getText());
+					if(loginEmailMatch.matches()) {
+						if (Controller.getInstancia().login(userField_Login.getText(),
+								String.valueOf(passwordField_Login.getPassword()), true)) {
+							// Aquí se mostraría la nueva ventana
+							JOptionPane.showMessageDialog(frmPhototdsLogin, "Login con éxito (dev)", null,
+									JOptionPane.INFORMATION_MESSAGE);
+							frmPhototdsLogin.setLocationRelativeTo(null);
+							frmPhototdsLogin.setVisible(false);
+						} else {
+							JOptionPane.showMessageDialog(frmPhototdsLogin, "Los datos son incorrectos.", null,
+									JOptionPane.ERROR_MESSAGE);
+						}
+					} else {
+						if (Controller.getInstancia().login(userField_Login.getText(),
+								String.valueOf(passwordField_Login.getPassword()), false)) {
+							// Aquí se mostraría la nueva ventana
+							JOptionPane.showMessageDialog(frmPhototdsLogin, "Login con éxito (dev)", null,
+									JOptionPane.INFORMATION_MESSAGE);
+							frmPhototdsLogin.setLocationRelativeTo(null);
+							frmPhototdsLogin.setVisible(false);
+						} else {
+							JOptionPane.showMessageDialog(frmPhototdsLogin, "Los datos son incorrectos.", null,
+									JOptionPane.ERROR_MESSAGE);
+						}
+					}
+					
 				}
 			}
 		});
@@ -221,6 +263,9 @@ public class StartWindow {
 				CardLayout cL = (CardLayout) panelCentral.getLayout();
 				cL.show(panelCentral, "panelRegister");
 				frmPhototdsLogin.setSize(frmPhototdsLogin.getWidth(), 496);
+				userField_Login.setText(null);
+				passwordField_Login.setText(null);
+				chckbxVisiblePassword_Login.setSelected(false);
 			}
 		});
 		GridBagConstraints gbc_registerButton_Login = new GridBagConstraints();
@@ -443,11 +488,30 @@ public class StartWindow {
 		registerButton_Register.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (emailField_Register.getText().isEmpty() || fullnameField_Register.getText().isEmpty()
-						|| userField_Register.getText().isEmpty() || passwordField_Register.getPassword().length == 0
-						|| dateChooser_Register.getDate() == null) {
-					JOptionPane.showMessageDialog(frmPhototdsLogin, "Faltan campos por rellenar", null,
+				Matcher registerEmailMatch = emailPat.matcher(emailField_Register.getText());
+
+				if (emailField_Register.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(frmPhototdsLogin, "El campo \"Email\" no puede estar vacío.", null,
 							JOptionPane.ERROR_MESSAGE);
+				} else if (!registerEmailMatch.matches()) {
+					JOptionPane.showMessageDialog(frmPhototdsLogin, "El email no es válido.", null,
+							JOptionPane.ERROR_MESSAGE);
+				} else if (fullnameField_Register.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(frmPhototdsLogin,
+							"El campo \"Nombre completo\" no puede estar vacío.", null, JOptionPane.ERROR_MESSAGE);
+				} else if (userField_Register.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(frmPhototdsLogin, "El campo \"Usuario\" no puede estar vacío.", null,
+							JOptionPane.ERROR_MESSAGE);
+				} else if (passwordField_Register.getPassword().length == 0) {
+					JOptionPane.showMessageDialog(frmPhototdsLogin, "El campo \"Contraseña\" no puede estar vacío.",
+							null, JOptionPane.ERROR_MESSAGE);
+				} else if (passwordField_Register.getPassword().length < MIN_PASSWORD_LENGTH) {
+					JOptionPane.showMessageDialog(frmPhototdsLogin,
+							"La contraseña ha de tener mínimo " + MIN_PASSWORD_LENGTH + " caracteres.", null,
+							JOptionPane.ERROR_MESSAGE);
+				} else if (dateChooser_Register.getDate() == null) {
+					JOptionPane.showMessageDialog(frmPhototdsLogin, "El campo \"Fecha de nacimiento\" es incorrecto.",
+							null, JOptionPane.ERROR_MESSAGE);
 				} else {
 					if (Controller.getInstancia().createUser(emailField_Register.getText(),
 							fullnameField_Register.getText(), userField_Register.getText(),
@@ -455,6 +519,16 @@ public class StartWindow {
 							description_Register.getText()) == true) {
 						JOptionPane.showMessageDialog(frmPhototdsLogin, "Registrado con éxito", null,
 								JOptionPane.INFORMATION_MESSAGE);
+						CardLayout cL = (CardLayout) panelCentral.getLayout();
+						cL.show(panelCentral, "panelLogin");
+						frmPhototdsLogin.setSize(frmPhototdsLogin.getWidth(), 299);
+						emailField_Register.setText(null);
+						fullnameField_Register.setText(null);
+						dateChooser_Register.setDate(null);
+						userField_Register.setText(null);
+						passwordField_Register.setText(null);
+						description_Register.setText(null);
+						chckbxVisiblePassword_Register.setSelected(false);
 					} else {
 						JOptionPane.showMessageDialog(frmPhototdsLogin, "¡Ya estás registrado!", null,
 								JOptionPane.ERROR_MESSAGE);
@@ -494,6 +568,13 @@ public class StartWindow {
 				CardLayout cL = (CardLayout) panelCentral.getLayout();
 				cL.show(panelCentral, "panelLogin");
 				frmPhototdsLogin.setSize(frmPhototdsLogin.getWidth(), 299);
+				emailField_Register.setText(null);
+				fullnameField_Register.setText(null);
+				dateChooser_Register.setDate(null);
+				userField_Register.setText(null);
+				passwordField_Register.setText(null);
+				description_Register.setText(null);
+				chckbxVisiblePassword_Register.setSelected(false);
 			}
 		});
 		GridBagConstraints gbc_loginButton_Register = new GridBagConstraints();
@@ -550,7 +631,7 @@ public class StartWindow {
 			public void mouseClicked(MouseEvent e) {
 				JFrame ventanaAyuda = new JFrame();
 				JOptionPane.showMessageDialog(ventanaAyuda,
-						"Para iniciar sesión, introduzca:\n- En el campo \"Usuario\", su nombre de usuario o correo electrónico.\n"
+						"Para iniciar sesión, introduzca:\n- En el campo \"Usuario/Email\", su nombre de usuario o correo electrónico.\n"
 								+ "- En el campo \"Contraseña\", su contraseña.\nPara más ayuda, contacte con el soporte.");
 			}
 		});
