@@ -94,7 +94,7 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 		usersFollowed = serverPersistencia.recuperarPropiedadEntidad(eUser, "usersFollowed");
 		publications = serverPersistencia.recuperarPropiedadEntidad(eUser, "publications");
 		
-		System.out.println("email: " + email);
+		/*System.out.println("email: " + email);
 		System.out.println("fullName: " + fullName);
 		System.out.println("username: " + username);
 		System.out.println("password: " + password);
@@ -102,7 +102,7 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 		System.out.println("isPremium: " + isPremium);
 		System.out.println("usersFollowing: " + usersFollowing);
 		System.out.println("usersFollowed: " + usersFollowed);
-		System.out.println("publications: " + publications);
+		System.out.println("publications: " + publications);*/
 		
 
 		Date birthDay = new Date();
