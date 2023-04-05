@@ -57,5 +57,29 @@ public class Controller {
 
 		return true;
 	}
+	
+	public boolean login(String username, String password, boolean isEmail) {
+		
+		boolean userExist = false;
+		if(isEmail)
+			userExist = userRepo.userExistEmail(username);
+		else
+			userExist = userRepo.userExist(username);
+		
+		if(userExist == false)
+			return false;
+		
+		User user;
+		
+		if(isEmail)
+			user = userRepo.getUserFromEmail(username);
+		else
+			user = userRepo.getUser(username);
+		
+		if(user.getPassword().equals(password)) 
+			return true;
+		else
+			return false;
+	}
 
 }
