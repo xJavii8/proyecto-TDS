@@ -12,7 +12,7 @@ public class Hashtag {
 		this.name = name;
 	}
 
-	// GETS AND SETS
+	// GETTERS AND SETTERS
 	public int getCode() {
 		return code;
 	}

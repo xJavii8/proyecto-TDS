@@ -45,6 +45,9 @@ import java.awt.CardLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import com.toedter.calendar.JDateChooser;
+
+import umu.tds.controller.Controller;
+
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JEditorPane;
@@ -361,8 +364,8 @@ public class StartWindow {
 		gbc_scrollPane_Register.gridy = 5;
 		panelRegister.add(scrollPane_Register, gbc_scrollPane_Register);
 
-		JTextArea textArea = new JTextArea();
-		scrollPane_Register.setViewportView(textArea);
+		JTextArea description_Register = new JTextArea();
+		scrollPane_Register.setViewportView(description_Register);
 
 		JLabel labelProfilePhoto_Register = new JLabel("Foto de perfil:");
 		GridBagConstraints gbc_labelProfilePhoto_Register = new GridBagConstraints();
@@ -443,11 +446,20 @@ public class StartWindow {
 				if (emailField_Register.getText().isEmpty() || fullnameField_Register.getText().isEmpty()
 						|| userField_Register.getText().isEmpty() || passwordField_Register.getPassword().length == 0
 						|| dateChooser_Register.getDate() == null) {
-					JOptionPane.showMessageDialog(frmPhototdsLogin, "Faltan campos por rellenar. Revísalo", null,
+					JOptionPane.showMessageDialog(frmPhototdsLogin, "Faltan campos por rellenar", null,
 							JOptionPane.ERROR_MESSAGE);
 				} else {
-					JOptionPane.showMessageDialog(frmPhototdsLogin, "Registrado con éxito", null,
-							JOptionPane.INFORMATION_MESSAGE);
+					if (Controller.getInstancia().createUser(emailField_Register.getText(),
+							fullnameField_Register.getText(), userField_Register.getText(),
+							String.valueOf(passwordField_Register.getPassword()), dateChooser_Register.getDate(),
+							description_Register.getText()) == true) {
+						JOptionPane.showMessageDialog(frmPhototdsLogin, "Registrado con éxito", null,
+								JOptionPane.INFORMATION_MESSAGE);
+					} else {
+						JOptionPane.showMessageDialog(frmPhototdsLogin, "¡Ya estás registrado!", null,
+								JOptionPane.ERROR_MESSAGE);
+					}
+
 				}
 			}
 		});
