@@ -32,6 +32,8 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -55,6 +57,11 @@ import javax.swing.JTextArea;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.function.Predicate;
+import javax.swing.JProgressBar;
+
 public class StartWindow {
 
 	private JFrame frmPhototdsLogin;
@@ -68,7 +75,7 @@ public class StartWindow {
 
 	private static final int MIN_PASSWORD_LENGTH = 8;
 	private static final String VALID_EMAIL_REGEX = "^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$";
-	
+
 	private Pattern emailPat = Pattern.compile(VALID_EMAIL_REGEX);
 
 	/**
@@ -213,7 +220,7 @@ public class StartWindow {
 							JOptionPane.ERROR_MESSAGE);
 				} else {
 					Matcher loginEmailMatch = emailPat.matcher(userField_Login.getText());
-					if(loginEmailMatch.matches()) {
+					if (loginEmailMatch.matches()) {
 						if (Controller.getInstancia().login(userField_Login.getText(),
 								String.valueOf(passwordField_Login.getPassword()), true)) {
 							// Aquí se mostraría la nueva ventana
@@ -238,7 +245,7 @@ public class StartWindow {
 									JOptionPane.ERROR_MESSAGE);
 						}
 					}
-					
+
 				}
 			}
 		});
@@ -279,9 +286,9 @@ public class StartWindow {
 		panelCentral.add(panelRegister, "panelRegister");
 		GridBagLayout gbl_panelRegister = new GridBagLayout();
 		gbl_panelRegister.columnWidths = new int[] { 15, 0, 0, 15, 0, 15, 0 };
-		gbl_panelRegister.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 15, 0, 0, 0, 0, 0 };
+		gbl_panelRegister.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 32, 15, 0, 0, 0, -12, 0, 0 };
 		gbl_panelRegister.columnWeights = new double[] { 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
-		gbl_panelRegister.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0,
+		gbl_panelRegister.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0,
 				Double.MIN_VALUE };
 		panelRegister.setLayout(gbl_panelRegister);
 
@@ -512,6 +519,10 @@ public class StartWindow {
 				} else if (dateChooser_Register.getDate() == null) {
 					JOptionPane.showMessageDialog(frmPhototdsLogin, "El campo \"Fecha de nacimiento\" es incorrecto.",
 							null, JOptionPane.ERROR_MESSAGE);
+				} else if (menorDeEdad(dateChooser_Register.getDate())) {
+					JOptionPane.showMessageDialog(frmPhototdsLogin,
+							"Eres menor de edad, no te puedes registrar en la aplicación", null,
+							JOptionPane.ERROR_MESSAGE);
 				} else {
 					if (Controller.getInstancia().createUser(emailField_Register.getText(),
 							fullnameField_Register.getText(), userField_Register.getText(),
@@ -537,6 +548,9 @@ public class StartWindow {
 				}
 			}
 		});
+		
+		
+		
 		GridBagConstraints gbc_registerButton_Register = new GridBagConstraints();
 		gbc_registerButton_Register.gridwidth = 6;
 		gbc_registerButton_Register.insets = new Insets(0, 0, 5, 0);
@@ -578,6 +592,7 @@ public class StartWindow {
 			}
 		});
 		GridBagConstraints gbc_loginButton_Register = new GridBagConstraints();
+		gbc_loginButton_Register.insets = new Insets(0, 0, 5, 0);
 		gbc_loginButton_Register.anchor = GridBagConstraints.NORTH;
 		gbc_loginButton_Register.gridwidth = 6;
 		gbc_loginButton_Register.gridx = 0;
@@ -636,6 +651,12 @@ public class StartWindow {
 			}
 		});
 		menuBar.add(mntmHelp);
+	}
+
+	private boolean menorDeEdad(java.util.Date date) {
+		LocalDate fechaDeNacimiento = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		Predicate<LocalDate> esMenorDeEdad = d -> Period.between(d, LocalDate.now()).getYears() < 18;
+		return esMenorDeEdad.test(fechaDeNacimiento);
 	}
 
 }
