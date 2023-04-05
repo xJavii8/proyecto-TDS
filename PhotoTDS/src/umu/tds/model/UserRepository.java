@@ -34,8 +34,29 @@ public class UserRepository {
 	public boolean userExist(String username) {
 		User user = users.get(username);
 		if(user != null) return true;
-		
 		return false;
+	}
+	
+	public User getUser(String username) {
+		User user = users.get(username);
+		if(user != null) return user;
+		return null;
+	}
+	
+	public boolean userExistEmail(String email) {
+		for (User u : users.values()) {
+			if (u.getEmail().equals(email))
+				return true;
+		}
+		return false;
+	}
+	
+	public User getUserFromEmail(String email) {
+		for (User u : users.values()) {
+			if (u.getEmail().equals(email))
+				return u;
+		}
+		return null;
 	}
 
 	// Obtener la única instancia de la clase ---> SINGLETONE
@@ -49,16 +70,16 @@ public class UserRepository {
 	// Devolver todos los usuarios
 	public List<User> getUser() {
 		ArrayList<User> lista = new ArrayList<User>();
-		for (User c : users.values())
-			lista.add(c);
+		for (User u : users.values())
+			lista.add(u);
 		return lista;
 	}
 
 	// Obtener uusario
 	public User getUser(int codigo) {
-		for (User c : users.values()) {
-			if (c.getCodigo() == codigo)
-				return c;
+		for (User u : users.values()) {
+			if (u.getCodigo() == codigo)
+				return u;
 		}
 		return null;
 	}
