@@ -13,7 +13,7 @@ public class Publication {
 	private List<Hashtag> hashtags;
 	private List<Comment> comments;
 
-	// MÃ‰TODO CONSTRUCTOR
+	// MÉTODO CONSTRUCTOR
 	public Publication(String title, Date datePublication, String description, int likes) {
 		super();
 		this.title = title;
