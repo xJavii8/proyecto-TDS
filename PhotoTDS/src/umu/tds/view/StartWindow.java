@@ -362,6 +362,7 @@ public class StartWindow {
 		
 		
 		JProgressBar barraProgreso = new JProgressBar();
+		barraProgreso.setToolTipText("Fortaleza de la contraseña");
 		GridBagConstraints gbc_barraProgreso = new GridBagConstraints();
 		gbc_barraProgreso.insets = new Insets(0, 0, 5, 5);
 		gbc_barraProgreso.gridx = 2;
