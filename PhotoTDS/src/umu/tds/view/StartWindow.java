@@ -61,6 +61,10 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.function.Predicate;
 import javax.swing.JProgressBar;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+
+//HOLA
 
 public class StartWindow {
 
@@ -194,7 +198,7 @@ public class StartWindow {
 				if (chckbxVisiblePassword_Login.isSelected()) {
 					passwordField_Login.setEchoChar((char) 0);
 				} else {
-					passwordField_Login.setEchoChar('•');
+					passwordField_Login.setEchoChar('â€¢');
 				}
 			}
 		});
@@ -209,22 +213,22 @@ public class StartWindow {
 		loginButton_Login.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (userField_Login.getText().isEmpty()) {
-					JOptionPane.showMessageDialog(frmPhototdsLogin, "El campo \"Usuario\" no puede estar vacío.", null,
+					JOptionPane.showMessageDialog(frmPhototdsLogin, "El campo \"Usuario\" no puede estar vacio.", null,
 							JOptionPane.ERROR_MESSAGE);
 				} else if (passwordField_Login.getPassword().length == 0) {
-					JOptionPane.showMessageDialog(frmPhototdsLogin, "El campo \"Contraseña\" no puede estar vacío.",
+					JOptionPane.showMessageDialog(frmPhototdsLogin, "El campo \"ContraseÃ±a\" no puede estar vacio.",
 							null, JOptionPane.ERROR_MESSAGE);
 				} else if (passwordField_Login.getPassword().length < MIN_PASSWORD_LENGTH) {
 					JOptionPane.showMessageDialog(frmPhototdsLogin,
-							"La contraseña ha de tener mínimo " + MIN_PASSWORD_LENGTH + " caracteres.", null,
+							"La contraseÃ±a ha de tener minimo " + MIN_PASSWORD_LENGTH + " caracteres.", null,
 							JOptionPane.ERROR_MESSAGE);
 				} else {
 					Matcher loginEmailMatch = emailPat.matcher(userField_Login.getText());
 					if (loginEmailMatch.matches()) {
 						if (Controller.getInstancia().login(userField_Login.getText(),
 								String.valueOf(passwordField_Login.getPassword()), true)) {
-							// Aquí se mostraría la nueva ventana
-							JOptionPane.showMessageDialog(frmPhototdsLogin, "Login con éxito (dev)", null,
+							// Aqui se mostrara la nueva ventana
+							JOptionPane.showMessageDialog(frmPhototdsLogin, "Login con Ã©xito (dev)", null,
 									JOptionPane.INFORMATION_MESSAGE);
 							frmPhototdsLogin.setLocationRelativeTo(null);
 							frmPhototdsLogin.setVisible(false);
@@ -235,8 +239,8 @@ public class StartWindow {
 					} else {
 						if (Controller.getInstancia().login(userField_Login.getText(),
 								String.valueOf(passwordField_Login.getPassword()), false)) {
-							// Aquí se mostraría la nueva ventana
-							JOptionPane.showMessageDialog(frmPhototdsLogin, "Login con éxito (dev)", null,
+							// AquÃ­ se mostrarÃ¡ la nueva ventana
+							JOptionPane.showMessageDialog(frmPhototdsLogin, "Login con Ã©xito (dev)", null,
 									JOptionPane.INFORMATION_MESSAGE);
 							frmPhototdsLogin.setLocationRelativeTo(null);
 							frmPhototdsLogin.setVisible(false);
@@ -286,9 +290,9 @@ public class StartWindow {
 		panelCentral.add(panelRegister, "panelRegister");
 		GridBagLayout gbl_panelRegister = new GridBagLayout();
 		gbl_panelRegister.columnWidths = new int[] { 15, 0, 0, 15, 0, 15, 0 };
-		gbl_panelRegister.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 32, 15, 0, 0, 0, -12, 0, 0 };
+		gbl_panelRegister.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 32, 15, 0, 0, 0, -12, 0, 0 };
 		gbl_panelRegister.columnWeights = new double[] { 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
-		gbl_panelRegister.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0,
+		gbl_panelRegister.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0,
 				Double.MIN_VALUE };
 		panelRegister.setLayout(gbl_panelRegister);
 
@@ -355,8 +359,35 @@ public class StartWindow {
 		gbc_labelPassword_Register.gridx = 1;
 		gbc_labelPassword_Register.gridy = 3;
 		panelRegister.add(labelPassword_Register, gbc_labelPassword_Register);
+		
+		
+		JProgressBar barraProgreso = new JProgressBar();
+		GridBagConstraints gbc_barraProgreso = new GridBagConstraints();
+		gbc_barraProgreso.insets = new Insets(0, 0, 5, 5);
+		gbc_barraProgreso.gridx = 2;
+		gbc_barraProgreso.gridy = 4;
+		panelRegister.add(barraProgreso, gbc_barraProgreso);
 
 		passwordField_Register = new JPasswordField();
+		passwordField_Register.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+
+				int valor = fortalezaContraseÃ±a(passwordField_Register);
+				barraProgreso.setValue(valor);
+
+				if (valor >= 0 && valor <= 25) {
+					barraProgreso.setForeground(Color.RED);
+				} else if (valor > 25 && valor <= 50) {
+					barraProgreso.setForeground(Color.ORANGE);
+				} else if (valor > 50 && valor <= 75) {
+					barraProgreso.setForeground(Color.YELLOW);
+				} else {
+					barraProgreso.setForeground(Color.GREEN);
+				}
+
+			}
+		});
 		GridBagConstraints gbc_passwordField_Register = new GridBagConstraints();
 		gbc_passwordField_Register.fill = GridBagConstraints.HORIZONTAL;
 		gbc_passwordField_Register.insets = new Insets(0, 0, 5, 5);
@@ -371,7 +402,7 @@ public class StartWindow {
 				if (chckbxVisiblePassword_Register.isSelected()) {
 					passwordField_Register.setEchoChar((char) 0);
 				} else {
-					passwordField_Register.setEchoChar('•');
+					passwordField_Register.setEchoChar('â€¢');
 				}
 			}
 		});
@@ -381,13 +412,15 @@ public class StartWindow {
 		gbc_chckbxVisiblePassword_Register.gridx = 3;
 		gbc_chckbxVisiblePassword_Register.gridy = 3;
 		panelRegister.add(chckbxVisiblePassword_Register, gbc_chckbxVisiblePassword_Register);
+		
+		
 
 		JLabel labelBirthdayDate_Register = new JLabel("* Fecha de nacimiento:");
 		GridBagConstraints gbc_labelBirthdayDate_Register = new GridBagConstraints();
 		gbc_labelBirthdayDate_Register.anchor = GridBagConstraints.EAST;
 		gbc_labelBirthdayDate_Register.insets = new Insets(0, 0, 5, 5);
 		gbc_labelBirthdayDate_Register.gridx = 1;
-		gbc_labelBirthdayDate_Register.gridy = 4;
+		gbc_labelBirthdayDate_Register.gridy = 5;
 		panelRegister.add(labelBirthdayDate_Register, gbc_labelBirthdayDate_Register);
 
 		JDateChooser dateChooser_Register = new JDateChooser();
@@ -396,7 +429,7 @@ public class StartWindow {
 		gbc_dateChooser_Register.gridwidth = 2;
 		gbc_dateChooser_Register.insets = new Insets(0, 0, 5, 5);
 		gbc_dateChooser_Register.gridx = 2;
-		gbc_dateChooser_Register.gridy = 4;
+		gbc_dateChooser_Register.gridy = 5;
 		panelRegister.add(dateChooser_Register, gbc_dateChooser_Register);
 
 		JLabel labelPresentation_Register = new JLabel("Presentaci\u00F3n:");
@@ -404,7 +437,7 @@ public class StartWindow {
 		gbc_labelPresentation_Register.anchor = GridBagConstraints.NORTHEAST;
 		gbc_labelPresentation_Register.insets = new Insets(0, 0, 5, 5);
 		gbc_labelPresentation_Register.gridx = 1;
-		gbc_labelPresentation_Register.gridy = 5;
+		gbc_labelPresentation_Register.gridy = 6;
 		panelRegister.add(labelPresentation_Register, gbc_labelPresentation_Register);
 
 		JScrollPane scrollPane_Register = new JScrollPane();
@@ -413,7 +446,7 @@ public class StartWindow {
 		gbc_scrollPane_Register.gridwidth = 2;
 		gbc_scrollPane_Register.insets = new Insets(0, 0, 5, 5);
 		gbc_scrollPane_Register.gridx = 2;
-		gbc_scrollPane_Register.gridy = 5;
+		gbc_scrollPane_Register.gridy = 6;
 		panelRegister.add(scrollPane_Register, gbc_scrollPane_Register);
 
 		JTextArea description_Register = new JTextArea();
@@ -424,7 +457,7 @@ public class StartWindow {
 		gbc_labelProfilePhoto_Register.anchor = GridBagConstraints.EAST;
 		gbc_labelProfilePhoto_Register.insets = new Insets(0, 0, 5, 5);
 		gbc_labelProfilePhoto_Register.gridx = 1;
-		gbc_labelProfilePhoto_Register.gridy = 6;
+		gbc_labelProfilePhoto_Register.gridy = 7;
 		panelRegister.add(labelProfilePhoto_Register, gbc_labelProfilePhoto_Register);
 
 		JPanel photoPicPanel = new JPanel();
@@ -432,7 +465,7 @@ public class StartWindow {
 		gbc_photoPicPanel.fill = GridBagConstraints.HORIZONTAL;
 		gbc_photoPicPanel.insets = new Insets(0, 0, 5, 5);
 		gbc_photoPicPanel.gridx = 2;
-		gbc_photoPicPanel.gridy = 6;
+		gbc_photoPicPanel.gridy = 7;
 		panelRegister.add(photoPicPanel, gbc_photoPicPanel);
 
 		JEditorPane editorPane = new JEditorPane();
@@ -488,7 +521,7 @@ public class StartWindow {
 		gbc_btnSelectPhoto_Register.anchor = GridBagConstraints.WEST;
 		gbc_btnSelectPhoto_Register.insets = new Insets(0, 0, 5, 5);
 		gbc_btnSelectPhoto_Register.gridx = 3;
-		gbc_btnSelectPhoto_Register.gridy = 6;
+		gbc_btnSelectPhoto_Register.gridy = 7;
 		panelRegister.add(btnSelectPhoto_Register, gbc_btnSelectPhoto_Register);
 
 		JButton registerButton_Register = new JButton("Registrar");
@@ -498,37 +531,37 @@ public class StartWindow {
 				Matcher registerEmailMatch = emailPat.matcher(emailField_Register.getText());
 
 				if (emailField_Register.getText().isEmpty()) {
-					JOptionPane.showMessageDialog(frmPhototdsLogin, "El campo \"Email\" no puede estar vacío.", null,
+					JOptionPane.showMessageDialog(frmPhototdsLogin, "El campo \"Email\" no puede estar vacÃ­o.", null,
 							JOptionPane.ERROR_MESSAGE);
 				} else if (!registerEmailMatch.matches()) {
-					JOptionPane.showMessageDialog(frmPhototdsLogin, "El email no es válido.", null,
+					JOptionPane.showMessageDialog(frmPhototdsLogin, "El email no es vÃ¡lido.", null,
 							JOptionPane.ERROR_MESSAGE);
 				} else if (fullnameField_Register.getText().isEmpty()) {
 					JOptionPane.showMessageDialog(frmPhototdsLogin,
-							"El campo \"Nombre completo\" no puede estar vacío.", null, JOptionPane.ERROR_MESSAGE);
+							"El campo \"Nombre completo\" no puede estar vacÃ­o.", null, JOptionPane.ERROR_MESSAGE);
 				} else if (userField_Register.getText().isEmpty()) {
-					JOptionPane.showMessageDialog(frmPhototdsLogin, "El campo \"Usuario\" no puede estar vacío.", null,
+					JOptionPane.showMessageDialog(frmPhototdsLogin, "El campo \"Usuario\" no puede estar vacÃ­o.", null,
 							JOptionPane.ERROR_MESSAGE);
 				} else if (passwordField_Register.getPassword().length == 0) {
-					JOptionPane.showMessageDialog(frmPhototdsLogin, "El campo \"Contraseña\" no puede estar vacío.",
+					JOptionPane.showMessageDialog(frmPhototdsLogin, "El campo \"ContraseÃ±a\" no puede estar vacÃ­o.",
 							null, JOptionPane.ERROR_MESSAGE);
 				} else if (passwordField_Register.getPassword().length < MIN_PASSWORD_LENGTH) {
 					JOptionPane.showMessageDialog(frmPhototdsLogin,
-							"La contraseña ha de tener mínimo " + MIN_PASSWORD_LENGTH + " caracteres.", null,
+							"La contraseÃ±a ha de tener mÃ­nimo " + MIN_PASSWORD_LENGTH + " caracteres.", null,
 							JOptionPane.ERROR_MESSAGE);
 				} else if (dateChooser_Register.getDate() == null) {
 					JOptionPane.showMessageDialog(frmPhototdsLogin, "El campo \"Fecha de nacimiento\" es incorrecto.",
 							null, JOptionPane.ERROR_MESSAGE);
 				} else if (menorDeEdad(dateChooser_Register.getDate())) {
 					JOptionPane.showMessageDialog(frmPhototdsLogin,
-							"Eres menor de edad, no te puedes registrar en la aplicación", null,
+							"Eres menor de edad, no te puedes registrar en la aplicaciÃ³n", null,
 							JOptionPane.ERROR_MESSAGE);
 				} else {
 					if (Controller.getInstancia().createUser(emailField_Register.getText(),
 							fullnameField_Register.getText(), userField_Register.getText(),
 							String.valueOf(passwordField_Register.getPassword()), dateChooser_Register.getDate(),
 							description_Register.getText()) == true) {
-						JOptionPane.showMessageDialog(frmPhototdsLogin, "Registrado con éxito", null,
+						JOptionPane.showMessageDialog(frmPhototdsLogin, "Registrado con Ã©xito", null,
 								JOptionPane.INFORMATION_MESSAGE);
 						CardLayout cL = (CardLayout) panelCentral.getLayout();
 						cL.show(panelCentral, "panelLogin");
@@ -541,7 +574,7 @@ public class StartWindow {
 						description_Register.setText(null);
 						chckbxVisiblePassword_Register.setSelected(false);
 					} else {
-						JOptionPane.showMessageDialog(frmPhototdsLogin, "¡Ya estás registrado!", null,
+						JOptionPane.showMessageDialog(frmPhototdsLogin, "Ya estÃ¡s registrado!", null,
 								JOptionPane.ERROR_MESSAGE);
 					}
 
@@ -555,7 +588,7 @@ public class StartWindow {
 		gbc_registerButton_Register.gridwidth = 6;
 		gbc_registerButton_Register.insets = new Insets(0, 0, 5, 0);
 		gbc_registerButton_Register.gridx = 0;
-		gbc_registerButton_Register.gridy = 8;
+		gbc_registerButton_Register.gridy = 9;
 		panelRegister.add(registerButton_Register, gbc_registerButton_Register);
 
 		JLabel labelMandatoryFields_Register = new JLabel("Los campos con * son obligatorios");
@@ -564,7 +597,7 @@ public class StartWindow {
 		gbc_labelMandatoryFields_Register.gridwidth = 6;
 		gbc_labelMandatoryFields_Register.insets = new Insets(0, 0, 5, 0);
 		gbc_labelMandatoryFields_Register.gridx = 0;
-		gbc_labelMandatoryFields_Register.gridy = 9;
+		gbc_labelMandatoryFields_Register.gridy = 10;
 		panelRegister.add(labelMandatoryFields_Register, gbc_labelMandatoryFields_Register);
 
 		JLabel labelAlreadyRegistered_Register = new JLabel("\u00BFYa tienes una cuenta?");
@@ -573,7 +606,7 @@ public class StartWindow {
 		gbc_labelAlreadyRegistered_Register.gridwidth = 6;
 		gbc_labelAlreadyRegistered_Register.insets = new Insets(0, 0, 5, 0);
 		gbc_labelAlreadyRegistered_Register.gridx = 0;
-		gbc_labelAlreadyRegistered_Register.gridy = 10;
+		gbc_labelAlreadyRegistered_Register.gridy = 11;
 		panelRegister.add(labelAlreadyRegistered_Register, gbc_labelAlreadyRegistered_Register);
 
 		JButton loginButton_Register = new JButton("Iniciar sesi\u00F3n");
@@ -596,7 +629,7 @@ public class StartWindow {
 		gbc_loginButton_Register.anchor = GridBagConstraints.NORTH;
 		gbc_loginButton_Register.gridwidth = 6;
 		gbc_loginButton_Register.gridx = 0;
-		gbc_loginButton_Register.gridy = 11;
+		gbc_loginButton_Register.gridy = 12;
 		panelRegister.add(loginButton_Register, gbc_loginButton_Register);
 
 		JMenuBar menuBar = new JMenuBar();
@@ -646,8 +679,8 @@ public class StartWindow {
 			public void mouseClicked(MouseEvent e) {
 				JFrame ventanaAyuda = new JFrame();
 				JOptionPane.showMessageDialog(ventanaAyuda,
-						"Para iniciar sesión, introduzca:\n- En el campo \"Usuario/Email\", su nombre de usuario o correo electrónico.\n"
-								+ "- En el campo \"Contraseña\", su contraseña.\nPara más ayuda, contacte con el soporte.");
+						"Para iniciar sesiÃ³n, introduzca:\n- En el campo \"Usuario/Email\", su nombre de usuario o correo electrÃ³nico.\n"
+								+ "- En el campo \"ContraseÃ±a\", su contraseÃ±a.\nPara mÃ¡s ayuda, contacte con el soporte.");
 			}
 		});
 		menuBar.add(mntmHelp);
@@ -657,6 +690,60 @@ public class StartWindow {
 		LocalDate fechaDeNacimiento = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		Predicate<LocalDate> esMenorDeEdad = d -> Period.between(d, LocalDate.now()).getYears() < 18;
 		return esMenorDeEdad.test(fechaDeNacimiento);
+	}
+	
+	private int fortalezaContraseÃ±a(JPasswordField contraseÃ±a) {
+		int fortaleza = 0;
+		char[] password = contraseÃ±a.getPassword();
+
+		String passwordString = new String(password);
+		
+
+		if (passwordString.length() >= 8 && passwordString.length() <= 10) {
+			fortaleza += 20;
+		} else if (passwordString.length() > 10) {
+			fortaleza += 40;
+		}
+
+		// Agregamos puntos por complejidad
+		boolean tieneMinsucula = false;
+		boolean tieneMayucula = false;
+		boolean tieneDigitos = false;
+		boolean tieneCaracterEspecial = false;
+
+		for (char c : password) {
+			if (Character.isLowerCase(c)) {
+				tieneMinsucula = true;
+			} else if (Character.isUpperCase(c)) {
+				tieneMayucula = true;
+			} else if (Character.isDigit(c)) {
+				tieneDigitos = true;
+			} else {
+				tieneCaracterEspecial = true;
+			}
+		}
+
+		int complejidad = 0;
+
+		if (tieneMinsucula) {
+			complejidad++;
+		}
+
+		if (tieneMayucula) {
+			complejidad++;
+		}
+
+		if (tieneDigitos) {
+			complejidad++;
+		}
+
+		if (tieneCaracterEspecial) {
+			complejidad++;
+		}
+
+		fortaleza += complejidad * 15;
+
+		return fortaleza;
 	}
 
 }
