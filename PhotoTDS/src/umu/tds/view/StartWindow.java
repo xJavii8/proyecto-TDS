@@ -6,11 +6,13 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import javax.swing.JLabel;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.MatteBorder;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.PlainDocument;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
@@ -30,10 +32,10 @@ import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Date;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -44,7 +46,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.CardLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -57,18 +58,15 @@ import javax.swing.JTextArea;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 
-import java.time.LocalDate;
 import java.time.Period;
 import java.util.function.Predicate;
 import javax.swing.JProgressBar;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-//HOLA
-
 public class StartWindow {
 
-	private JFrame frmPhototdsLogin;
+	private JFrame frame;
 	private JTextField userField_Login;
 	private JPasswordField passwordField_Login;
 	private JTextField emailField_Register;
@@ -90,7 +88,7 @@ public class StartWindow {
 			public void run() {
 				try {
 					StartWindow window = new StartWindow();
-					window.frmPhototdsLogin.setVisible(true);
+					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -105,13 +103,6 @@ public class StartWindow {
 		initialize();
 	}
 
-	public static void launchLogin(JFrame old) {
-		old.setVisible(false);
-		old.dispose();
-		StartWindow window = new StartWindow();
-		window.frmPhototdsLogin.setVisible(true);
-	}
-
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -123,14 +114,15 @@ public class StartWindow {
 		} else {
 			FlatDarkLaf.setup();
 		}
-		frmPhototdsLogin = new JFrame();
-		frmPhototdsLogin
-				.setIconImage(Toolkit.getDefaultToolkit().getImage(StartWindow.class.getResource("/images/ig64.png")));
-		frmPhototdsLogin.setBounds(100, 100, 450, 299);
-		frmPhototdsLogin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		frame = new JFrame();
+		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(StartWindow.class.getResource("/images/ig64.png")));
+		frame.setSize(450, 299);
+		frame.setLocationRelativeTo(null);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JPanel panelNorte = new JPanel();
-		frmPhototdsLogin.getContentPane().add(panelNorte, BorderLayout.NORTH);
+		frame.getContentPane().add(panelNorte, BorderLayout.NORTH);
 		panelNorte.setLayout(new BoxLayout(panelNorte, BoxLayout.X_AXIS));
 
 		JPanel panel = new JPanel();
@@ -142,7 +134,7 @@ public class StartWindow {
 		panel.add(labelBienvenidoTDS);
 
 		JPanel panelCentral = new JPanel();
-		frmPhototdsLogin.getContentPane().add(panelCentral, BorderLayout.CENTER);
+		frame.getContentPane().add(panelCentral, BorderLayout.CENTER);
 		panelCentral.setLayout(new CardLayout(0, 0));
 
 		JPanel panelLogin = new JPanel();
@@ -213,41 +205,34 @@ public class StartWindow {
 		loginButton_Login.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (userField_Login.getText().isEmpty()) {
-					JOptionPane.showMessageDialog(frmPhototdsLogin, "El campo \"Usuario\" no puede estar vacio.", null,
+					JOptionPane.showMessageDialog(frame, "El campo \"Usuario\" no puede estar vacío.", null,
 							JOptionPane.ERROR_MESSAGE);
 				} else if (passwordField_Login.getPassword().length == 0) {
-					JOptionPane.showMessageDialog(frmPhototdsLogin, "El campo \"Contraseña\" no puede estar vacio.",
-							null, JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(frame, "El campo \"Contraseña\" no puede estar vacío.", null,
+							JOptionPane.ERROR_MESSAGE);
 				} else if (passwordField_Login.getPassword().length < MIN_PASSWORD_LENGTH) {
-					JOptionPane.showMessageDialog(frmPhototdsLogin,
-							"La contraseña ha de tener minimo " + MIN_PASSWORD_LENGTH + " caracteres.", null,
+					JOptionPane.showMessageDialog(frame,
+							"La contraseña ha de tener mínimo " + MIN_PASSWORD_LENGTH + " caracteres.", null,
 							JOptionPane.ERROR_MESSAGE);
 				} else {
 					Matcher loginEmailMatch = emailPat.matcher(userField_Login.getText());
+					boolean login = false;
 					if (loginEmailMatch.matches()) {
-						if (Controller.getInstancia().login(userField_Login.getText(),
-								String.valueOf(passwordField_Login.getPassword()), true)) {
-							// Aqui se mostrara la nueva ventana
-							JOptionPane.showMessageDialog(frmPhototdsLogin, "Login con éxito (dev)", null,
-									JOptionPane.INFORMATION_MESSAGE);
-							frmPhototdsLogin.setLocationRelativeTo(null);
-							frmPhototdsLogin.setVisible(false);
-						} else {
-							JOptionPane.showMessageDialog(frmPhototdsLogin, "Los datos son incorrectos.", null,
-									JOptionPane.ERROR_MESSAGE);
-						}
+						login = Controller.getInstancia().login(userField_Login.getText(),
+								String.valueOf(passwordField_Login.getPassword()), true);
 					} else {
-						if (Controller.getInstancia().login(userField_Login.getText(),
-								String.valueOf(passwordField_Login.getPassword()), false)) {
-							// Aquí se mostrará la nueva ventana
-							JOptionPane.showMessageDialog(frmPhototdsLogin, "Login con éxito (dev)", null,
-									JOptionPane.INFORMATION_MESSAGE);
-							frmPhototdsLogin.setLocationRelativeTo(null);
-							frmPhototdsLogin.setVisible(false);
-						} else {
-							JOptionPane.showMessageDialog(frmPhototdsLogin, "Los datos son incorrectos.", null,
-									JOptionPane.ERROR_MESSAGE);
-						}
+						login = Controller.getInstancia().login(userField_Login.getText(),
+								String.valueOf(passwordField_Login.getPassword()), false);
+					}
+					if (login == true) {
+						MainWindow mainView = new MainWindow();
+						JOptionPane.showMessageDialog(frame, "Login con éxito (dev)", null,
+								JOptionPane.INFORMATION_MESSAGE);
+						frame.setVisible(false);
+						mainView.show();
+					} else {
+						JOptionPane.showMessageDialog(frame, "Los datos son incorrectos.", null,
+								JOptionPane.ERROR_MESSAGE);
 					}
 
 				}
@@ -273,7 +258,8 @@ public class StartWindow {
 			public void actionPerformed(ActionEvent e) {
 				CardLayout cL = (CardLayout) panelCentral.getLayout();
 				cL.show(panelCentral, "panelRegister");
-				frmPhototdsLogin.setSize(frmPhototdsLogin.getWidth(), 496);
+				frame.setSize(frame.getWidth(), 496);
+				frame.setLocationRelativeTo(null);
 				userField_Login.setText(null);
 				passwordField_Login.setText(null);
 				chckbxVisiblePassword_Login.setSelected(false);
@@ -292,8 +278,8 @@ public class StartWindow {
 		gbl_panelRegister.columnWidths = new int[] { 15, 0, 0, 15, 0, 15, 0 };
 		gbl_panelRegister.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 32, 15, 0, 0, 0, -12, 0, 0 };
 		gbl_panelRegister.columnWeights = new double[] { 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
-		gbl_panelRegister.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0,
-				Double.MIN_VALUE };
+		gbl_panelRegister.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0,
+				0.0, Double.MIN_VALUE };
 		panelRegister.setLayout(gbl_panelRegister);
 
 		JLabel labelEmail_Register = new JLabel("* Email:");
@@ -359,8 +345,7 @@ public class StartWindow {
 		gbc_labelPassword_Register.gridx = 1;
 		gbc_labelPassword_Register.gridy = 3;
 		panelRegister.add(labelPassword_Register, gbc_labelPassword_Register);
-		
-		
+
 		JProgressBar barraProgreso = new JProgressBar();
 		barraProgreso.setToolTipText("Fortaleza de la contraseña");
 		GridBagConstraints gbc_barraProgreso = new GridBagConstraints();
@@ -413,8 +398,6 @@ public class StartWindow {
 		gbc_chckbxVisiblePassword_Register.gridx = 3;
 		gbc_chckbxVisiblePassword_Register.gridy = 3;
 		panelRegister.add(chckbxVisiblePassword_Register, gbc_chckbxVisiblePassword_Register);
-		
-		
 
 		JLabel labelBirthdayDate_Register = new JLabel("* Fecha de nacimiento:");
 		GridBagConstraints gbc_labelBirthdayDate_Register = new GridBagConstraints();
@@ -451,6 +434,14 @@ public class StartWindow {
 		panelRegister.add(scrollPane_Register, gbc_scrollPane_Register);
 
 		JTextArea description_Register = new JTextArea();
+		description_Register.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (description_Register.getText().length() > 200) {
+					description_Register.setText(description_Register.getText().substring(0, 200));
+				}
+			}
+		});
 		scrollPane_Register.setViewportView(description_Register);
 
 		JLabel labelProfilePhoto_Register = new JLabel("Foto de perfil:");
@@ -490,15 +481,15 @@ public class StartWindow {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					chooser.showOpenDialog(frmPhototdsLogin);
+					chooser.showOpenDialog(frame);
 					File currentFile = chooser.getSelectedFile();
 					if (currentFile != null) {
 						if (currentFile.getAbsolutePath().contains(".png")
 								|| currentFile.getAbsolutePath().contains(".jpg")) {
 							editorPane.setText("<html><img src=file:\"" + currentFile.getAbsolutePath() + "\"" + " "
 									+ "width=75 height=75></img>");
-							frmPhototdsLogin.setSize(frmPhototdsLogin.getWidth() + 75,
-									frmPhototdsLogin.getHeight() + 75);
+							frame.setSize(frame.getWidth() + 75, frame.getHeight() + 75);
+							frame.setLocationRelativeTo(null);
 							profilePicture = true;
 							btnSelectPhoto_Register.setText("Borrar");
 						} else {
@@ -512,7 +503,8 @@ public class StartWindow {
 					profilePicture = false;
 					editorPane.setText("");
 					btnSelectPhoto_Register.setText("Seleccionar");
-					frmPhototdsLogin.setSize(frmPhototdsLogin.getWidth() - 75, frmPhototdsLogin.getHeight() - 75);
+					frame.setSize(frame.getWidth() - 75, frame.getHeight() - 75);
+					frame.setLocationRelativeTo(null);
 
 				}
 
@@ -530,43 +522,46 @@ public class StartWindow {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				Matcher registerEmailMatch = emailPat.matcher(emailField_Register.getText());
+				int fortalezaPass = fortalezaContraseña(passwordField_Register);
 
 				if (emailField_Register.getText().isEmpty()) {
-					JOptionPane.showMessageDialog(frmPhototdsLogin, "El campo \"Email\" no puede estar vacío.", null,
+					JOptionPane.showMessageDialog(frame, "El campo \"Email\" no puede estar vacío.", null,
 							JOptionPane.ERROR_MESSAGE);
 				} else if (!registerEmailMatch.matches()) {
-					JOptionPane.showMessageDialog(frmPhototdsLogin, "El email no es válido.", null,
-							JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(frame, "El email no es válido.", null, JOptionPane.ERROR_MESSAGE);
 				} else if (fullnameField_Register.getText().isEmpty()) {
-					JOptionPane.showMessageDialog(frmPhototdsLogin,
-							"El campo \"Nombre completo\" no puede estar vacío.", null, JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(frame, "El campo \"Nombre completo\" no puede estar vacío.", null,
+							JOptionPane.ERROR_MESSAGE);
 				} else if (userField_Register.getText().isEmpty()) {
-					JOptionPane.showMessageDialog(frmPhototdsLogin, "El campo \"Usuario\" no puede estar vacío.", null,
+					JOptionPane.showMessageDialog(frame, "El campo \"Usuario\" no puede estar vacío.", null,
 							JOptionPane.ERROR_MESSAGE);
 				} else if (passwordField_Register.getPassword().length == 0) {
-					JOptionPane.showMessageDialog(frmPhototdsLogin, "El campo \"Contraseña\" no puede estar vacío.",
-							null, JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(frame, "El campo \"Contraseña\" no puede estar vacío.", null,
+							JOptionPane.ERROR_MESSAGE);
+				} else if (fortalezaPass < 50) {
+					JOptionPane.showMessageDialog(frame, "La contraseña no es lo suficientemente fuerte.", null,
+							JOptionPane.ERROR_MESSAGE);
 				} else if (passwordField_Register.getPassword().length < MIN_PASSWORD_LENGTH) {
-					JOptionPane.showMessageDialog(frmPhototdsLogin,
+					JOptionPane.showMessageDialog(frame,
 							"La contraseña ha de tener mínimo " + MIN_PASSWORD_LENGTH + " caracteres.", null,
 							JOptionPane.ERROR_MESSAGE);
 				} else if (dateChooser_Register.getDate() == null) {
-					JOptionPane.showMessageDialog(frmPhototdsLogin, "El campo \"Fecha de nacimiento\" es incorrecto.",
-							null, JOptionPane.ERROR_MESSAGE);
-				} else if (menorDeEdad(dateChooser_Register.getDate())) {
-					JOptionPane.showMessageDialog(frmPhototdsLogin,
-							"Eres menor de edad, no te puedes registrar en la aplicación", null,
+					JOptionPane.showMessageDialog(frame, "El campo \"Fecha de nacimiento\" es incorrecto.", null,
 							JOptionPane.ERROR_MESSAGE);
+				} else if (menorDeEdad(dateChooser_Register.getDate())) {
+					JOptionPane.showMessageDialog(frame, "Debes de ser mayor de edad para registrarte en PhotoTDS.",
+							null, JOptionPane.ERROR_MESSAGE);
 				} else {
 					if (Controller.getInstancia().createUser(emailField_Register.getText(),
 							fullnameField_Register.getText(), userField_Register.getText(),
 							String.valueOf(passwordField_Register.getPassword()), dateChooser_Register.getDate(),
 							description_Register.getText()) == true) {
-						JOptionPane.showMessageDialog(frmPhototdsLogin, "Registrado con éxito", null,
+						JOptionPane.showMessageDialog(frame, "Registrado con éxito", null,
 								JOptionPane.INFORMATION_MESSAGE);
 						CardLayout cL = (CardLayout) panelCentral.getLayout();
 						cL.show(panelCentral, "panelLogin");
-						frmPhototdsLogin.setSize(frmPhototdsLogin.getWidth(), 299);
+						frame.setSize(frame.getWidth(), 299);
+						frame.setLocationRelativeTo(null);
 						emailField_Register.setText(null);
 						fullnameField_Register.setText(null);
 						dateChooser_Register.setDate(null);
@@ -575,16 +570,13 @@ public class StartWindow {
 						description_Register.setText(null);
 						chckbxVisiblePassword_Register.setSelected(false);
 					} else {
-						JOptionPane.showMessageDialog(frmPhototdsLogin, "Ya estás registrado!", null,
-								JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(frame, "¡Ya estás registrado!", null, JOptionPane.ERROR_MESSAGE);
 					}
 
 				}
 			}
 		});
-		
-		
-		
+
 		GridBagConstraints gbc_registerButton_Register = new GridBagConstraints();
 		gbc_registerButton_Register.gridwidth = 6;
 		gbc_registerButton_Register.insets = new Insets(0, 0, 5, 0);
@@ -615,7 +607,8 @@ public class StartWindow {
 			public void actionPerformed(ActionEvent e) {
 				CardLayout cL = (CardLayout) panelCentral.getLayout();
 				cL.show(panelCentral, "panelLogin");
-				frmPhototdsLogin.setSize(frmPhototdsLogin.getWidth(), 299);
+				frame.setSize(frame.getWidth(), 299);
+				frame.setLocationRelativeTo(null);
 				emailField_Register.setText(null);
 				fullnameField_Register.setText(null);
 				dateChooser_Register.setDate(null);
@@ -634,7 +627,7 @@ public class StartWindow {
 		panelRegister.add(loginButton_Register, gbc_loginButton_Register);
 
 		JMenuBar menuBar = new JMenuBar();
-		frmPhototdsLogin.setJMenuBar(menuBar);
+		frame.setJMenuBar(menuBar);
 		JMenuItem mntmModoClaroOscuro = new JMenuItem();
 
 		Color lightBars = new Color(230, 230, 230, 230);
@@ -658,13 +651,13 @@ public class StartWindow {
 			public void mouseClicked(MouseEvent e) {
 				if (mntmModoClaroOscuro.getText() == "Modo oscuro") {
 					FlatDarkLaf.setup();
-					SwingUtilities.updateComponentTreeUI(frmPhototdsLogin);
+					SwingUtilities.updateComponentTreeUI(frame);
 					menuBar.setBorder(new MatteBorder(1, 1, 1, 1, darkBars));
 					mntmModoClaroOscuro.setBorder(new MatteBorder(0, 0, 0, 1, darkBars));
 					mntmModoClaroOscuro.setText("Modo claro");
 				} else if (mntmModoClaroOscuro.getText() == "Modo claro") {
 					FlatLightLaf.setup();
-					SwingUtilities.updateComponentTreeUI(frmPhototdsLogin);
+					SwingUtilities.updateComponentTreeUI(frame);
 					mntmModoClaroOscuro.setText("Modo oscuro");
 					menuBar.setBorder(new MatteBorder(1, 1, 1, 1, lightBars));
 					mntmModoClaroOscuro.setBorder(new MatteBorder(0, 0, 0, 1, lightBars));
@@ -687,18 +680,17 @@ public class StartWindow {
 		menuBar.add(mntmHelp);
 	}
 
-	private boolean menorDeEdad(java.util.Date date) {
+	private boolean menorDeEdad(Date date) {
 		LocalDate fechaDeNacimiento = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		Predicate<LocalDate> esMenorDeEdad = d -> Period.between(d, LocalDate.now()).getYears() < 18;
 		return esMenorDeEdad.test(fechaDeNacimiento);
 	}
-	
+
 	private int fortalezaContraseña(JPasswordField contraseña) {
 		int fortaleza = 0;
 		char[] password = contraseña.getPassword();
 
 		String passwordString = new String(password);
-		
 
 		if (passwordString.length() >= 8 && passwordString.length() <= 10) {
 			fortaleza += 20;
