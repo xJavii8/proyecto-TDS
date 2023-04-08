@@ -51,35 +51,34 @@ public class Controller {
 
 		if (userExist == true)
 			return false;
-		
+
 		User user = new User(username, email, password, fullname, birthday, userExist);
 		userRepo.addUser(user);
 
 		return true;
 	}
-	
+
 	public boolean login(String username, String password, boolean isEmail) {
-		
+
 		boolean userExist = false;
-		if(isEmail)
+		if (isEmail)
 			userExist = userRepo.userExistEmail(username);
 		else
 			userExist = userRepo.userExist(username);
-		
-		if(userExist == false)
+
+		if (userExist == false)
 			return false;
-		
+
 		User user;
-		
-		if(isEmail)
+
+		if (isEmail)
 			user = userRepo.getUserFromEmail(username);
 		else
 			user = userRepo.getUser(username);
-		
-		if(user.getPassword().equals(password)) 
+
+		if (user.getPassword().equals(password))
 			return true;
 		else
 			return false;
 	}
-
 }
