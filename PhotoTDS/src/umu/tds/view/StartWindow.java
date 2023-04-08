@@ -52,6 +52,7 @@ import java.awt.event.ActionEvent;
 import com.toedter.calendar.JDateChooser;
 
 import umu.tds.controller.Controller;
+import umu.tds.model.User;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -217,15 +218,17 @@ public class StartWindow {
 				} else {
 					Matcher loginEmailMatch = emailPat.matcher(userField_Login.getText());
 					boolean login = false;
+					boolean isEmail = false;
 					if (loginEmailMatch.matches()) {
+						isEmail = true;
 						login = Controller.getInstancia().login(userField_Login.getText(),
-								String.valueOf(passwordField_Login.getPassword()), true);
+								String.valueOf(passwordField_Login.getPassword()), isEmail);
 					} else {
 						login = Controller.getInstancia().login(userField_Login.getText(),
-								String.valueOf(passwordField_Login.getPassword()), false);
+								String.valueOf(passwordField_Login.getPassword()), isEmail);
 					}
 					if (login == true) {
-						MainWindow mainView = new MainWindow();
+						MainWindow mainView = new MainWindow(userField_Login.getText());
 						JOptionPane.showMessageDialog(frame, "Login con éxito (dev)", null,
 								JOptionPane.INFORMATION_MESSAGE);
 						frame.setVisible(false);
@@ -552,6 +555,7 @@ public class StartWindow {
 					JOptionPane.showMessageDialog(frame, "Debes de ser mayor de edad para registrarte en PhotoTDS.",
 							null, JOptionPane.ERROR_MESSAGE);
 				} else {
+					// Introducir foto de perfil por defecto
 					if (Controller.getInstancia().createUser(emailField_Register.getText(),
 							fullnameField_Register.getText(), userField_Register.getText(),
 							String.valueOf(passwordField_Register.getPassword()), dateChooser_Register.getDate(),
