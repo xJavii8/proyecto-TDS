@@ -32,6 +32,9 @@ import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -75,6 +78,7 @@ public class StartWindow {
 	private JTextField userField_Register;
 	private JPasswordField passwordField_Register;
 	private boolean profilePicture = false;
+	private String profilePic_Register;
 
 	private static final int MIN_PASSWORD_LENGTH = 8;
 	private static final String VALID_EMAIL_REGEX = "^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$";
@@ -228,9 +232,9 @@ public class StartWindow {
 								String.valueOf(passwordField_Login.getPassword()), isEmail);
 					}
 					if (login == true) {
-						MainWindow mainView = new MainWindow(userField_Login.getText());
-						JOptionPane.showMessageDialog(frame, "Login con éxito (dev)", null,
-								JOptionPane.INFORMATION_MESSAGE);
+						String profilePicPath = Controller.getInstancia().getProfilePicPath(userField_Login.getText(),
+								isEmail);
+						MainWindow mainView = new MainWindow(userField_Login.getText(), profilePicPath);
 						frame.setVisible(false);
 						mainView.show();
 					} else {
@@ -474,7 +478,7 @@ public class StartWindow {
 			public void mouseClicked(MouseEvent e) {
 				LookAndFeel actualLF = UIManager.getLookAndFeel();
 				JFileChooser chooser = null;
-				if (!profilePicture) {
+				if (profilePic_Register == null) {
 					try {
 						UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 						chooser = new JFileChooser();
@@ -485,11 +489,14 @@ public class StartWindow {
 						e1.printStackTrace();
 					}
 					chooser.showOpenDialog(frame);
-					File currentFile = chooser.getSelectedFile();
-					if (currentFile != null) {
-						if (currentFile.getAbsolutePath().contains(".png")
-								|| currentFile.getAbsolutePath().contains(".jpg")) {
-							editorPane.setText("<html><img src=file:\"" + currentFile.getAbsolutePath() + "\"" + " "
+					profilePic_Register = chooser.getSelectedFile().getAbsolutePath();
+					String HTMLProfilePic = profilePic_Register;
+					if (profilePic_Register != null) {
+						if (profilePic_Register.contains(".png") || profilePic_Register.contains(".jpg")) {
+							if (HTMLProfilePic.contains(" ")) {
+								HTMLProfilePic = HTMLProfilePic.replaceAll(" ", "%20");
+							}
+							editorPane.setText("<html><img src=file:\"" + HTMLProfilePic + "\"" + " "
 									+ "width=75 height=75></img>");
 							frame.setSize(frame.getWidth() + 75, frame.getHeight() + 75);
 							frame.setLocationRelativeTo(null);
@@ -501,16 +508,13 @@ public class StartWindow {
 									"La imagen debe ser formato .png o .jpg");
 						}
 					}
-
 				} else {
-					profilePicture = false;
+					profilePic_Register = null;
 					editorPane.setText("");
 					btnSelectPhoto_Register.setText("Seleccionar");
 					frame.setSize(frame.getWidth() - 75, frame.getHeight() - 75);
 					frame.setLocationRelativeTo(null);
-
 				}
-
 			}
 		});
 		GridBagConstraints gbc_btnSelectPhoto_Register = new GridBagConstraints();
@@ -526,7 +530,6 @@ public class StartWindow {
 			public void mouseClicked(MouseEvent e) {
 				Matcher registerEmailMatch = emailPat.matcher(emailField_Register.getText());
 				int fortalezaPass = fortalezaContraseña(passwordField_Register);
-
 				if (emailField_Register.getText().isEmpty()) {
 					JOptionPane.showMessageDialog(frame, "El campo \"Email\" no puede estar vacío.", null,
 							JOptionPane.ERROR_MESSAGE);
@@ -555,11 +558,15 @@ public class StartWindow {
 					JOptionPane.showMessageDialog(frame, "Debes de ser mayor de edad para registrarte en PhotoTDS.",
 							null, JOptionPane.ERROR_MESSAGE);
 				} else {
-					// Introducir foto de perfil por defecto
+					if (profilePic_Register == null)
+						profilePic_Register = StartWindow.class.getResource("/images/defaultUserPic32.png").getPath()
+								.substring(1);
+					if (profilePic_Register.contains(" "))
+						profilePic_Register = "\"" + profilePic_Register + "\"";
 					if (Controller.getInstancia().createUser(emailField_Register.getText(),
 							fullnameField_Register.getText(), userField_Register.getText(),
 							String.valueOf(passwordField_Register.getPassword()), dateChooser_Register.getDate(),
-							description_Register.getText()) == true) {
+							profilePic_Register, description_Register.getText()) == true) {
 						JOptionPane.showMessageDialog(frame, "Registrado con éxito", null,
 								JOptionPane.INFORMATION_MESSAGE);
 						CardLayout cL = (CardLayout) panelCentral.getLayout();

@@ -43,7 +43,7 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 			return;
 
 		// Registrar primero atributos que son objetos (esto se hace con los atributos
-		// del usuario, cuando esté el resto de adaptadores)
+		// del usuario, cuando estï¿½ el resto de adaptadores)
 
 		eUser = new Entidad();
 		eUser.setNombre("user");
@@ -52,6 +52,7 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 						new Propiedad("username", user.getUsername()), new Propiedad("password", user.getPassword()),
 						new Propiedad("birthDay", new SimpleDateFormat("dd/MM/yyyy").format(user.getBirthDay())),
 						new Propiedad("isPremium", String.valueOf(user.isPremium())),
+						new Propiedad("profilePic", user.getProfilePic()),
 						new Propiedad("usersFollowing", obtenerCodigosUsuarios(user.getUsersFollowing())),
 						new Propiedad("usersFollowed", obtenerCodigosUsuarios(user.getUsersFollowed())),
 						new Propiedad("publications", obtenerCodigosPublicaciones(user.getPublications())))));
@@ -64,7 +65,7 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 	}
 
 	public User readUser(int userCode) {
-		// Si la entidad está en el pool, la devuelve directamente
+		// Si la entidad estï¿½ en el pool, la devuelve directamente
 		if (PoolDAO.getUnicaInstancia().contiene(userCode))
 			return (User) PoolDAO.getUnicaInstancia().getObjeto(userCode);
 
@@ -75,6 +76,7 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 		String password;
 		String fullName;
 		String birthDayStr;
+		String profilePic;
 		String isPremium;
 		String usersFollowing;
 		String usersFollowed;
@@ -89,6 +91,7 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 		username = serverPersistencia.recuperarPropiedadEntidad(eUser, "username");
 		password = serverPersistencia.recuperarPropiedadEntidad(eUser, "password");
 		birthDayStr = serverPersistencia.recuperarPropiedadEntidad(eUser, "birthDay");
+		profilePic = serverPersistencia.recuperarPropiedadEntidad(eUser, "profilePic");
 		isPremium = serverPersistencia.recuperarPropiedadEntidad(eUser, "isPremium");
 		usersFollowing = serverPersistencia.recuperarPropiedadEntidad(eUser, "usersFollowing");
 		usersFollowed = serverPersistencia.recuperarPropiedadEntidad(eUser, "usersFollowed");
@@ -113,10 +116,10 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 			e.printStackTrace();
 		}
 
-		User user = new User(username, email, password, fullName, birthDay, Boolean.parseBoolean(isPremium));
+		User user = new User(username, email, password, fullName, birthDay, profilePic, Boolean.parseBoolean(isPremium));
 		user.setCodigo(userCode);
 
-		// IMPORTANTE: añadir el usuario al pool antes de llamar a otros
+		// IMPORTANTE: aï¿½adir el usuario al pool antes de llamar a otros
 		// adaptadores
 		PoolDAO.getUnicaInstancia().addObjeto(userCode, user);
 		
@@ -141,6 +144,8 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 				p.setValor(user.getPassword());
 			} else if (p.getNombre().equals("birthDay")) {
 				p.setValor(new SimpleDateFormat("dd/MM/yyyy").format(user.getBirthDay()));
+			} else if(p.getNombre().equals("profilePic")) {
+				p.setValor(user.getProfilePic());
 			} else if (p.getNombre().equals("isPremium")) {
 				p.setValor(String.valueOf(user.isPremium()));
 			} else if (p.getNombre().equals("usersFollowing")) {
