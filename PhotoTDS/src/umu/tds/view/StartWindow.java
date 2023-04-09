@@ -561,8 +561,6 @@ public class StartWindow {
 					if (profilePic_Register == null)
 						profilePic_Register = StartWindow.class.getResource("/images/defaultUserPic32.png").getPath()
 								.substring(1);
-					if (profilePic_Register.contains(" "))
-						profilePic_Register = "\"" + profilePic_Register + "\"";
 					if (Controller.getInstancia().createUser(emailField_Register.getText(),
 							fullnameField_Register.getText(), userField_Register.getText(),
 							String.valueOf(passwordField_Register.getPassword()), dateChooser_Register.getDate(),
