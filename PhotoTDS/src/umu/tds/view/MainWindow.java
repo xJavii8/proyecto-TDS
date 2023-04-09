@@ -69,6 +69,22 @@ public class MainWindow {
 		panelNorte.setLayout(gbl_panelNorte);
 
 		JLabel logo = new JLabel("PhotoTDS");
+		logo.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				System.out.println("Presionado");
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				logo.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				logo.setCursor(Cursor.getDefaultCursor());
+			}
+		});
 		logo.setIcon(new ImageIcon(MainWindow.class.getResource("/images/ig32.png")));
 		logo.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		GridBagConstraints gbc_logo = new GridBagConstraints();
@@ -78,6 +94,22 @@ public class MainWindow {
 		panelNorte.add(logo, gbc_logo);
 
 		JLabel profile = new JLabel("username");
+		profile.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				System.out.println("Presionado");
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				profile.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				profile.setCursor(Cursor.getDefaultCursor());
+			}
+		});
 		ImageIcon icon = new ImageIcon(profilePicPath);
 		if (icon.getIconHeight() > 32 || icon.getIconWidth() > 32) {
 			icon = new ImageIcon(icon.getImage().getScaledInstance(32, 32, Image.SCALE_DEFAULT));
