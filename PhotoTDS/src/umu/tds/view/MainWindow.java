@@ -73,8 +73,6 @@ public class MainWindow {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				System.out.println("Presionado");
-				AddPublicationWindow publicationView = new AddPublicationWindow();
-				publicationView.show();
 			}
 
 			@Override
@@ -121,7 +119,8 @@ public class MainWindow {
 		uploadPhoto.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.out.println("Presionado");
+				AddPublicationWindow publicationView = new AddPublicationWindow();
+				publicationView.show();
 			}
 
 			@Override
