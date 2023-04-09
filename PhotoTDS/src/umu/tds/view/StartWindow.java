@@ -77,7 +77,6 @@ public class StartWindow {
 	private JTextField fullnameField_Register;
 	private JTextField userField_Register;
 	private JPasswordField passwordField_Register;
-	private boolean profilePicture = false;
 	private String profilePic_Register;
 
 	private static final int MIN_PASSWORD_LENGTH = 8;
@@ -500,7 +499,6 @@ public class StartWindow {
 									+ "width=75 height=75></img>");
 							frame.setSize(frame.getWidth() + 75, frame.getHeight() + 75);
 							frame.setLocationRelativeTo(null);
-							profilePicture = true;
 							btnSelectPhoto_Register.setText("Borrar");
 						} else {
 							JFrame ventanaMultipleProfilePicture = new JFrame();
