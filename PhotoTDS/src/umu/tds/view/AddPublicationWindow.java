@@ -25,12 +25,14 @@ import javax.swing.JFileChooser;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.SwingConstants;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import java.awt.Toolkit;
 
 public class AddPublicationWindow {
 
 	private JFrame frame;
 	private JTextField tituloField;
-	private JTextField descripcionField;
 	private String picPublication;
 
 
@@ -51,31 +53,33 @@ public class AddPublicationWindow {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
+		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(AddPublicationWindow.class.getResource("/images/ig32.png")));
+		frame.setSize(450, 300);
+		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(new BorderLayout(0, 0));
 		
 		JPanel panelNorte = new JPanel();
 		frame.getContentPane().add(panelNorte, BorderLayout.NORTH);
 		
-		JLabel NewPublication = new JLabel("Nueva Publicación");
-		NewPublication.setFont(new Font("Tahoma", Font.BOLD, 16));
+		JLabel NewPublication = new JLabel("Nueva publicación");
+		NewPublication.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		panelNorte.add(NewPublication);
 		
 		JPanel panelCentral = new JPanel();
 		frame.getContentPane().add(panelCentral, BorderLayout.CENTER);
 		GridBagLayout gbl_panelCentral = new GridBagLayout();
-		gbl_panelCentral.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-		gbl_panelCentral.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
-		gbl_panelCentral.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		gbl_panelCentral.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panelCentral.columnWidths = new int[]{15, 0, 0, 0, 15, 0};
+		gbl_panelCentral.rowHeights = new int[]{15, 0, 0, 0, 15, 0, 15, 0};
+		gbl_panelCentral.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panelCentral.rowWeights = new double[]{0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panelCentral.setLayout(gbl_panelCentral);
 		
 		JLabel lblTítulo = new JLabel("Título: ");
 		GridBagConstraints gbc_lblTítulo = new GridBagConstraints();
 		gbc_lblTítulo.insets = new Insets(0, 0, 5, 5);
 		gbc_lblTítulo.anchor = GridBagConstraints.EAST;
-		gbc_lblTítulo.gridx = 3;
+		gbc_lblTítulo.gridx = 1;
 		gbc_lblTítulo.gridy = 1;
 		panelCentral.add(lblTítulo, gbc_lblTítulo);
 		
@@ -86,7 +90,7 @@ public class AddPublicationWindow {
 		gbc_tituloField.fill = GridBagConstraints.BOTH;
 		gbc_tituloField.gridwidth = 2;
 		gbc_tituloField.insets = new Insets(0, 0, 5, 5);
-		gbc_tituloField.gridx = 4;
+		gbc_tituloField.gridx = 2;
 		gbc_tituloField.gridy = 1;
 		panelCentral.add(tituloField, gbc_tituloField);
 		tituloField.setColumns(10);
@@ -95,24 +99,26 @@ public class AddPublicationWindow {
 		GridBagConstraints gbc_lblDescripcion = new GridBagConstraints();
 		gbc_lblDescripcion.anchor = GridBagConstraints.EAST;
 		gbc_lblDescripcion.insets = new Insets(0, 0, 5, 5);
-		gbc_lblDescripcion.gridx = 3;
+		gbc_lblDescripcion.gridx = 1;
 		gbc_lblDescripcion.gridy = 2;
 		panelCentral.add(lblDescripcion, gbc_lblDescripcion);
 		
-		descripcionField = new JTextField();
-		GridBagConstraints gbc_descripcionField = new GridBagConstraints();
-		gbc_descripcionField.fill = GridBagConstraints.BOTH;
-		gbc_descripcionField.gridwidth = 2;
-		gbc_descripcionField.insets = new Insets(0, 0, 5, 5);
-		gbc_descripcionField.gridx = 4;
-		gbc_descripcionField.gridy = 2;
-		panelCentral.add(descripcionField, gbc_descripcionField);
-		descripcionField.setColumns(10);
+		JScrollPane scrollPane = new JScrollPane();
+		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+		gbc_scrollPane.fill = GridBagConstraints.BOTH;
+		gbc_scrollPane.gridwidth = 2;
+		gbc_scrollPane.insets = new Insets(0, 0, 5, 5);
+		gbc_scrollPane.gridx = 2;
+		gbc_scrollPane.gridy = 2;
+		panelCentral.add(scrollPane, gbc_scrollPane);
+		
+		JTextArea textArea = new JTextArea();
+		scrollPane.setViewportView(textArea);
 		
 		JLabel lblFotoElegida = new JLabel("Foto elegida: ");
 		GridBagConstraints gbc_lblFotoElegida = new GridBagConstraints();
 		gbc_lblFotoElegida.insets = new Insets(0, 0, 5, 5);
-		gbc_lblFotoElegida.gridx = 3;
+		gbc_lblFotoElegida.gridx = 1;
 		gbc_lblFotoElegida.gridy = 3;
 		panelCentral.add(lblFotoElegida, gbc_lblFotoElegida);
 		
@@ -120,7 +126,7 @@ public class AddPublicationWindow {
 		GridBagConstraints gbc_photoPicPanel = new GridBagConstraints();
 		gbc_photoPicPanel.insets = new Insets(0, 0, 5, 5);
 		gbc_photoPicPanel.fill = GridBagConstraints.BOTH;
-		gbc_photoPicPanel.gridx = 4;
+		gbc_photoPicPanel.gridx = 2;
 		gbc_photoPicPanel.gridy = 3;
 		panelCentral.add(photoPicPanel, gbc_photoPicPanel);
 		
@@ -175,15 +181,15 @@ public class AddPublicationWindow {
 		});
 		GridBagConstraints gbc_btnSeleccionar = new GridBagConstraints();
 		gbc_btnSeleccionar.insets = new Insets(0, 0, 5, 5);
-		gbc_btnSeleccionar.gridx = 5;
+		gbc_btnSeleccionar.gridx = 3;
 		gbc_btnSeleccionar.gridy = 3;
 		panelCentral.add(btnSeleccionar, gbc_btnSeleccionar);
 		
 		JButton btnSubir = new JButton("Subir");
 		GridBagConstraints gbc_btnSubir = new GridBagConstraints();
-		gbc_btnSubir.insets = new Insets(0, 0, 0, 5);
-		gbc_btnSubir.gridx = 4;
-		gbc_btnSubir.gridy = 6;
+		gbc_btnSubir.insets = new Insets(0, 0, 5, 5);
+		gbc_btnSubir.gridx = 2;
+		gbc_btnSubir.gridy = 5;
 		panelCentral.add(btnSubir, gbc_btnSubir);
 	}
 
