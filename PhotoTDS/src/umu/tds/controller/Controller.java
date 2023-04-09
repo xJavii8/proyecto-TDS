@@ -45,14 +45,14 @@ public class Controller {
 		userRepo = UserRepository.getInstancia();
 	}
 
-	public boolean createUser(String email, String fullname, String username, String password, Date birthday,
+	public boolean createUser(String email, String fullname, String username, String password, Date birthday, String profilePic,
 			String description) {
 		boolean userExist = userRepo.userExist(username);
 
 		if (userExist == true)
 			return false;
 
-		User user = new User(username, email, password, fullname, birthday, userExist);
+		User user = new User(username, email, password, fullname, birthday, profilePic, userExist);
 		userRepo.addUser(user);
 
 		return true;
@@ -80,5 +80,16 @@ public class Controller {
 			return true;
 		else
 			return false;
+	}
+	
+	public String getProfilePicPath(String username, boolean isEmail) {
+		String profilePic;
+		
+		if (isEmail)
+			profilePic = userRepo.getUserFromEmail(username).getProfilePic();
+		else
+			profilePic = userRepo.getUser(username).getProfilePic();
+		
+		return profilePic;
 	}
 }

@@ -12,19 +12,21 @@ public class User {
 	private String password;
 	private String fullName;
 	private Date birthDay;
+	private String profilePic;
 	private boolean isPremium;
 	private List<User> usersFollowing;
 	private List<User> usersFollowed;
 	private List<Publication> publications;
 
 	// MÉTODO CONSTRUCTOR
-	public User(String username, String email, String password, String fullName, Date birthDay, boolean isPremium) {
+	public User(String username, String email, String password, String fullName, Date birthDay, String profilePic, boolean isPremium) {
 		super();
 		this.username = username;
 		this.email = email;
 		this.password = password;
 		this.fullName = fullName;
 		this.birthDay = birthDay;
+		this.profilePic = profilePic;
 		this.isPremium = isPremium;
 
 		this.usersFollowing = new LinkedList<User>();
@@ -32,8 +34,8 @@ public class User {
 		this.publications = new LinkedList<Publication>();
 	}
 	
-	public User(String username, String email, String password, String fullName, Date birthDay) {
-		this(username, email, password, fullName, birthDay, false);
+	public User(String username, String email, String password, String fullName, Date birthDay, String profilePic) {
+		this(username, email, password, fullName, birthDay, profilePic, false);
 	}
 
 	// GETS AND SETS
@@ -51,6 +53,14 @@ public class User {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	public String getProfilePic() {
+		return profilePic;
+	}
+
+	public void setProfilePic(String profilePic) {
+		this.profilePic = profilePic;
 	}
 
 	public String getPassword() {
