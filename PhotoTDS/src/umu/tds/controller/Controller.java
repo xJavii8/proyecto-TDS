@@ -52,7 +52,7 @@ public class Controller {
 		if (userExist == true)
 			return false;
 
-		User user = new User(username, email, password, fullname, birthday, profilePic, userExist);
+		User user = new User(username, email, password, fullname, birthday, profilePic, description);
 		userRepo.addUser(user);
 
 		return true;
@@ -91,5 +91,36 @@ public class Controller {
 			profilePic = userRepo.getUser(username).getProfilePic();
 		
 		return profilePic;
+	}
+	
+	public boolean isPremium(String username) {
+		return userRepo.getUser(username).isPremium();
+	}
+	
+	public boolean setPremium(String username) {
+		User user = userRepo.getUser(username);
+		user.setPremium(true);
+		adaptadorUser.updateUser(user);
+		return true;
+	}
+	
+	public boolean createExcel(String username, String path) {
+		User user = userRepo.getUser(username);
+		if(!user.isPremium())
+			return false;
+		
+		ExcelGen.genExcel(user, user.getFollowers(), path);
+		
+		return true;
+	}
+	
+	public boolean createPDF(String username, String path) {
+		User user = userRepo.getUser(username);
+		if(!user.isPremium())
+			return false;
+		
+		PDFGen.genPDF(user, user.getFollowers(), path);
+		
+		return true;
 	}
 }

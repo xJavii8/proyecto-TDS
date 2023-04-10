@@ -35,46 +35,45 @@ public class AddPublicationWindow {
 	private JTextField tituloField;
 	private String picPublication;
 
-
 	/**
 	 * Create the application.
 	 */
 	public AddPublicationWindow() {
 		initialize();
 	}
-	
+
 	public void show() {
 		frame.setVisible(true);
 	}
-	
-	
+
 	/**
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(AddPublicationWindow.class.getResource("/images/ig32.png")));
+		frame.setIconImage(
+				Toolkit.getDefaultToolkit().getImage(AddPublicationWindow.class.getResource("/images/ig32.png")));
 		frame.setSize(450, 300);
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(new BorderLayout(0, 0));
-		
+
 		JPanel panelNorte = new JPanel();
 		frame.getContentPane().add(panelNorte, BorderLayout.NORTH);
-		
+
 		JLabel NewPublication = new JLabel("Nueva publicación");
 		NewPublication.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		panelNorte.add(NewPublication);
-		
+
 		JPanel panelCentral = new JPanel();
 		frame.getContentPane().add(panelCentral, BorderLayout.CENTER);
 		GridBagLayout gbl_panelCentral = new GridBagLayout();
-		gbl_panelCentral.columnWidths = new int[]{15, 0, 0, 0, 15, 0};
-		gbl_panelCentral.rowHeights = new int[]{15, 0, 0, 0, 15, 0, 15, 0};
-		gbl_panelCentral.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
-		gbl_panelCentral.rowWeights = new double[]{0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panelCentral.columnWidths = new int[] { 15, 0, 0, 0, 15, 0 };
+		gbl_panelCentral.rowHeights = new int[] { 15, 0, 0, 0, 15, 0, 15, 0 };
+		gbl_panelCentral.columnWeights = new double[] { 0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_panelCentral.rowWeights = new double[] { 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		panelCentral.setLayout(gbl_panelCentral);
-		
+
 		JLabel lblTítulo = new JLabel("Título: ");
 		GridBagConstraints gbc_lblTítulo = new GridBagConstraints();
 		gbc_lblTítulo.insets = new Insets(0, 0, 5, 5);
@@ -82,10 +81,9 @@ public class AddPublicationWindow {
 		gbc_lblTítulo.gridx = 1;
 		gbc_lblTítulo.gridy = 1;
 		panelCentral.add(lblTítulo, gbc_lblTítulo);
-		
+
 		tituloField = new JTextField();
-		
-		
+
 		GridBagConstraints gbc_tituloField = new GridBagConstraints();
 		gbc_tituloField.fill = GridBagConstraints.BOTH;
 		gbc_tituloField.gridwidth = 2;
@@ -94,7 +92,7 @@ public class AddPublicationWindow {
 		gbc_tituloField.gridy = 1;
 		panelCentral.add(tituloField, gbc_tituloField);
 		tituloField.setColumns(10);
-		
+
 		JLabel lblDescripcion = new JLabel("Descripción: ");
 		GridBagConstraints gbc_lblDescripcion = new GridBagConstraints();
 		gbc_lblDescripcion.anchor = GridBagConstraints.EAST;
@@ -102,7 +100,7 @@ public class AddPublicationWindow {
 		gbc_lblDescripcion.gridx = 1;
 		gbc_lblDescripcion.gridy = 2;
 		panelCentral.add(lblDescripcion, gbc_lblDescripcion);
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
 		gbc_scrollPane.fill = GridBagConstraints.BOTH;
@@ -111,17 +109,17 @@ public class AddPublicationWindow {
 		gbc_scrollPane.gridx = 2;
 		gbc_scrollPane.gridy = 2;
 		panelCentral.add(scrollPane, gbc_scrollPane);
-		
+
 		JTextArea textArea = new JTextArea();
 		scrollPane.setViewportView(textArea);
-		
+
 		JLabel lblFotoElegida = new JLabel("Foto elegida: ");
 		GridBagConstraints gbc_lblFotoElegida = new GridBagConstraints();
 		gbc_lblFotoElegida.insets = new Insets(0, 0, 5, 5);
 		gbc_lblFotoElegida.gridx = 1;
 		gbc_lblFotoElegida.gridy = 3;
 		panelCentral.add(lblFotoElegida, gbc_lblFotoElegida);
-		
+
 		JPanel photoPicPanel = new JPanel();
 		GridBagConstraints gbc_photoPicPanel = new GridBagConstraints();
 		gbc_photoPicPanel.insets = new Insets(0, 0, 5, 5);
@@ -129,32 +127,22 @@ public class AddPublicationWindow {
 		gbc_photoPicPanel.gridx = 2;
 		gbc_photoPicPanel.gridy = 3;
 		panelCentral.add(photoPicPanel, gbc_photoPicPanel);
-		
+
 		JEditorPane editorPane = new JEditorPane();
 		editorPane.setEditable(false);
 		editorPane.setContentType("text/html");
 		photoPicPanel.add(editorPane);
-		
+
 		JButton btnSeleccionar = new JButton("Seleccionar");
 		btnSeleccionar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				LookAndFeel actualLF = UIManager.getLookAndFeel();
-				JFileChooser chooser = null;
 				if (picPublication == null) {
-					try {
-						UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-						chooser = new JFileChooser();
-						UIManager.setLookAndFeel(actualLF);
-					} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-							| UnsupportedLookAndFeelException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-					chooser.showOpenDialog(frame);
-					picPublication = chooser.getSelectedFile().getAbsolutePath();
-					String HTMLProfilePic = picPublication;
-					if (picPublication != null) {
+					JFileChooser chooser = new JFileChooser();
+					int resultado = chooser.showOpenDialog(frame);
+					if (resultado == JFileChooser.APPROVE_OPTION) {
+						picPublication = chooser.getSelectedFile().getAbsolutePath();
+						String HTMLProfilePic = picPublication;
 						if (picPublication.contains(".png") || picPublication.contains(".jpg")) {
 							if (HTMLProfilePic.contains(" ")) {
 								HTMLProfilePic = HTMLProfilePic.replaceAll(" ", "%20");
@@ -184,7 +172,7 @@ public class AddPublicationWindow {
 		gbc_btnSeleccionar.gridx = 3;
 		gbc_btnSeleccionar.gridy = 3;
 		panelCentral.add(btnSeleccionar, gbc_btnSeleccionar);
-		
+
 		JButton btnSubir = new JButton("Subir");
 		GridBagConstraints gbc_btnSubir = new GridBagConstraints();
 		gbc_btnSubir.insets = new Insets(0, 0, 5, 5);
