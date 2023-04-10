@@ -49,6 +49,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.CardLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -197,6 +198,15 @@ public class StartWindow {
 					passwordField_Login.setEchoChar('•');
 				}
 			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				chckbxVisiblePassword_Login.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				chckbxVisiblePassword_Login.setCursor(Cursor.getDefaultCursor());
+			}
 		});
 		GridBagConstraints gbc_chckbxVisiblePassword_Login = new GridBagConstraints();
 		gbc_chckbxVisiblePassword_Login.anchor = GridBagConstraints.NORTH;
@@ -206,6 +216,17 @@ public class StartWindow {
 		panelLogin.add(chckbxVisiblePassword_Login, gbc_chckbxVisiblePassword_Login);
 
 		JButton loginButton_Login = new JButton("Iniciar sesi\u00F3n");
+		loginButton_Login.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				loginButton_Login.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				loginButton_Login.setCursor(Cursor.getDefaultCursor());
+			}
+		});
 		loginButton_Login.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (userField_Login.getText().isEmpty()) {
@@ -260,6 +281,17 @@ public class StartWindow {
 		panelLogin.add(labelNotRegistered_Login, gbc_labelNotRegistered_Login);
 
 		JButton registerButton_Login = new JButton("Registrar");
+		registerButton_Login.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				registerButton_Login.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				registerButton_Login.setCursor(Cursor.getDefaultCursor());
+			}
+		});
 		registerButton_Login.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				CardLayout cL = (CardLayout) panelCentral.getLayout();
@@ -397,6 +429,15 @@ public class StartWindow {
 					passwordField_Register.setEchoChar('•');
 				}
 			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				chckbxVisiblePassword_Register.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				chckbxVisiblePassword_Register.setCursor(Cursor.getDefaultCursor());
+			}
 		});
 		GridBagConstraints gbc_chckbxVisiblePassword_Register = new GridBagConstraints();
 		gbc_chckbxVisiblePassword_Register.fill = GridBagConstraints.VERTICAL;
@@ -414,6 +455,17 @@ public class StartWindow {
 		panelRegister.add(labelBirthdayDate_Register, gbc_labelBirthdayDate_Register);
 
 		JDateChooser dateChooser_Register = new JDateChooser();
+		dateChooser_Register.getCalendarButton().addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				dateChooser_Register.getCalendarButton().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				dateChooser_Register.getCalendarButton().setCursor(Cursor.getDefaultCursor());
+			}
+		});
 		GridBagConstraints gbc_dateChooser_Register = new GridBagConstraints();
 		gbc_dateChooser_Register.fill = GridBagConstraints.HORIZONTAL;
 		gbc_dateChooser_Register.gridwidth = 2;
@@ -475,22 +527,12 @@ public class StartWindow {
 		btnSelectPhoto_Register.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				LookAndFeel actualLF = UIManager.getLookAndFeel();
-				JFileChooser chooser = null;
 				if (profilePic_Register == null) {
-					try {
-						UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-						chooser = new JFileChooser();
-						UIManager.setLookAndFeel(actualLF);
-					} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-							| UnsupportedLookAndFeelException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-					chooser.showOpenDialog(frame);
-					profilePic_Register = chooser.getSelectedFile().getAbsolutePath();
-					String HTMLProfilePic = profilePic_Register;
-					if (profilePic_Register != null) {
+					JFileChooser chooser = new JFileChooser();
+					int resultado = chooser.showOpenDialog(frame);
+					if (resultado == JFileChooser.APPROVE_OPTION) {
+						profilePic_Register = chooser.getSelectedFile().getAbsolutePath();
+						String HTMLProfilePic = profilePic_Register;
 						if (profilePic_Register.contains(".png") || profilePic_Register.contains(".jpg")) {
 							if (HTMLProfilePic.contains(" ")) {
 								HTMLProfilePic = HTMLProfilePic.replaceAll(" ", "%20");
@@ -513,6 +555,15 @@ public class StartWindow {
 					frame.setSize(frame.getWidth() - 75, frame.getHeight() - 75);
 					frame.setLocationRelativeTo(null);
 				}
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				btnSelectPhoto_Register.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				btnSelectPhoto_Register.setCursor(Cursor.getDefaultCursor());
 			}
 		});
 		GridBagConstraints gbc_btnSelectPhoto_Register = new GridBagConstraints();
@@ -582,6 +633,15 @@ public class StartWindow {
 
 				}
 			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				registerButton_Register.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				registerButton_Register.setCursor(Cursor.getDefaultCursor());
+			}
 		});
 
 		GridBagConstraints gbc_registerButton_Register = new GridBagConstraints();
@@ -610,6 +670,17 @@ public class StartWindow {
 		panelRegister.add(labelAlreadyRegistered_Register, gbc_labelAlreadyRegistered_Register);
 
 		JButton loginButton_Register = new JButton("Iniciar sesi\u00F3n");
+		loginButton_Register.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				loginButton_Register.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				loginButton_Register.setCursor(Cursor.getDefaultCursor());
+			}
+		});
 		loginButton_Register.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				CardLayout cL = (CardLayout) panelCentral.getLayout();
@@ -671,6 +742,15 @@ public class StartWindow {
 
 				}
 			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				mntmModoClaroOscuro.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				mntmModoClaroOscuro.setCursor(Cursor.getDefaultCursor());
+			}
 		});
 		menuBar.add(mntmModoClaroOscuro);
 
@@ -682,6 +762,15 @@ public class StartWindow {
 				JOptionPane.showMessageDialog(ventanaAyuda,
 						"Para iniciar sesión, introduzca:\n- En el campo \"Usuario/Email\", su nombre de usuario o correo electrónico.\n"
 								+ "- En el campo \"Contraseña\", su contraseña.\nPara más ayuda, contacte con el soporte.");
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				mntmHelp.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				mntmHelp.setCursor(Cursor.getDefaultCursor());
 			}
 		});
 		menuBar.add(mntmHelp);

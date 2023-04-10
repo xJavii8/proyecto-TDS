@@ -47,15 +47,15 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 
 		eUser = new Entidad();
 		eUser.setNombre("user");
-		eUser.setPropiedades(new ArrayList<Propiedad>(
-				Arrays.asList(new Propiedad("email", user.getEmail()), new Propiedad("fullName", user.getFullName()),
-						new Propiedad("username", user.getUsername()), new Propiedad("password", user.getPassword()),
-						new Propiedad("birthDay", new SimpleDateFormat("dd/MM/yyyy").format(user.getBirthDay())),
-						new Propiedad("isPremium", String.valueOf(user.isPremium())),
-						new Propiedad("profilePic", user.getProfilePic()),
-						new Propiedad("usersFollowing", obtenerCodigosUsuarios(user.getUsersFollowing())),
-						new Propiedad("usersFollowed", obtenerCodigosUsuarios(user.getUsersFollowed())),
-						new Propiedad("publications", obtenerCodigosPublicaciones(user.getPublications())))));
+		eUser.setPropiedades(new ArrayList<Propiedad>(Arrays.asList(new Propiedad("email", user.getEmail()),
+				new Propiedad("fullName", user.getFullName()), new Propiedad("username", user.getUsername()),
+				new Propiedad("password", user.getPassword()),
+				new Propiedad("birthDay", new SimpleDateFormat("dd/MM/yyyy").format(user.getBirthDay())),
+				new Propiedad("isPremium", String.valueOf(user.isPremium())),
+				new Propiedad("profilePic", user.getProfilePic()), new Propiedad("description", user.getDescription()),
+				new Propiedad("usersFollowing", obtenerCodigosUsuarios(user.getUsersFollowing())),
+				new Propiedad("followers", obtenerCodigosUsuarios(user.getFollowers())),
+				new Propiedad("publications", obtenerCodigosPublicaciones(user.getPublications())))));
 
 		// registrar entidad cliente
 		eUser = serverPersistencia.registrarEntidad(eUser);
@@ -77,9 +77,10 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 		String fullName;
 		String birthDayStr;
 		String profilePic;
+		String description;
 		String isPremium;
 		String usersFollowing;
-		String usersFollowed;
+		String followers;
 		String publications;
 
 		// recuperar entidad
@@ -92,21 +93,11 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 		password = serverPersistencia.recuperarPropiedadEntidad(eUser, "password");
 		birthDayStr = serverPersistencia.recuperarPropiedadEntidad(eUser, "birthDay");
 		profilePic = serverPersistencia.recuperarPropiedadEntidad(eUser, "profilePic");
+		description = serverPersistencia.recuperarPropiedadEntidad(eUser, "description");
 		isPremium = serverPersistencia.recuperarPropiedadEntidad(eUser, "isPremium");
 		usersFollowing = serverPersistencia.recuperarPropiedadEntidad(eUser, "usersFollowing");
-		usersFollowed = serverPersistencia.recuperarPropiedadEntidad(eUser, "usersFollowed");
+		followers = serverPersistencia.recuperarPropiedadEntidad(eUser, "followers");
 		publications = serverPersistencia.recuperarPropiedadEntidad(eUser, "publications");
-		
-		/*System.out.println("email: " + email);
-		System.out.println("fullName: " + fullName);
-		System.out.println("username: " + username);
-		System.out.println("password: " + password);
-		System.out.println("birthDayStr: " + birthDayStr);
-		System.out.println("isPremium: " + isPremium);
-		System.out.println("usersFollowing: " + usersFollowing);
-		System.out.println("usersFollowed: " + usersFollowed);
-		System.out.println("publications: " + publications);*/
-		
 
 		Date birthDay = new Date();
 		try {
@@ -116,15 +107,16 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 			e.printStackTrace();
 		}
 
-		User user = new User(username, email, password, fullName, birthDay, profilePic, Boolean.parseBoolean(isPremium));
+		User user = new User(username, email, password, fullName, birthDay, profilePic, description,
+				Boolean.parseBoolean(isPremium));
 		user.setCodigo(userCode);
 
 		// IMPORTANTE: a�adir el usuario al pool antes de llamar a otros
 		// adaptadores
 		PoolDAO.getUnicaInstancia().addObjeto(userCode, user);
-		
+
 		user.setUsersFollowing(obtenerUsersDesdeCodigos(usersFollowing));
-		user.setUsersFollowed(obtenerUsersDesdeCodigos(usersFollowed));
+		user.setFollowers(obtenerUsersDesdeCodigos(followers));
 		user.setPublications(obtenerPublicationsDesdeCodigos(publications));
 
 		return user;
@@ -144,14 +136,16 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 				p.setValor(user.getPassword());
 			} else if (p.getNombre().equals("birthDay")) {
 				p.setValor(new SimpleDateFormat("dd/MM/yyyy").format(user.getBirthDay()));
-			} else if(p.getNombre().equals("profilePic")) {
+			} else if (p.getNombre().equals("profilePic")) {
 				p.setValor(user.getProfilePic());
+			} else if (p.getNombre().equals("description")) {
+				p.setValor(user.getDescription());
 			} else if (p.getNombre().equals("isPremium")) {
 				p.setValor(String.valueOf(user.isPremium()));
 			} else if (p.getNombre().equals("usersFollowing")) {
 				p.setValor(obtenerCodigosUsuarios(user.getUsersFollowing()));
-			} else if (p.getNombre().equals("usersFollowed")) {
-				p.setValor(obtenerCodigosUsuarios(user.getUsersFollowed()));
+			} else if (p.getNombre().equals("followers")) {
+				p.setValor(obtenerCodigosUsuarios(user.getFollowers()));
 			} else if (p.getNombre().equals("publications")) {
 				p.setValor(obtenerCodigosPublicaciones(user.getPublications()));
 			}
@@ -199,7 +193,7 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 		}
 		return userList;
 	}
-	
+
 	private List<Publication> obtenerPublicationsDesdeCodigos(String publications) {
 		List<Publication> publicationList = new LinkedList<Publication>();
 		StringTokenizer strTok = new StringTokenizer(publications, " ");

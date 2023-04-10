@@ -13,13 +13,15 @@ public class User {
 	private String fullName;
 	private Date birthDay;
 	private String profilePic;
+	private String description;
 	private boolean isPremium;
 	private List<User> usersFollowing;
-	private List<User> usersFollowed;
+	private List<User> followers;
 	private List<Publication> publications;
 
 	// MÉTODO CONSTRUCTOR
-	public User(String username, String email, String password, String fullName, Date birthDay, String profilePic, boolean isPremium) {
+	public User(String username, String email, String password, String fullName, Date birthDay, String profilePic,
+			String description, boolean isPremium) {
 		super();
 		this.username = username;
 		this.email = email;
@@ -27,15 +29,16 @@ public class User {
 		this.fullName = fullName;
 		this.birthDay = birthDay;
 		this.profilePic = profilePic;
+		this.description = description;
 		this.isPremium = isPremium;
 
 		this.usersFollowing = new LinkedList<User>();
-		this.usersFollowed = new LinkedList<User>();
+		this.followers = new LinkedList<User>();
 		this.publications = new LinkedList<Publication>();
 	}
-	
-	public User(String username, String email, String password, String fullName, Date birthDay, String profilePic) {
-		this(username, email, password, fullName, birthDay, profilePic, false);
+
+	public User(String username, String email, String password, String fullName, Date birthDay, String profilePic, String description) {
+		this(username, email, password, fullName, birthDay, profilePic, description, false);
 	}
 
 	// GETS AND SETS
@@ -61,6 +64,14 @@ public class User {
 
 	public void setProfilePic(String profilePic) {
 		this.profilePic = profilePic;
+	}
+	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public String getPassword() {
@@ -111,12 +122,12 @@ public class User {
 		this.usersFollowing = usersFollowing;
 	}
 
-	public List<User> getUsersFollowed() {
-		return new LinkedList<User>(this.usersFollowed);
+	public List<User> getFollowers() {
+		return new LinkedList<User>(this.followers);
 	}
 
-	public void setUsersFollowed(List<User> usersFollowed) {
-		this.usersFollowed = usersFollowed;
+	public void setFollowers(List<User> followers) {
+		this.followers = followers;
 	}
 
 	public List<Publication> getPublications() {
