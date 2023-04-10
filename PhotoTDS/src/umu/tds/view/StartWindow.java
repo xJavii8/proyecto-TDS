@@ -299,6 +299,7 @@ public class StartWindow {
 				CardLayout cL = (CardLayout) panelCentral.getLayout();
 				cL.show(panelCentral, "panelRegister");
 				frame.setSize(frame.getWidth(), 496);
+				frame.setLocationRelativeTo(null);
 				userField_Login.setText(null);
 				passwordField_Login.setText(null);
 				chckbxVisiblePassword_Login.setSelected(false);
@@ -611,7 +612,7 @@ public class StartWindow {
 							null, JOptionPane.ERROR_MESSAGE);
 				} else {
 					if (profilePic_Register == null)
-						profilePic_Register = StartWindow.class.getResource("/images/defaultUserPic32.png").getPath()
+						profilePic_Register = StartWindow.class.getResource("/images/defaultUserPic128.png").getPath()
 								.substring(1);
 					if (Controller.getInstancia().createUser(emailField_Register.getText(),
 							fullnameField_Register.getText(), userField_Register.getText(),
@@ -622,6 +623,7 @@ public class StartWindow {
 						CardLayout cL = (CardLayout) panelCentral.getLayout();
 						cL.show(panelCentral, "panelLogin");
 						frame.setSize(450, 299);
+						frame.setLocationRelativeTo(null);
 						emailField_Register.setText(null);
 						fullnameField_Register.setText(null);
 						dateChooser_Register.setDate(null);
@@ -689,6 +691,7 @@ public class StartWindow {
 				CardLayout cL = (CardLayout) panelCentral.getLayout();
 				cL.show(panelCentral, "panelLogin");
 				frame.setSize(frame.getWidth(), 299);
+				frame.setLocationRelativeTo(null);
 				emailField_Register.setText(null);
 				fullnameField_Register.setText(null);
 				dateChooser_Register.setDate(null);
