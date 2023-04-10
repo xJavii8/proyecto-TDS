@@ -388,12 +388,6 @@ public class MainWindow {
 		// máscara
 		g2d.drawImage(image, 0, 0, null);
 
-		// Dibujar el borde alrededor del círculo
-		g2d.setClip(null);
-		g2d.setStroke(new BasicStroke(10)); // Grosor del borde
-		g2d.setColor(Color.GRAY); // Color del borde
-		g2d.draw(circle);
-
 		// Desechar el contexto gráfico y devolver la imagen recortada
 		g2d.dispose();
 		return masked;
