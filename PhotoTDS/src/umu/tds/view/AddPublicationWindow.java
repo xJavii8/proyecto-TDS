@@ -19,6 +19,7 @@ import javax.swing.JTextField;
 import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 
@@ -139,6 +140,9 @@ public class AddPublicationWindow {
 			public void mouseClicked(MouseEvent e) {
 				if (picPublication == null) {
 					JFileChooser chooser = new JFileChooser();
+					FileNameExtensionFilter filtro = new FileNameExtensionFilter("Imágenes (*.png, *.jpg)", "png",
+							"jpg");
+					chooser.setFileFilter(filtro);
 					int resultado = chooser.showOpenDialog(frame);
 					if (resultado == JFileChooser.APPROVE_OPTION) {
 						picPublication = chooser.getSelectedFile().getAbsolutePath();
