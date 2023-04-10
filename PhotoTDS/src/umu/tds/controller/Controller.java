@@ -123,4 +123,30 @@ public class Controller {
 		
 		return true;
 	}
+	
+	public int getNumFollowers(String username) {
+		User user = userRepo.getUser(username);
+		return user.getFollowers().size();
+	}
+	
+	public int getNumUsersFollowing(String username) {
+		User user = userRepo.getUser(username);
+		return user.getUsersFollowing().size();
+	}
+	
+	public int getNumPublications(String username) {
+		User user = userRepo.getUser(username);
+		return user.getPublications().size();
+	}
+	
+	public User getUser(String username) {
+		return userRepo.getUser(username);
+	}
+	
+	public boolean updateUser(User user, String username, String description, String profilePicPath) {
+		user.setUsername(username);
+		user.setDescription(description);
+		user.setProfilePic(profilePicPath);
+		return true;
+	}
 }

@@ -10,6 +10,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.MatteBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.PlainDocument;
@@ -198,6 +199,7 @@ public class StartWindow {
 					passwordField_Login.setEchoChar('•');
 				}
 			}
+
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				chckbxVisiblePassword_Login.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -429,6 +431,7 @@ public class StartWindow {
 					passwordField_Register.setEchoChar('•');
 				}
 			}
+
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				chckbxVisiblePassword_Register.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -529,6 +532,9 @@ public class StartWindow {
 			public void mouseClicked(MouseEvent e) {
 				if (profilePic_Register == null) {
 					JFileChooser chooser = new JFileChooser();
+					FileNameExtensionFilter filtro = new FileNameExtensionFilter("Imágenes (*.png, *.jpg)", "png",
+							"jpg");
+					chooser.setFileFilter(filtro);
 					int resultado = chooser.showOpenDialog(frame);
 					if (resultado == JFileChooser.APPROVE_OPTION) {
 						profilePic_Register = chooser.getSelectedFile().getAbsolutePath();
@@ -543,9 +549,8 @@ public class StartWindow {
 							frame.setLocationRelativeTo(null);
 							btnSelectPhoto_Register.setText("Borrar");
 						} else {
-							JFrame ventanaMultipleProfilePicture = new JFrame();
-							JOptionPane.showMessageDialog(ventanaMultipleProfilePicture,
-									"La imagen debe ser formato .png o .jpg");
+							JOptionPane.showMessageDialog(frame, "La imagen debe ser formato .png o .jpg", null,
+									JOptionPane.INFORMATION_MESSAGE);
 						}
 					}
 				} else {
@@ -556,6 +561,7 @@ public class StartWindow {
 					frame.setLocationRelativeTo(null);
 				}
 			}
+
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				btnSelectPhoto_Register.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -633,6 +639,7 @@ public class StartWindow {
 
 				}
 			}
+
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				registerButton_Register.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -742,6 +749,7 @@ public class StartWindow {
 
 				}
 			}
+
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				mntmModoClaroOscuro.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -763,6 +771,7 @@ public class StartWindow {
 						"Para iniciar sesión, introduzca:\n- En el campo \"Usuario/Email\", su nombre de usuario o correo electrónico.\n"
 								+ "- En el campo \"Contraseña\", su contraseña.\nPara más ayuda, contacte con el soporte.");
 			}
+
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				mntmHelp.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));

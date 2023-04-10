@@ -62,26 +62,6 @@ public class PremiumMenuWindow {
 		panelCentral.add(panelNoPremium, "panelNoPremium");
 
 		JButton getPremium = new JButton("Adquirir premium");
-		getPremium.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				Controller.getInstancia().setPremium(nickname);
-				JOptionPane.showMessageDialog(frame, "Has adquirido el estado premium", null,
-						JOptionPane.INFORMATION_MESSAGE);
-				CardLayout cL = (CardLayout) panelCentral.getLayout();
-				cL.show(panelCentral, "panelPremium");
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				getPremium.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				getPremium.setCursor(Cursor.getDefaultCursor());
-			}
-		});
 		panelNoPremium.add(getPremium);
 
 		JPanel panelPremium = new JPanel();
@@ -250,6 +230,28 @@ public class PremiumMenuWindow {
 		gbc_status.gridx = 2;
 		gbc_status.gridy = 2;
 		panelNorte.add(status, gbc_status);
+		
+		getPremium.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Controller.getInstancia().setPremium(nickname);
+				JOptionPane.showMessageDialog(frame, "Has adquirido el estado premium", null,
+						JOptionPane.INFORMATION_MESSAGE);
+				status.setText("Estado: premium");
+				CardLayout cL = (CardLayout) panelCentral.getLayout();
+				cL.show(panelCentral, "panelPremium");
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				getPremium.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				getPremium.setCursor(Cursor.getDefaultCursor());
+			}
+		});
 	}
 
 }
