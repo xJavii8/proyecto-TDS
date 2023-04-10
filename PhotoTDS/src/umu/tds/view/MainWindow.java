@@ -159,6 +159,20 @@ public class MainWindow {
 		panelPerfilPersonal.add(nickname, gbc_nickname);
 		
 		JButton editProfile = new JButton("Editar perfil");
+		editProfile.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				editProfile.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				editProfile.setCursor(Cursor.getDefaultCursor());
+			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+			}
+		});
 		GridBagConstraints gbc_editProfile = new GridBagConstraints();
 		gbc_editProfile.insets = new Insets(0, 0, 5, 5);
 		gbc_editProfile.gridx = 8;
@@ -166,6 +180,22 @@ public class MainWindow {
 		panelPerfilPersonal.add(editProfile, gbc_editProfile);
 		
 		JButton premium = new JButton("Premium");
+		premium.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				premium.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				premium.setCursor(Cursor.getDefaultCursor());
+			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				PremiumMenuWindow pmw = new PremiumMenuWindow(username);
+				pmw.show();
+			}
+		});
 		GridBagConstraints gbc_premium = new GridBagConstraints();
 		gbc_premium.insets = new Insets(0, 0, 5, 0);
 		gbc_premium.gridx = 9;
