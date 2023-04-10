@@ -20,11 +20,17 @@ import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import umu.tds.controller.Controller;
+import umu.tds.model.Publication;
+
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Optional;
+
 import javax.swing.SwingConstants;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -178,6 +184,15 @@ public class AddPublicationWindow {
 		panelCentral.add(btnSeleccionar, gbc_btnSeleccionar);
 
 		JButton btnSubir = new JButton("Subir");
+		btnSubir.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				String titulo = tituloField.getText();
+				boolean exite;
+				
+				//Optional<Publication> publ = Controller.getInstancia().getPublicacion();
+			}
+		});
 		GridBagConstraints gbc_btnSubir = new GridBagConstraints();
 		gbc_btnSubir.insets = new Insets(0, 0, 5, 5);
 		gbc_btnSubir.gridx = 2;

@@ -59,7 +59,7 @@ public class UserRepository {
 		return null;
 	}
 
-	// Obtener la única instancia de la clase ---> SINGLETONE
+	// Obtener la unica instancia de la clase ---> SINGLETONE
 	public static UserRepository getInstancia() {
 		if (uniqueInstance == null) {
 			uniqueInstance = new UserRepository();
@@ -84,7 +84,7 @@ public class UserRepository {
 		return null;
 	}
 	
-	// Añadimos el usuario tanto a la lista de usuarios como al adaptador
+	// Aï¿½adimos el usuario tanto a la lista de usuarios como al adaptador
 	public void addUser(User user) {
 		userAdapter.createUser(user);
 		users.put(user.getUsername(), user);
