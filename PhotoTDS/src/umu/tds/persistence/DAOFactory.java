@@ -24,4 +24,5 @@ public abstract class DAOFactory {
 	protected DAOFactory() {}
 
 	public abstract IAdaptadorUserDAO getUserDAO();
+	public abstract IAdaptadorPublicationDAO getPublicationDAO();
 }
