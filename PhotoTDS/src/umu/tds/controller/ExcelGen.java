@@ -20,9 +20,9 @@ public class ExcelGen {
 			HSSFRow rowhead = sheet.createRow((short) 0);
 			// creating cell by using the createCell() method and setting the values to the
 			// cell by using the setCellValue() method
-			rowhead.createCell(1).setCellValue("Nombre de usuario");
-			rowhead.createCell(2).setCellValue("Email");
-			rowhead.createCell(3).setCellValue("Descripción");
+			rowhead.createCell(0).setCellValue("Nombre de usuario");
+			rowhead.createCell(1).setCellValue("Email");
+			rowhead.createCell(2).setCellValue("Descripción");
 
 			if(!followers.isEmpty()) {
 				int numUser = 1;
@@ -30,9 +30,9 @@ public class ExcelGen {
 					// creating the 1st row
 					HSSFRow row = sheet.createRow((short) numUser);
 					// inserting data in the first row
-					row.createCell(1).setCellValue(u.getUsername());
-					row.createCell(2).setCellValue(u.getEmail());
-					row.createCell(3).setCellValue(u.getDescription());
+					row.createCell(0).setCellValue(u.getUsername());
+					row.createCell(1).setCellValue(u.getEmail());
+					row.createCell(2).setCellValue(u.getDescription());
 					numUser++;
 				}
 			}
