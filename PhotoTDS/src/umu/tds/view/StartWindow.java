@@ -81,10 +81,10 @@ public class StartWindow {
 	private JPasswordField passwordField_Register;
 	private String profilePic_Register;
 
-	private static final int MIN_PASSWORD_LENGTH = 8;
-	private static final String VALID_EMAIL_REGEX = "^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$";
+	public static final int MIN_PASSWORD_LENGTH = 8;
+	public static final String VALID_EMAIL_REGEX = "^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$";
 
-	private Pattern emailPat = Pattern.compile(VALID_EMAIL_REGEX);
+	public static final Pattern emailPat = Pattern.compile(VALID_EMAIL_REGEX);
 
 	/**
 	 * Launch the application.
@@ -546,7 +546,6 @@ public class StartWindow {
 							editorPane.setText("<html><img src=file:\"" + HTMLProfilePic + "\"" + " "
 									+ "width=75 height=75></img>");
 							frame.setSize(frame.getWidth() + 75, frame.getHeight() + 75);
-							frame.setLocationRelativeTo(null);
 							btnSelectPhoto_Register.setText("Borrar");
 						} else {
 							JOptionPane.showMessageDialog(frame, "La imagen debe ser formato .png o .jpg", null,
@@ -558,7 +557,6 @@ public class StartWindow {
 					editorPane.setText("");
 					btnSelectPhoto_Register.setText("Seleccionar");
 					frame.setSize(frame.getWidth() - 75, frame.getHeight() - 75);
-					frame.setLocationRelativeTo(null);
 				}
 			}
 
@@ -614,7 +612,7 @@ public class StartWindow {
 							null, JOptionPane.ERROR_MESSAGE);
 				} else {
 					if (profilePic_Register == null)
-						profilePic_Register = StartWindow.class.getResource("/images/defaultUserPic32.png").getPath()
+						profilePic_Register = StartWindow.class.getResource("/images/defaultUserPic128.png").getPath()
 								.substring(1);
 					if (Controller.getInstancia().createUser(emailField_Register.getText(),
 							fullnameField_Register.getText(), userField_Register.getText(),
@@ -624,7 +622,7 @@ public class StartWindow {
 								JOptionPane.INFORMATION_MESSAGE);
 						CardLayout cL = (CardLayout) panelCentral.getLayout();
 						cL.show(panelCentral, "panelLogin");
-						frame.setSize(frame.getWidth(), 299);
+						frame.setSize(450, 299);
 						frame.setLocationRelativeTo(null);
 						emailField_Register.setText(null);
 						fullnameField_Register.setText(null);
@@ -791,7 +789,7 @@ public class StartWindow {
 		return esMenorDeEdad.test(fechaDeNacimiento);
 	}
 
-	private int fortalezaContraseña(JPasswordField contraseña) {
+	public static int fortalezaContraseña(JPasswordField contraseña) {
 		int fortaleza = 0;
 		char[] password = contraseña.getPassword();
 

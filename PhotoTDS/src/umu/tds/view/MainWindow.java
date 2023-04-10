@@ -75,6 +75,10 @@ public class MainWindow {
 		this.profilePicPath = profilePicPath;
 		initialize();
 	}
+	
+	public void exit() {
+		frame.dispose();
+	}
 
 	public void show() {
 		frame.setVisible(true);
@@ -199,7 +203,7 @@ public class MainWindow {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				EditProfileView epw = new EditProfileView(username);
+				EditProfileVindow epw = new EditProfileVindow(username, MainWindow.this);
 				epw.show();
 			}
 		});
@@ -383,12 +387,6 @@ public class MainWindow {
 		// Dibujar la imagen original en el contexto usando el área circular como
 		// máscara
 		g2d.drawImage(image, 0, 0, null);
-
-		// Dibujar el borde alrededor del círculo
-		g2d.setClip(null);
-		g2d.setStroke(new BasicStroke(10)); // Grosor del borde
-		g2d.setColor(Color.GRAY); // Color del borde
-		g2d.draw(circle);
 
 		// Desechar el contexto gráfico y devolver la imagen recortada
 		g2d.dispose();
