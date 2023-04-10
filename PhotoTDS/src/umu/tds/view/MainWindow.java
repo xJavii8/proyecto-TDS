@@ -75,6 +75,10 @@ public class MainWindow {
 		this.profilePicPath = profilePicPath;
 		initialize();
 	}
+	
+	public void exit() {
+		frame.dispose();
+	}
 
 	public void show() {
 		frame.setVisible(true);
@@ -199,7 +203,7 @@ public class MainWindow {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				EditProfileView epw = new EditProfileView(username);
+				EditProfileVindow epw = new EditProfileVindow(username, MainWindow.this);
 				epw.show();
 			}
 		});
