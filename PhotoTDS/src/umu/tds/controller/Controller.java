@@ -143,10 +143,19 @@ public class Controller {
 		return userRepo.getUser(username);
 	}
 	
-	public boolean updateUser(User user, String username, String description, String profilePicPath) {
+	public boolean updateUser(User user, String fullname, String username, String description, String profilePicPath) {
+		user.setFullName(fullname);
 		user.setUsername(username);
 		user.setDescription(description);
 		user.setProfilePic(profilePicPath);
+		userRepo.updateUser(user);
+		return true;
+	}
+	
+	public boolean updateUserSensibleInfo(User user, String email, String password) {
+		user.setEmail(email);
+		user.setPassword(password);
+		userRepo.updateUser(user);
 		return true;
 	}
 }
