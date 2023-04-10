@@ -1,6 +1,7 @@
 package umu.tds.persistence;
 
 import java.text.ParseException;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,6 +14,8 @@ import beans.Entidad;
 import beans.Propiedad;
 import tds.driver.FactoriaServicioPersistencia;
 import tds.driver.ServicioPersistencia;
+import umu.tds.model.Album;
+import umu.tds.model.Photo;
 import umu.tds.model.Publication;
 import umu.tds.model.User;
 
@@ -43,17 +46,32 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 			return;
 
 		// Registrar primero atributos que son objetos (esto se hace con los atributos
-		// del usuario, cuando esté el resto de adaptadores)
-
+		// del usuario, cuando estï¿½ el resto de adaptadores)
 		ePublication = new Entidad();
-		ePublication.setNombre("publication");
-		ePublication.setPropiedades(new ArrayList<Propiedad>(
-				Arrays.asList(new Propiedad("title", publication.getTitle()), 
-						new Propiedad("datePublication", new SimpleDateFormat("dd/MM/yyyy").format(publication.getDatePublication())), 
-						new Propiedad("description", publication.getDescription()),
-						new Propiedad("likes", String.valueOf(publication.getLikes())),
-						//new Propiedad("hashtags", obtenerCodigosUsuarios(publication.getUsersFollowing())),
-						//new Propiedad("comments", obtenerCodigosUsuarios(publication.getUsersFollowed()))))));
+		if (publication instanceof Photo) {
+			ePublication.setNombre("photo");
+			ePublication.setPropiedades(
+					new ArrayList<Propiedad>(Arrays.asList(new Propiedad("title", publication.getTitle()),
+							new Propiedad("datePublication", publication.getDatePublication().toString()),
+							new Propiedad("description", publication.getDescription()),
+							new Propiedad("likes", String.valueOf(publication.getLikes())),
+							new Propiedad("path", ((Photo) publication).getPath())
+					// new Propiedad("comentarios", ),
+					// new Propiedad("hashtags", );
+					)));
+		} else if (publication instanceof Album) {
+			((Album) publication).getPhotos().stream().forEach(f -> getUnicaInstancia().createPublication(publication));
+			ePublication.setNombre("album");
+			ePublication.setPropiedades(
+					new ArrayList<Propiedad>(Arrays.asList(new Propiedad("title", publication.getTitle()),
+							new Propiedad("datePublication", publication.getDatePublication().toString()),
+							new Propiedad("description", publication.getDescription()),
+							new Propiedad("likes", String.valueOf(publication.getLikes())),
+							new Propiedad("photos", obtenerCodigosPhotos(((Album) publication).getPhotos())
+							// new Propiedad("comentarios", ),
+							// new Propiedad("hashtags", );
+							))));
+		}
 
 		// registrar entidad cliente
 		ePublication = serverPersistencia.registrarEntidad(ePublication);
@@ -63,82 +81,140 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 	}
 
 	public Publication readPublication(int publicationCode) {
-		// Si la entidad está en el pool, la devuelve directamente
-		if (PoolDAO.getUnicaInstancia().contiene(publicationCode))
-			return (Publication) PoolDAO.getUnicaInstancia().getObjeto(publicationCode);
-
-		// Si no, la recupera de la base de datos
-		Entidad eUser;
-		String username;
-		String email;
-		String password;
-		String fullName;
-		String birthDayStr;
-		String isPremium;
-		String usersFollowing;
-		String usersFollowed;
-		String publications;
-
-		// recuperar entidad
-		eUser = serverPersistencia.recuperarEntidad(publicationCode);
-
-		// recuperar propiedades que no son objetos
-		email = serverPersistencia.recuperarPropiedadEntidad(eUser, "email");
-		fullName = serverPersistencia.recuperarPropiedadEntidad(eUser, "fullName");
-		username = serverPersistencia.recuperarPropiedadEntidad(eUser, "username");
-		password = serverPersistencia.recuperarPropiedadEntidad(eUser, "password");
-		birthDayStr = serverPersistencia.recuperarPropiedadEntidad(eUser, "birthDay");
-		isPremium = serverPersistencia.recuperarPropiedadEntidad(eUser, "isPremium");
-		usersFollowing = serverPersistencia.recuperarPropiedadEntidad(eUser, "usersFollowing");
-		usersFollowed = serverPersistencia.recuperarPropiedadEntidad(eUser, "usersFollowed");
-		publications = serverPersistencia.recuperarPropiedadEntidad(eUser, "publications");
-
-		Date birthDay = new Date();
-		try {
-			birthDay = new SimpleDateFormat("dd/MM/yyyy").parse(birthDayStr);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		// Si la entidad esta en el pool, la devuelve directamente
+		if (PoolDAO.getUnicaInstancia().contiene(publicationCode)) {
+			Object ob = PoolDAO.getUnicaInstancia().getObjeto(publicationCode);
+			if (ob instanceof Photo) {
+				return (Photo) ob;
+			} else if (ob instanceof Album) {
+				return (Album) ob;
+			}
 		}
 
-		User user = new User(username, email, password, fullName, birthDay, Boolean.parseBoolean(isPremium));
-		user.setCodigo(publicationCode);
+		Entidad ePublication;
+		ePublication = serverPersistencia.recuperarEntidad(publicationCode);
+		if (ePublication.getNombre().equals("photo"))
+			return readPhoto(publicationCode);
+		else if (ePublication.getNombre().equals("album"))
+			return readAlbum(publicationCode);
+		else
+			return null;
+	}
 
-		// IMPORTANTE: añadir el usuario al pool antes de llamar a otros
-		// adaptadores
-		PoolDAO.getUnicaInstancia().addObjeto(publicationCode, user);
+	private Photo readPhoto(int codigo) {
+		Entidad ePublication;
+
+		String title;
+		String datePublication;
+		String description;
+		String likes;
+
+		String path;
+
+		// String comments
+		// String hashtags
+
+		// recuperar entidad
+		ePublication = serverPersistencia.recuperarEntidad(codigo);
+		title = serverPersistencia.recuperarPropiedadEntidad(ePublication, "title");
+		datePublication = serverPersistencia.recuperarPropiedadEntidad(ePublication, "datePublication");
+		description = serverPersistencia.recuperarPropiedadEntidad(ePublication, "description");
+		likes = serverPersistencia.recuperarPropiedadEntidad(ePublication, "likes");
+		path = serverPersistencia.recuperarPropiedadEntidad(ePublication, "path");
+
+		// Hay que pasar la string a fecha
+		Photo p = new Photo(title, stringToDate(datePublication), description, Integer.parseInt(likes), path);
+		p.setCodigo(codigo);
+
+		PoolDAO.getUnicaInstancia().addObjeto(codigo, p);
+
+		return p;
+
+	}
+
+	private Album readAlbum(int codigo) {
+		Entidad ePublication;
+
+		String title;
+		String datePublication;
+		String description;
+		String likes;
+
+		String path;
+
+		String photos;
+
+		// String comments
+		// String hashtags
+
+		// recuperar entidad
+		ePublication = serverPersistencia.recuperarEntidad(codigo);
+
+		// recuperar propiedades que no son objetos
+		title = serverPersistencia.recuperarPropiedadEntidad(ePublication, "title");
+		datePublication = serverPersistencia.recuperarPropiedadEntidad(ePublication, "datePublication");
+		description = serverPersistencia.recuperarPropiedadEntidad(ePublication, "description");
+		likes = serverPersistencia.recuperarPropiedadEntidad(ePublication, "likes");
+		path = serverPersistencia.recuperarPropiedadEntidad(ePublication, "path");
+		photos = serverPersistencia.recuperarPropiedadEntidad(ePublication, "photos");
+
 		
-		user.setUsersFollowing(obtenerUsersDesdeCodigos(usersFollowing));
-		user.setUsersFollowed(obtenerUsersDesdeCodigos(usersFollowed));
-		user.setPublications(obtenerPublicationsDesdeCodigos(publications));
+		Album p = new Album(title, stringToDate(datePublication), description, Integer.parseInt(likes));
+		p.setCodigo(codigo);
 
-		return user;
+		PoolDAO.getUnicaInstancia().addObjeto(codigo, p);
+
+		return p;
 
 	}
 
 	public void updatePublication(Publication publication) {
-		Entidad ePublication = serverPersistencia.recuperarEntidad(publication.getCodigo());
-		for (Propiedad p : ePublication.getPropiedades()) {
-			if (p.getNombre().equals("email")) {
-				p.setValor(publication.getEmail());
-			} else if (p.getNombre().equals("fullName")) {
-				p.setValor(publication.getFullName());
-			} else if (p.getNombre().equals("username")) {
-				p.setValor(publication.getUsername());
-			} else if (p.getNombre().equals("password")) {
-				p.setValor(publication.getPassword());
-			} else if (p.getNombre().equals("birthDay")) {
-				p.setValor(new SimpleDateFormat("dd/MM/yyyy").format(publication.getBirthDay()));
-			} else if (p.getNombre().equals("isPremium")) {
-				p.setValor(String.valueOf(publication.isPremium()));
-			} else if (p.getNombre().equals("usersFollowing")) {
-				p.setValor(obtenerCodigosUsuarios(publication.getUsersFollowing()));
-			} else if (p.getNombre().equals("usersFollowed")) {
-				p.setValor(obtenerCodigosUsuarios(publication.getUsersFollowed()));
-			} else if (p.getNombre().equals("publications")) {
-				p.setValor(obtenerCodigosPublicaciones(publication.getPublications()));
+		Entidad ePublicacion = serverPersistencia.recuperarEntidad(publication.getCodigo());
+
+		if (ePublicacion.getNombre().equals("photo")) {
+			updatePhoto((Photo) publication);
+		} else if (ePublicacion.getNombre().equals("album")) {
+			updateAlbum((Album) publication);
+		} else {
+			System.err.println("La publicaciÃ³n ni es una foto ni un album");
+		}
+	}
+
+	private void updatePhoto(Photo p) {
+		Entidad ePublication = serverPersistencia.recuperarEntidad(p.getCodigo());
+
+		for (Propiedad pro : ePublication.getPropiedades()) {
+			if (pro.getNombre().equals("tittle")) {
+				pro.setValor(String.valueOf(p.getTitle()));
+			} else if (pro.getNombre().equals("datePublication")) {
+				pro.setValor(dateToString(p.getDatePublication()));
+			} else if (pro.getNombre().equals("description")) {
+				pro.setValor(String.valueOf(p.getDescription()));
+			} else if (pro.getNombre().equals("likes")) {
+				pro.setValor(String.valueOf(p.getLikes()));
+			} else if (pro.getNombre().equals("path")) {
+				pro.setValor(String.valueOf(p.getPath()));
 			}
-			serverPersistencia.modificarPropiedad(p);
+			serverPersistencia.modificarPropiedad(pro);
+		}
+	}
+
+	private void updateAlbum(Album p) {
+		Entidad ePublication = serverPersistencia.recuperarEntidad(p.getCodigo());
+
+		for (Propiedad pro : ePublication.getPropiedades()) {
+			if (pro.getNombre().equals("tittle")) {
+				pro.setValor(String.valueOf(p.getTitle()));
+			} else if (pro.getNombre().equals("datePublication")) {
+				pro.setValor(dateToString(p.getDatePublication()));
+			} else if (pro.getNombre().equals("description")) {
+				pro.setValor(String.valueOf(p.getDescription()));
+			} else if (pro.getNombre().equals("likes")) {
+				pro.setValor(String.valueOf(p.getLikes()));
+			} else if (pro.getNombre().equals("fotos")) {
+				pro.setValor(obtenerCodigosPhotos(p.getPhotos()));
+			}
+			serverPersistencia.modificarPropiedad(pro);
 		}
 	}
 
@@ -155,5 +231,31 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 			publications.add(readPublication(ePublication.getId()));
 		}
 		return publications;
+	}
+
+	// FUNCIONES PRIVADAS
+	private String obtenerCodigosPhotos(List<Photo> listaFotos) {
+		String aux = "";
+		for (Photo p : listaFotos) {
+			aux += p.getCodigo() + " ";
+		}
+		return aux.trim();
+	}
+
+	private Date stringToDate(String fechaString) {
+		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+		Date fecha = null;
+		try {
+			fecha = formato.parse(fechaString);
+		} catch (ParseException e) {
+			System.out.println("Error al convertir la fecha: " + e.getMessage());
+		}
+		return fecha;
+	}
+
+	private String dateToString(Date fechaDate) {
+		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+        String fechaString = formato.format(fechaDate);
+        return fechaString;
 	}
 }
