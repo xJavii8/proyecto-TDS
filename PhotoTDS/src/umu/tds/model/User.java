@@ -37,8 +37,39 @@ public class User {
 		this.publications = new LinkedList<Publication>();
 	}
 
-	public User(String username, String email, String password, String fullName, Date birthDay, String profilePic, String description) {
+	public User(String username, String email, String password, String fullName, Date birthDay, String profilePic,
+			String description) {
 		this(username, email, password, fullName, birthDay, profilePic, description, false);
+	}
+
+	public boolean addUserFollowing(User u) {
+		if (usersFollowing.contains(u))
+			return false;
+		usersFollowing.add(u);
+		return true;
+	}
+
+	public boolean removeUserFollowing(User u) {
+		if (!usersFollowing.contains(u))
+			return false;
+		usersFollowing.remove(u);
+		return true;
+	}
+
+	public boolean addUserFollower(User u) {
+		if (followers.contains(u))
+			return false;
+
+		followers.add(u);
+		return true;
+	}
+
+	public boolean removeUserFollower(User u) {
+		if (!followers.contains(u))
+			return false;
+
+		followers.remove(u);
+		return true;
 	}
 
 	// GETS AND SETS
@@ -65,7 +96,7 @@ public class User {
 	public void setProfilePic(String profilePic) {
 		this.profilePic = profilePic;
 	}
-	
+
 	public String getDescription() {
 		return description;
 	}
