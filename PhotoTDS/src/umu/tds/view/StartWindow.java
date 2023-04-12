@@ -631,6 +631,7 @@ public class StartWindow {
 						passwordField_Register.setText(null);
 						description_Register.setText(null);
 						chckbxVisiblePassword_Register.setSelected(false);
+						profilePic_Register = null;
 					} else {
 						JOptionPane.showMessageDialog(frame, "¡Ya estás registrado!", null, JOptionPane.ERROR_MESSAGE);
 					}
