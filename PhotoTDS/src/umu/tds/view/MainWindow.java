@@ -329,8 +329,8 @@ public class MainWindow {
 		JPanel panelPerfil = new JPanel();
 		panelCentral.add(panelPerfil, "panelPerfil");
 		GridBagLayout gbl_panelPerfil = new GridBagLayout();
-		gbl_panelPerfil.columnWidths = new int[] { 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 0 };
-		gbl_panelPerfil.rowHeights = new int[] { 20, 0, 0, 0, 0, 0, 0 };
+		gbl_panelPerfil.columnWidths = new int[] { 15, 0, 0, 0, 0, 15, 0, 0, 0, 0, 15, 0 };
+		gbl_panelPerfil.rowHeights = new int[] { 15, 0, 0, 0, 0, 0, 0 };
 		gbl_panelPerfil.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 				Double.MIN_VALUE };
 		gbl_panelPerfil.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
@@ -346,7 +346,7 @@ public class MainWindow {
 		gbc_profilePic.gridy = 1;
 		panelPerfil.add(profilePic, gbc_profilePic);
 
-		nickname = new JLabel("");
+		nickname = new JLabel("username");
 		nickname.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		GridBagConstraints gbc_nickname = new GridBagConstraints();
 		gbc_nickname.insets = new Insets(0, 0, 5, 5);
@@ -354,7 +354,7 @@ public class MainWindow {
 		gbc_nickname.gridy = 2;
 		panelPerfil.add(nickname, gbc_nickname);
 
-		followButton = new JButton("");
+		followButton = new JButton("dev");
 
 		GridBagConstraints gbc_followButton = new GridBagConstraints();
 		gbc_followButton.insets = new Insets(0, 0, 5, 5);
@@ -362,7 +362,7 @@ public class MainWindow {
 		gbc_followButton.gridy = 2;
 		panelPerfil.add(followButton, gbc_followButton);
 
-		publications = new JLabel(" publicaciones");
+		publications = new JLabel("0 publicaciones");
 		publications.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		GridBagConstraints gbc_publications = new GridBagConstraints();
 		gbc_publications.insets = new Insets(0, 0, 5, 5);
@@ -370,7 +370,7 @@ public class MainWindow {
 		gbc_publications.gridy = 3;
 		panelPerfil.add(publications, gbc_publications);
 
-		following = new JLabel(" seguidos");
+		following = new JLabel("0 seguidos");
 		following.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		GridBagConstraints gbc_following = new GridBagConstraints();
 		gbc_following.insets = new Insets(0, 0, 5, 5);
@@ -378,7 +378,7 @@ public class MainWindow {
 		gbc_following.gridy = 3;
 		panelPerfil.add(following, gbc_following);
 
-		followers = new JLabel(" seguidores");
+		followers = new JLabel("0 seguidores");
 		followers.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		GridBagConstraints gbc_follows = new GridBagConstraints();
 		gbc_follows.insets = new Insets(0, 0, 5, 5);
