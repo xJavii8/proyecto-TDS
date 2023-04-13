@@ -13,13 +13,22 @@ public class Publication {
 	private List<Hashtag> hashtags;
 	private List<Comment> comments;
 
-	// MÉTODO CONSTRUCTOR
+	// Mï¿½TODO CONSTRUCTOR
 	public Publication(String title, Date datePublication, String description, int likes) {
 		super();
 		this.title = title;
 		this.datePublication = datePublication;
 		this.description = description;
 		this.likes = likes;
+		this.hashtags = new LinkedList<Hashtag>();
+		this.comments = new LinkedList<Comment>();
+	}
+	
+	public Publication(String title, Date datePublication, String description) {
+		super();
+		this.title = title;
+		this.datePublication = datePublication;
+		this.description = description;
 		this.hashtags = new LinkedList<Hashtag>();
 		this.comments = new LinkedList<Comment>();
 	}

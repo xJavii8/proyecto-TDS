@@ -62,7 +62,9 @@ public class PublicationRepository {
 	private void uploadRepository() {
 		List<Publication> publicationDB = publicationAdapter.readAllPublications();
 		for (Publication p : publicationDB) {
-			publications.put(p.getTitle(), p);
+			if (p != null) {
+				publications.put(p.getTitle(), p);
+			}
 		}
 	}
 }
