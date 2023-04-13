@@ -52,10 +52,11 @@ public class Controller {
 	public boolean createUser(String email, String fullname, String username, String password, Date birthday,
 			String profilePic, String description) {
 		boolean userExist = userRepo.userExist(username);
-
-		if (userExist == true)
+		boolean emailExist = userRepo.userExistEmail(email);
+		
+		if (userExist == true || emailExist == true)
 			return false;
-
+		
 		User user = new User(username, email, password, fullname, birthday, profilePic, description);
 		userRepo.addUser(user);
 
