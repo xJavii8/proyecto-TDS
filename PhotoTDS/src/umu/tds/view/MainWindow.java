@@ -75,16 +75,18 @@ public class MainWindow {
 	private Color lightBars;
 	private Color darkBars;
 	private JPanel panelCentral;
+	private JLabel selfProfile;
+	private JLabel selfNickname;
+	private JLabel selfProfilePic;
+	private JLabel selfFullname;
 	private JLabel nickname;
 	private JLabel publications;
 	private JLabel following;
 	private JLabel followers;
 	private JLabel profilePic;
 	private JButton followButton;
-	private int numSelfPub;
 	private int numSelfFollowing;
 	private int numSelfFollowers;
-	private int numPub;
 	private int numFollowing;
 	private int numFollowers;
 
@@ -112,6 +114,32 @@ public class MainWindow {
 
 	public void show() {
 		frame.setVisible(true);
+	}
+
+	public void updateProfile(String username, String fullname, String profilePicPath) {
+		this.selfUsername = username;
+		this.selfProfilePicPath = profilePicPath;
+		this.selfNickname.setText(username);
+		this.selfFullname.setText(fullname);
+		BufferedImage rawPic = null;
+		try {
+			rawPic = ImageIO.read(new File(selfProfilePicPath));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		if (rawPic != null) {
+			ImageIcon pic = new ImageIcon(getCircularImage(rawPic));
+			if (pic.getIconHeight() != 128 || pic.getIconWidth() != 128) {
+				pic = new ImageIcon(pic.getImage().getScaledInstance(128, 128, Image.SCALE_DEFAULT));
+			}
+			selfProfilePic.setIcon(pic);
+
+			if (pic.getIconHeight() != 32 || pic.getIconWidth() != 32) {
+				pic = new ImageIcon(pic.getImage().getScaledInstance(32, 32, Image.SCALE_DEFAULT));
+			}
+			selfProfile.setIcon(pic);
+		}
 	}
 
 	/**
@@ -144,7 +172,7 @@ public class MainWindow {
 		gbc_logo.gridy = 1;
 		panelNorte.add(logo, gbc_logo);
 
-		JLabel profile = new JLabel("username");
+		selfProfile = new JLabel("username");
 		BufferedImage rawPic = null;
 		try {
 			rawPic = ImageIO.read(new File(selfProfilePicPath));
@@ -157,14 +185,14 @@ public class MainWindow {
 			if (pic.getIconHeight() != 32 || pic.getIconWidth() != 32) {
 				pic = new ImageIcon(pic.getImage().getScaledInstance(32, 32, Image.SCALE_DEFAULT));
 			}
-			profile.setIcon(pic);
+			selfProfile.setIcon(pic);
 		}
 
 		JLabel uploadPhoto = new JLabel("");
 		uploadPhoto.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				AddPublicationWindow publicationView = new AddPublicationWindow(profile.getText());
+				AddPublicationWindow publicationView = new AddPublicationWindow(selfProfile.getText());
 				publicationView.show();
 			}
 
@@ -201,14 +229,14 @@ public class MainWindow {
 		gbc_uploadPhoto.gridx = 5;
 		gbc_uploadPhoto.gridy = 1;
 		panelNorte.add(uploadPhoto, gbc_uploadPhoto);
-		profile.setText(selfUsername);
-		profile.setFont(new Font("Bahnschrift", Font.BOLD, 16));
+		selfProfile.setText(selfUsername);
+		selfProfile.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		GridBagConstraints gbc_profile = new GridBagConstraints();
 		gbc_profile.insets = new Insets(0, 0, 0, 5);
 		gbc_profile.anchor = GridBagConstraints.WEST;
 		gbc_profile.gridx = 6;
 		gbc_profile.gridy = 1;
-		panelNorte.add(profile, gbc_profile);
+		panelNorte.add(selfProfile, gbc_profile);
 
 		panelCentral = new JPanel();
 		frame.getContentPane().add(panelCentral, BorderLayout.CENTER);
@@ -233,7 +261,7 @@ public class MainWindow {
 		gbl_panelPerfilPersonal.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		panelPerfilPersonal.setLayout(gbl_panelPerfilPersonal);
 
-		JLabel selfNickname = new JLabel("");
+		selfNickname = new JLabel("");
 		selfNickname.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		selfNickname.setText(selfUsername);
 		GridBagConstraints gbc_selfNickname = new GridBagConstraints();
@@ -266,7 +294,7 @@ public class MainWindow {
 		gbc_selfEditProfile.gridy = 2;
 		panelPerfilPersonal.add(selfEditProfile, gbc_selfEditProfile);
 
-		JLabel selfProfilePic = new JLabel("");
+		selfProfilePic = new JLabel("");
 
 		if (rawPic != null) {
 			ImageIcon pic = new ImageIcon(getCircularImage(rawPic));
@@ -308,7 +336,7 @@ public class MainWindow {
 		panelPerfilPersonal.add(selfProfilePic, gbc_selfProfilePic);
 
 		JLabel selfPublications = new JLabel("");
-		numSelfPub = Controller.getInstancia().getNumPublications(selfUsername);
+		int numSelfPub = Controller.getInstancia().getNumPublications(selfUsername);
 		if (numSelfPub == 1)
 			selfPublications.setText(numSelfPub + " publicación");
 		else
@@ -345,6 +373,14 @@ public class MainWindow {
 		gbc_selfFollows.gridx = 8;
 		gbc_selfFollows.gridy = 3;
 		panelPerfilPersonal.add(selfFollows, gbc_selfFollows);
+
+		selfFullname = new JLabel(Controller.getInstancia().getUser(selfUsername).getFullName());
+		selfFullname.setFont(new Font("Bahnschrift", Font.BOLD, 16));
+		GridBagConstraints gbc_selfFullname = new GridBagConstraints();
+		gbc_selfFullname.insets = new Insets(0, 0, 5, 5);
+		gbc_selfFullname.gridx = 6;
+		gbc_selfFullname.gridy = 4;
+		panelPerfilPersonal.add(selfFullname, gbc_selfFullname);
 
 		JPanel panelPerfil = new JPanel();
 		panelCentral.add(panelPerfil, "panelPerfil");
@@ -484,7 +520,7 @@ public class MainWindow {
 			}
 		});
 
-		profile.addMouseListener(new MouseAdapter() {
+		selfProfile.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				CardLayout cL = (CardLayout) panelCentral.getLayout();
@@ -494,12 +530,12 @@ public class MainWindow {
 
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				profile.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+				selfProfile.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			}
 
 			@Override
 			public void mouseExited(MouseEvent e) {
-				profile.setCursor(Cursor.getDefaultCursor());
+				selfProfile.setCursor(Cursor.getDefaultCursor());
 			}
 		});
 
@@ -611,7 +647,7 @@ public class MainWindow {
 	private void cambiarPerfil(String username) {
 		this.anotherProfileUsername = username;
 		nickname.setText(username);
-		numPub = Controller.getInstancia().getNumPublications(username);
+		int numPub = Controller.getInstancia().getNumPublications(username);
 		if (numPub == 1)
 			publications.setText(numPub + " publicación");
 		else

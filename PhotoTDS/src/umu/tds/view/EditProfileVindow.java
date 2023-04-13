@@ -247,9 +247,7 @@ public class EditProfileVindow {
 						JOptionPane.showMessageDialog(frame, "Perfil actualizado.", null,
 								JOptionPane.INFORMATION_MESSAGE);
 						frame.dispose();
-						mw.exit();
-						mw = new MainWindow(usernameField.getText(), newProfilePic);
-						mw.show();
+						mw.updateProfile(usernameField.getText(), fullnameField.getText(), newProfilePic);
 					} else {
 						JOptionPane.showMessageDialog(frame,
 								"Ha ocurrido un error al actualizar la información del perfil.", null,
