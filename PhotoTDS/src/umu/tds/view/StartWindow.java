@@ -115,7 +115,7 @@ public class StartWindow {
 	private void initialize() {
 		SimpleDateFormat formatter = new SimpleDateFormat("HH", Locale.US);
 		Date date = new Date(System.currentTimeMillis());
-		if (Integer.parseInt(formatter.format(date)) > 8 && Integer.parseInt(formatter.format(date)) < 20) {
+		if (Integer.parseInt(formatter.format(date)) >= 8 && Integer.parseInt(formatter.format(date)) <= 20) {
 			FlatLightLaf.setup();
 		} else {
 			FlatDarkLaf.setup();
@@ -624,6 +624,8 @@ public class StartWindow {
 						cL.show(panelCentral, "panelLogin");
 						frame.setSize(450, 299);
 						frame.setLocationRelativeTo(null);
+						editorPane.setText("");
+						btnSelectPhoto_Register.setText("Seleccionar");
 						emailField_Register.setText(null);
 						fullnameField_Register.setText(null);
 						dateChooser_Register.setDate(null);
@@ -691,7 +693,7 @@ public class StartWindow {
 			public void actionPerformed(ActionEvent e) {
 				CardLayout cL = (CardLayout) panelCentral.getLayout();
 				cL.show(panelCentral, "panelLogin");
-				frame.setSize(frame.getWidth(), 299);
+				frame.setSize(450, 299);
 				frame.setLocationRelativeTo(null);
 				emailField_Register.setText(null);
 				fullnameField_Register.setText(null);
@@ -717,17 +719,13 @@ public class StartWindow {
 		Color lightBars = new Color(230, 230, 230, 230);
 		Color darkBars = new Color(75, 77, 78);
 
-		if (Integer.parseInt(formatter.format(date)) > 8 && Integer.parseInt(formatter.format(date)) < 20) {
+		if (UIManager.getLookAndFeel().getName() == "FlatLaf Light") {
 			menuBar.setBorder(new MatteBorder(1, 1, 1, 1, lightBars));
 			mntmModoClaroOscuro.setBorder(new MatteBorder(0, 0, 0, 1, lightBars));
-		} else {
-			menuBar.setBorder(new MatteBorder(1, 1, 1, 1, darkBars));
-			mntmModoClaroOscuro.setBorder(new MatteBorder(0, 0, 0, 1, darkBars));
-		}
-
-		if (UIManager.getLookAndFeel().getName() == "FlatLaf Light") {
 			mntmModoClaroOscuro.setText("Modo oscuro");
 		} else if (UIManager.getLookAndFeel().getName() == "FlatLaf Dark") {
+			menuBar.setBorder(new MatteBorder(1, 1, 1, 1, darkBars));
+			mntmModoClaroOscuro.setBorder(new MatteBorder(0, 0, 0, 1, darkBars));
 			mntmModoClaroOscuro.setText("Modo claro");
 		}
 		mntmModoClaroOscuro.addMouseListener(new MouseAdapter() {

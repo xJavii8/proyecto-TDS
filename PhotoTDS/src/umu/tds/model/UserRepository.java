@@ -9,8 +9,6 @@ import java.util.Map;
 import umu.tds.persistence.DAOException;
 import umu.tds.persistence.DAOFactory;
 import umu.tds.persistence.IAdaptadorUserDAO;
-import umu.tds.persistence.DAOFactory;
-
 
 public class UserRepository {
 	private Map<String, User> users;
@@ -29,20 +27,22 @@ public class UserRepository {
 			eDAO.printStackTrace();
 		}
 	}
-	
+
 	// Comprobamos si el usuario existe por su username
 	public boolean userExist(String username) {
 		User user = users.get(username);
-		if(user != null) return true;
+		if (user != null)
+			return true;
 		return false;
 	}
-	
+
 	public User getUser(String username) {
 		User user = users.get(username);
-		if(user != null) return user;
+		if (user != null)
+			return user;
 		return null;
 	}
-	
+
 	public boolean userExistEmail(String email) {
 		for (User u : users.values()) {
 			if (u.getEmail().equals(email))
@@ -50,7 +50,7 @@ public class UserRepository {
 		}
 		return false;
 	}
-	
+
 	public User getUserFromEmail(String email) {
 		for (User u : users.values()) {
 			if (u.getEmail().equals(email))
@@ -100,6 +100,6 @@ public class UserRepository {
 		for (User u : userDB) {
 			users.put(u.getUsername(), u);
 		}
-		
+
 	}
 }
