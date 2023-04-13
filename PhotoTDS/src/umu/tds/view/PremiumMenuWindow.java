@@ -60,9 +60,32 @@ public class PremiumMenuWindow {
 
 		JPanel panelNoPremium = new JPanel();
 		panelCentral.add(panelNoPremium, "panelNoPremium");
+		GridBagLayout gbl_panelNoPremium = new GridBagLayout();
+		gbl_panelNoPremium.columnWidths = new int[] { 15, 236, 202, 15, 0 };
+		gbl_panelNoPremium.rowHeights = new int[] { 15, 23, 0, 0 };
+		gbl_panelNoPremium.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_panelNoPremium.rowWeights = new double[] { 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		panelNoPremium.setLayout(gbl_panelNoPremium);
+
+		JLabel price = new JLabel("Precio: " + Controller.getInstancia().getUser(nickname).getFinalPrice());
+		price.setFont(new Font("Bahnschrift", Font.BOLD, 16));
+		price.setHorizontalAlignment(SwingConstants.CENTER);
+		GridBagConstraints gbc_price = new GridBagConstraints();
+		gbc_price.gridwidth = 2;
+		gbc_price.insets = new Insets(0, 0, 5, 5);
+		gbc_price.gridx = 1;
+		gbc_price.gridy = 1;
+		panelNoPremium.add(price, gbc_price);
 
 		JButton getPremium = new JButton("Adquirir premium");
-		panelNoPremium.add(getPremium);
+		getPremium.setVerticalAlignment(SwingConstants.BOTTOM);
+		GridBagConstraints gbc_getPremium = new GridBagConstraints();
+		gbc_getPremium.gridwidth = 2;
+		gbc_getPremium.insets = new Insets(0, 0, 0, 5);
+		gbc_getPremium.anchor = GridBagConstraints.NORTH;
+		gbc_getPremium.gridx = 1;
+		gbc_getPremium.gridy = 2;
+		panelNoPremium.add(getPremium, gbc_getPremium);
 
 		JPanel panelPremium = new JPanel();
 		panelCentral.add(panelPremium, "panelPremium");
