@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 
 import javax.swing.DefaultListModel;
 
@@ -18,6 +19,7 @@ import umu.tds.persistence.DAOException;
 import umu.tds.persistence.DAOFactory;
 import umu.tds.persistence.IAdaptadorPublicationDAO;
 import umu.tds.persistence.IAdaptadorUserDAO;
+import umu.tds.view.Constantes;
 import umu.tds.view.StartWindow;
 
 public class Controller {
@@ -75,54 +77,57 @@ public class Controller {
 	}
 
 	public boolean login(String username, String password) {
+		Matcher emailMatch = Constantes.EMAIL_PAT.matcher(username);
 
-		boolean userExist = false;
-		Matcher emailMatch = StartWindow.EMAIL_PAT.matcher(username);
-		if (emailMatch.matches())
-			userExist = userRepo.userExistEmail(username);
-		else
-			userExist = userRepo.userExist(username);
-
-		if (userExist == false)
-			return false;
-
-		User user;
+		Optional<User> user;
 
 		if (emailMatch.matches())
 			user = userRepo.getUserFromEmail(username);
 		else
 			user = userRepo.getUser(username);
-
-		if (user.getPassword().equals(password))
+		if (user.isEmpty())
+			return false;
+		else if (user.get().getPassword().equals(password))
 			return true;
 		else
 			return false;
 	}
 
 	public String getProfilePicPath(String username) {
-		String profilePic;
-		Matcher emailMatch = StartWindow.EMAIL_PAT.matcher(username);
+		Matcher emailMatch = Constantes.EMAIL_PAT.matcher(username);
+		Optional<User> user;
 		if (emailMatch.matches())
-			profilePic = userRepo.getUserFromEmail(username).getProfilePic();
+			user = userRepo.getUserFromEmail(username);
 		else
-			profilePic = userRepo.getUser(username).getProfilePic();
+			user = userRepo.getUser(username);
 
-		return profilePic;
+		if (user.isEmpty())
+			return "";
+		else
+			return user.get().getProfilePic();
 	}
 
 	public boolean isPremium(String username) {
-		return userRepo.getUser(username).isPremium();
+		return userRepo.getUser(username).get().isPremium();
 	}
 
 	public boolean setPremium(String username) {
-		User user = userRepo.getUser(username);
+		Optional<User> userO = userRepo.getUser(username);
+		if (userO.isEmpty())
+			return false;
+
+		User user = userO.get();
 		user.setPremium(true);
 		adaptadorUser.updateUser(user);
 		return true;
 	}
 
 	public boolean createExcel(String username, String path) {
-		User user = userRepo.getUser(username);
+		Optional<User> userO = userRepo.getUser(username);
+		if (userO.isEmpty())
+			return false;
+
+		User user = userO.get();
 		if (!user.isPremium())
 			return false;
 
@@ -132,7 +137,11 @@ public class Controller {
 	}
 
 	public boolean createPDF(String username, String path) {
-		User user = userRepo.getUser(username);
+		Optional<User> userO= userRepo.getUser(username);
+		if(userO.isEmpty())
+			return false;
+		
+		User user = userO.get();
 		if (!user.isPremium())
 			return false;
 
@@ -142,36 +151,49 @@ public class Controller {
 	}
 
 	public int getNumFollowers(String username) {
-		User user = userRepo.getUser(username);
+		Optional<User> userO= userRepo.getUser(username);
+		if(userO.isEmpty())
+			return 0;
+		
+		User user = userO.get();
 		return user.getFollowers().size();
 	}
 
 	public int getNumUsersFollowing(String username) {
-		User user = userRepo.getUser(username);
+		Optional<User> userO= userRepo.getUser(username);
+		if(userO.isEmpty())
+			return 0;
+		
+		User user = userO.get();
 		return user.getUsersFollowing().size();
 	}
 
 	public int getNumPublications(String username) {
-		User user = userRepo.getUser(username);
+		Optional<User> userO= userRepo.getUser(username);
+		if(userO.isEmpty())
+			return 0;
+		
+		User user = userO.get();
 		return user.getPublications().size();
 	}
 
 	public User getUser(String username) {
-		return userRepo.getUser(username);
+		Optional<User> userO = userRepo.getUser(username);
+		if(userO.isEmpty())
+			return null;
+		
+		return userO.get();
 	}
 
 	public boolean userIsFollower(String selfUsername, String usernameSearched) {
-		User userSearched = userRepo.getUser(usernameSearched);
-		for (User user : userSearched.getFollowers()) {
-			if (user.getUsername().equals(selfUsername))
-				return true;
-		}
-		return false;
+		User userSearched = userRepo.getUser(usernameSearched).get();
+		return userSearched.getFollowers().stream()
+	            .anyMatch(user -> user.getUsername().equals(selfUsername));
 	}
 
 	public boolean follow(String selfUsername, String usernameSearched) {
-		User selfUser = userRepo.getUser(selfUsername);
-		User searchedUser = userRepo.getUser(usernameSearched);
+		User selfUser = userRepo.getUser(selfUsername).get();
+		User searchedUser = userRepo.getUser(usernameSearched).get();
 
 		selfUser.addUserFollowing(searchedUser);
 		searchedUser.addUserFollower(selfUser);
@@ -182,8 +204,8 @@ public class Controller {
 	}
 
 	public boolean unfollow(String selfUsername, String usernameSearched) {
-		User selfUser = userRepo.getUser(selfUsername);
-		User searchedUser = userRepo.getUser(usernameSearched);
+		User selfUser = userRepo.getUser(selfUsername).get();
+		User searchedUser = userRepo.getUser(usernameSearched).get();
 
 		selfUser.removeUserFollowing(searchedUser);
 		searchedUser.removeUserFollower(selfUser);
@@ -193,33 +215,26 @@ public class Controller {
 	}
 
 	public DefaultListModel<User> search(String selfUsername, String searchString) {
-		User selfUser = userRepo.getUser(selfUsername);
+		User selfUser = userRepo.getUser(selfUsername).get();
 		DefaultListModel<User> matchingUsers = new DefaultListModel<>();
 		List<User> allUsers = userRepo.getUser();
-		Matcher emailMatch = StartWindow.EMAIL_PAT.matcher(searchString);
-		Matcher fullnameMatch = StartWindow.FULLNAME_PAT.matcher(searchString);
+		Matcher emailMatch = Constantes.EMAIL_PAT.matcher(searchString);
+		Matcher fullnameMatch = Constantes.FULLNAME_PAT.matcher(searchString);
 		if (emailMatch.matches()) {
-			for (User u : allUsers) {
-				if (u.getEmail().equals(searchString)) {
-					matchingUsers.addElement(u);
-				}
-			}
-		} else if (fullnameMatch.matches()) {
-			for (User u : allUsers) {
-				if (u.getFullName().startsWith(searchString) || u.getFullName().equals(searchString)) {
-					matchingUsers.addElement(u);
-				}
-			}
-		} else {
-			for (User u : allUsers) {
-				if (u.getUsername().startsWith(searchString) || u.getUsername().equals(searchString)) {
-					matchingUsers.addElement(u);
-				}
-			}
-		}
+	        matchingUsers.addAll(allUsers.stream()
+	                .filter(u -> u.getEmail().equals(searchString))
+	                .collect(Collectors.toList()));
+	    } else if (fullnameMatch.matches()) {
+	        matchingUsers.addAll(allUsers.stream()
+	                .filter(u -> u.getFullName().startsWith(searchString) || u.getFullName().equals(searchString))
+	                .collect(Collectors.toList()));
+	    } else {
+	        matchingUsers.addAll(allUsers.stream()
+	                .filter(u -> u.getUsername().startsWith(searchString) || u.getUsername().equals(searchString))
+	                .collect(Collectors.toList()));
+	    }
 
-		if (matchingUsers.contains(selfUser))
-			matchingUsers.removeElement(selfUser);
+	    matchingUsers.removeElement(selfUser);
 		return matchingUsers;
 	}
 
