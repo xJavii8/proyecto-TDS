@@ -52,7 +52,7 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 			ePublication.setNombre("photo");
 			ePublication.setPropiedades(
 					new ArrayList<Propiedad>(Arrays.asList(new Propiedad("title", publication.getTitle()),
-							new Propiedad("datePublication", publication.getDatePublication().toString()),
+							new Propiedad("datePublication", dateToString(publication.getDatePublication())),
 							new Propiedad("description", publication.getDescription()),
 							new Propiedad("likes", String.valueOf(publication.getLikes())),
 							new Propiedad("path", ((Photo) publication).getPath())
@@ -64,7 +64,7 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 			ePublication.setNombre("album");
 			ePublication.setPropiedades(
 					new ArrayList<Propiedad>(Arrays.asList(new Propiedad("title", publication.getTitle()),
-							new Propiedad("datePublication", publication.getDatePublication().toString()),
+							new Propiedad("datePublication", dateToString(publication.getDatePublication())),
 							new Propiedad("description", publication.getDescription()),
 							new Propiedad("likes", String.valueOf(publication.getLikes())),
 							new Propiedad("photos", obtenerCodigosPhotos(((Album) publication).getPhotos())
@@ -247,7 +247,7 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 		try {
 			fecha = formato.parse(fechaString);
 		} catch (ParseException e) {
-			System.out.println("Error al convertir la fecha: " + e.getMessage());
+			System.err.println("Error al convertir la fecha: " + e.getMessage());
 		}
 		return fecha;
 	}

@@ -176,8 +176,8 @@ public class Controller {
 		selfUser.addUserFollowing(searchedUser);
 		searchedUser.addUserFollower(selfUser);
 
-		userRepo.updateUser(selfUser);
-		userRepo.updateUser(searchedUser);
+		adaptadorUser.updateUser(selfUser);
+		adaptadorUser.updateUser(searchedUser);
 		return true;
 	}
 
@@ -187,8 +187,8 @@ public class Controller {
 
 		selfUser.removeUserFollowing(searchedUser);
 		searchedUser.removeUserFollower(selfUser);
-		userRepo.updateUser(selfUser);
-		userRepo.updateUser(searchedUser);
+		adaptadorUser.updateUser(selfUser);
+		adaptadorUser.updateUser(searchedUser);
 		return true;
 	}
 
@@ -198,13 +198,13 @@ public class Controller {
 		List<User> allUsers = userRepo.getUser();
 		Matcher emailMatch = StartWindow.EMAIL_PAT.matcher(searchString);
 		Matcher fullnameMatch = StartWindow.FULLNAME_PAT.matcher(searchString);
-		if(emailMatch.matches()) {
+		if (emailMatch.matches()) {
 			for (User u : allUsers) {
 				if (u.getEmail().equals(searchString)) {
 					matchingUsers.addElement(u);
 				}
 			}
-		} else if(fullnameMatch.matches()) {
+		} else if (fullnameMatch.matches()) {
 			for (User u : allUsers) {
 				if (u.getFullName().startsWith(searchString) || u.getFullName().equals(searchString)) {
 					matchingUsers.addElement(u);
@@ -228,25 +228,22 @@ public class Controller {
 		user.setUsername(username);
 		user.setDescription(description);
 		user.setProfilePic(profilePicPath);
-		userRepo.updateUser(user);
+		adaptadorUser.updateUser(user);
 		return true;
 	}
 
 	public boolean updateUserSensibleInfo(User user, String email, String password) {
 		user.setEmail(email);
 		user.setPassword(password);
-		userRepo.updateUser(user);
+		adaptadorUser.updateUser(user);
 		return true;
 	}
 
 	public boolean createPhoto(String user, String titulo, String descripcion, String path) {
 		User usuario = this.getUser(user);
 		Photo p = usuario.createPhoto(titulo, descripcion, path);
-		System.out.println("Photo creada");
 		this.publRepo.createPublication(p);
-		System.out.println("Publicación creada");
-		this.userRepo.updateUser(usuario);
-		System.out.println("Usuario actualizado");
+		this.adaptadorUser.updateUser(usuario);
 		return true;
 	}
 
