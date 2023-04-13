@@ -158,7 +158,6 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 		path = serverPersistencia.recuperarPropiedadEntidad(ePublication, "path");
 		photos = serverPersistencia.recuperarPropiedadEntidad(ePublication, "photos");
 
-		
 		Album p = new Album(title, stringToDate(datePublication), description, Integer.parseInt(likes));
 		p.setCodigo(codigo);
 
@@ -255,7 +254,7 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 
 	private String dateToString(Date fechaDate) {
 		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
-        String fechaString = formato.format(fechaDate);
-        return fechaString;
+		String fechaString = formato.format(fechaDate);
+		return fechaString;
 	}
 }
