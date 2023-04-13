@@ -57,19 +57,19 @@ public class UserListRender extends JPanel implements ListCellRenderer<User> {
 			}
 			userLabel.setIcon(pic);
 		}
-		
-		if(isSelected) {
+
+		if (isSelected) {
 			setBackground(list.getSelectionBackground());
 			setForeground(list.getSelectionForeground());
 		} else {
 			setBackground(list.getBackground());
 			setForeground(list.getSelectionForeground());
 		}
-		
+
 		setEnabled(list.isEnabled());
 		setFont(list.getFont());
 		setOpaque(true);
-		
+
 		return this;
 	};
 

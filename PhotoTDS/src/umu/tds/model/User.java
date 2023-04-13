@@ -72,6 +72,15 @@ public class User {
 		return true;
 	}
 
+	public int getFinalPrice() {
+		List<Discount> descuentos = Discount.getDiscountTypes();
+		int precio = 10;
+		for (Discount d : descuentos) {
+			precio -= d.getPremiumDiscount(precio, this);
+		}
+		return precio;
+	}
+
 	// GETS AND SETS
 	public int getCodigo() {
 		return codigo;

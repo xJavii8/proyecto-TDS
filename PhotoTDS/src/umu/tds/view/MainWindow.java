@@ -81,6 +81,12 @@ public class MainWindow {
 	private JLabel followers;
 	private JLabel profilePic;
 	private JButton followButton;
+	private int numSelfPub;
+	private int numSelfFollowing;
+	private int numSelfFollowers;
+	private int numPub;
+	private int numFollowing;
+	private int numFollowers;
 
 	/**
 	 * Create the application.
@@ -220,7 +226,7 @@ public class MainWindow {
 		JPanel panelPerfilPersonal = new JPanel();
 		panelCentral.add(panelPerfilPersonal, "panelPerfilPersonal");
 		GridBagLayout gbl_panelPerfilPersonal = new GridBagLayout();
-		gbl_panelPerfilPersonal.columnWidths = new int[] { 15, 0, 0, 0, 15, 15, 0, 0, 0, 15, 0, 0 };
+		gbl_panelPerfilPersonal.columnWidths = new int[] { 15, 0, 0, 0, 15, 15, 0, 112, 0, 15, 0, 0 };
 		gbl_panelPerfilPersonal.rowHeights = new int[] { 15, 0, 0, 0, 0, 0, 0 };
 		gbl_panelPerfilPersonal.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 				Double.MIN_VALUE };
@@ -301,8 +307,12 @@ public class MainWindow {
 		panelPerfilPersonal.add(premium, gbc_premium);
 		panelPerfilPersonal.add(selfProfilePic, gbc_selfProfilePic);
 
-		JLabel selfPublications = new JLabel(
-				Controller.getInstancia().getNumPublications(selfUsername) + " publicaciones");
+		JLabel selfPublications;
+		numSelfPub = Controller.getInstancia().getNumPublications(selfUsername);
+		if (numSelfPub == 1)
+			selfPublications = new JLabel(numSelfPub + " publicación");
+		else
+			selfPublications = new JLabel(numSelfPub + " publicaciones");
 		selfPublications.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		GridBagConstraints gbc_selfPublications = new GridBagConstraints();
 		gbc_selfPublications.insets = new Insets(0, 0, 5, 5);
@@ -310,7 +320,12 @@ public class MainWindow {
 		gbc_selfPublications.gridy = 3;
 		panelPerfilPersonal.add(selfPublications, gbc_selfPublications);
 
-		JLabel selfFollowing = new JLabel(Controller.getInstancia().getNumUsersFollowing(selfUsername) + " seguidos");
+		JLabel selfFollowing;
+		numSelfFollowing = Controller.getInstancia().getNumUsersFollowing(selfUsername);
+		if (numSelfFollowing == 1)
+			selfFollowing = new JLabel(numSelfFollowing + " seguido");
+		else
+			selfFollowing = new JLabel(numSelfFollowing + " seguidos");
 		selfFollowing.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		GridBagConstraints gbc_selfFollowing = new GridBagConstraints();
 		gbc_selfFollowing.insets = new Insets(0, 0, 5, 5);
@@ -318,7 +333,12 @@ public class MainWindow {
 		gbc_selfFollowing.gridy = 3;
 		panelPerfilPersonal.add(selfFollowing, gbc_selfFollowing);
 
-		JLabel selfFollows = new JLabel(Controller.getInstancia().getNumFollowers(selfUsername) + " seguidores");
+		JLabel selfFollows;
+		numSelfFollowers = Controller.getInstancia().getNumFollowers(selfUsername);
+		if (numSelfFollowers == 1)
+			selfFollows = new JLabel(numSelfFollowers + " seguidor");
+		else
+			selfFollows = new JLabel(numSelfFollowers + " seguidores");
 		selfFollows.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		GridBagConstraints gbc_selfFollows = new GridBagConstraints();
 		gbc_selfFollows.insets = new Insets(0, 0, 5, 5);
@@ -329,7 +349,7 @@ public class MainWindow {
 		JPanel panelPerfil = new JPanel();
 		panelCentral.add(panelPerfil, "panelPerfil");
 		GridBagLayout gbl_panelPerfil = new GridBagLayout();
-		gbl_panelPerfil.columnWidths = new int[] { 15, 0, 0, 0, 0, 15, 0, 0, 0, 0, 15, 0 };
+		gbl_panelPerfil.columnWidths = new int[] { 15, 0, 0, 0, 0, 15, 0, 112, 0, 0, 15, 0 };
 		gbl_panelPerfil.rowHeights = new int[] { 15, 0, 0, 0, 0, 0, 0 };
 		gbl_panelPerfil.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 				Double.MIN_VALUE };
@@ -390,6 +410,16 @@ public class MainWindow {
 			public void mouseClicked(MouseEvent e) {
 				buscar(searchField.getText());
 			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				searchButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				searchButton.setCursor(Cursor.getDefaultCursor());
+			}
 		});
 
 		followButton.addMouseListener(new MouseAdapter() {
@@ -398,16 +428,40 @@ public class MainWindow {
 				if (followButton.getText().equals("Seguir")) {
 					Controller.getInstancia().follow(selfUsername, anotherProfileUsername);
 					followButton.setText("Dejar de seguir");
-					selfFollowing.setText(Controller.getInstancia().getNumUsersFollowing(selfUsername) + " seguidos");
-					followers
-							.setText(Controller.getInstancia().getNumFollowers(anotherProfileUsername) + " seguidores");
+					numSelfFollowing = Controller.getInstancia().getNumUsersFollowing(selfUsername);
+					if (numSelfFollowing == 1)
+						selfFollowing.setText(numSelfFollowing + " seguido");
+					else
+						selfFollowing.setText(numSelfFollowing + " seguidos");
+					numFollowers = Controller.getInstancia().getNumFollowers(anotherProfileUsername);
+					if (numFollowers == 1)
+						followers.setText(numFollowers + " seguidor");
+					else
+						followers.setText(numFollowers + " seguidores");
 				} else if (followButton.getText().equals("Dejar de seguir")) {
 					Controller.getInstancia().unfollow(selfUsername, anotherProfileUsername);
 					followButton.setText("Seguir");
-					selfFollowing.setText(Controller.getInstancia().getNumUsersFollowing(selfUsername) + " seguidos");
-					followers
-							.setText(Controller.getInstancia().getNumFollowers(anotherProfileUsername) + " seguidores");
+					numSelfFollowing = Controller.getInstancia().getNumUsersFollowing(selfUsername);
+					if (numSelfFollowing == 1)
+						selfFollowing.setText(numSelfFollowing + " seguido");
+					else
+						selfFollowing.setText(numSelfFollowing + " seguidos");
+					numFollowers = Controller.getInstancia().getNumFollowers(anotherProfileUsername);
+					if (numFollowers == 1)
+						followers.setText(numFollowers + " seguidor");
+					else
+						followers.setText(numFollowers + " seguidores");
 				}
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				followButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				followButton.setCursor(Cursor.getDefaultCursor());
 			}
 		});
 
@@ -454,17 +508,13 @@ public class MainWindow {
 
 		JMenuItem mntmModoClaroOscuro = new JMenuItem();
 
-		if (Integer.parseInt(formatter.format(date)) > 8 && Integer.parseInt(formatter.format(date)) < 20) {
+		if (UIManager.getLookAndFeel().getName() == "FlatLaf Light") {
 			menuBar.setBorder(new MatteBorder(1, 1, 1, 1, lightBars));
 			mntmModoClaroOscuro.setBorder(new MatteBorder(0, 0, 0, 1, lightBars));
-		} else {
-			menuBar.setBorder(new MatteBorder(1, 1, 1, 1, darkBars));
-			mntmModoClaroOscuro.setBorder(new MatteBorder(0, 0, 0, 1, darkBars));
-		}
-
-		if (UIManager.getLookAndFeel().getName() == "FlatLaf Light") {
 			mntmModoClaroOscuro.setText("Modo oscuro");
 		} else if (UIManager.getLookAndFeel().getName() == "FlatLaf Dark") {
+			menuBar.setBorder(new MatteBorder(1, 1, 1, 1, darkBars));
+			mntmModoClaroOscuro.setBorder(new MatteBorder(0, 0, 0, 1, darkBars));
 			mntmModoClaroOscuro.setText("Modo claro");
 		}
 		mntmModoClaroOscuro.addMouseListener(new MouseAdapter() {
@@ -523,6 +573,18 @@ public class MainWindow {
 					}
 				});
 
+				userList.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseEntered(MouseEvent e) {
+						userList.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+					}
+
+					@Override
+					public void mouseExited(MouseEvent e) {
+						userList.setCursor(Cursor.getDefaultCursor());
+					}
+				});
+
 				JPanel panelNorte = new JPanel();
 				matchingUsersPanel.getContentPane().add(panelNorte, BorderLayout.NORTH);
 				JLabel foundUsers = new JLabel("Usuarios encontrados");
@@ -549,9 +611,23 @@ public class MainWindow {
 	private void cambiarPerfil(String username) {
 		this.anotherProfileUsername = username;
 		nickname.setText(username);
-		publications.setText(Controller.getInstancia().getNumPublications(username) + " publicaciones");
-		following.setText(Controller.getInstancia().getNumUsersFollowing(username) + " seguidos");
-		followers.setText(Controller.getInstancia().getNumFollowers(username) + " seguidores");
+		numPub = Controller.getInstancia().getNumPublications(username);
+		if (numPub == 1)
+			publications.setText(numPub + " publicación");
+		else
+			publications.setText(numPub + " publicaciones");
+
+		numFollowing = Controller.getInstancia().getNumUsersFollowing(username);
+		if (numFollowing == 1)
+			following.setText(numFollowing + " seguido");
+		else
+			following.setText(numFollowing + " seguidos");
+
+		numFollowers = Controller.getInstancia().getNumFollowers(username);
+		if (numFollowers == 1)
+			followers.setText(numFollowers + " seguidor");
+		else
+			followers.setText(numFollowers + " seguidores");
 		BufferedImage searchedUserPic = null;
 		try {
 			String userPicPath = Controller.getInstancia().getProfilePicPath(username, false);
