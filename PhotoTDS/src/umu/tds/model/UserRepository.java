@@ -84,10 +84,6 @@ public class UserRepository {
 		return null;
 	}
 
-	public void updateUser(User user) {
-		this.userAdapter.updateUser(user);
-	}
-
 	// A�adimos el usuario tanto a la lista de usuarios como al adaptador
 	public void addUser(User user) {
 		userAdapter.createUser(user);
