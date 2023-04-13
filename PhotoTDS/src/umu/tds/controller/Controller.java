@@ -265,4 +265,8 @@ public class Controller {
 	public Optional<Publication> getPublication(String titulo) {
 		return this.publRepo.getPublication(titulo);
 	}
+	
+	public List<Publication> getAllPublications(){
+		return new LinkedList<>(publRepo.getAllPublications());
+	}
 }

@@ -1,9 +1,12 @@
 package umu.tds.model;
 
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+
 
 import umu.tds.persistence.DAOException;
 import umu.tds.persistence.DAOFactory;
@@ -56,6 +59,12 @@ public class PublicationRepository {
 		this.publicationAdapter.deletePublication(p);
 		this.publications.remove(p.getTitle());
 	}
+	
+	public Set<Publication> getAllPublications() {
+		return new LinkedHashSet<>(this.publications.values());
+	}
+	
+	
 	
 	
 	//Recargar repositorio
