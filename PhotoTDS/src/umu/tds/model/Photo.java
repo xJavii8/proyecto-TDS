@@ -10,6 +10,11 @@ public class Photo extends Publication {
 		super(title, datePublication, description, likes);
 		this.path = path;
 	}
+	
+	public Photo(String title, Date datePublication, String description, String path) {
+		super(title, datePublication, description);
+		this.path = path;
+	}
 
 	//GETTERS AND SETTERS
 	public String getPath() {

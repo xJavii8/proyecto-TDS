@@ -10,7 +10,6 @@ public class TDSDAOFactory extends DAOFactory {
 
 	@Override
 	public IAdaptadorPublicationDAO getPublicationDAO() {
-		// TODO Auto-generated method stub
-		return null;
+		return AdaptadorPublicationTDS.getUnicaInstancia();
 	}
 }

@@ -11,6 +11,8 @@ import java.awt.event.ActionEvent;
 import java.awt.Insets;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.awt.Cursor;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
@@ -41,11 +43,14 @@ public class AddPublicationWindow {
 	private JFrame frame;
 	private JTextField tituloField;
 	private String picPublication;
+	
+	private String user;
 
 	/**
 	 * Create the application.
 	 */
-	public AddPublicationWindow() {
+	public AddPublicationWindow(String user) {
+		this.user = user;
 		initialize();
 	}
 
@@ -176,6 +181,15 @@ public class AddPublicationWindow {
 					frame.setLocationRelativeTo(null);
 				}
 			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				btnSeleccionar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				btnSeleccionar.setCursor(Cursor.getDefaultCursor());
+			}
 		});
 		GridBagConstraints gbc_btnSeleccionar = new GridBagConstraints();
 		gbc_btnSeleccionar.insets = new Insets(0, 0, 5, 5);
@@ -188,9 +202,39 @@ public class AddPublicationWindow {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				String titulo = tituloField.getText();
-				boolean exite;
+				boolean existe;
 				
-				//Optional<Publication> publ = Controller.getInstancia().getPublicacion();
+				Optional<Publication> publ = Controller.getInstancia().getPublication(titulo);
+				
+				if (publ.isEmpty()) {
+					existe = false;
+				}else {
+					existe = publ.get().getTitle().equals(titulo);
+				}
+				
+				
+				if (existe) {
+					JOptionPane.showMessageDialog(frame,
+							"Ya existe una  publicación con ese nombre" , null,
+							JOptionPane.ERROR_MESSAGE);
+				}else {
+					Controller.getInstancia().createPhoto(user, titulo, titulo, titulo);
+					JOptionPane.showMessageDialog(frame,
+							"Publicación subida" , null,
+							JOptionPane.INFORMATION_MESSAGE);
+					frame.dispose();
+				}
+				
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				btnSubir.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				btnSubir.setCursor(Cursor.getDefaultCursor());
 			}
 		});
 		GridBagConstraints gbc_btnSubir = new GridBagConstraints();

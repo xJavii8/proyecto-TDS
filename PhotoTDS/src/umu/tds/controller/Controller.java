@@ -3,22 +3,29 @@ package umu.tds.controller;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.swing.DefaultListModel;
 
+import umu.tds.model.Photo;
+import umu.tds.model.Publication;
+import umu.tds.model.PublicationRepository;
 import umu.tds.model.User;
 import umu.tds.model.UserRepository;
 import umu.tds.persistence.AdaptadorUserTDS;
 import umu.tds.persistence.DAOException;
 import umu.tds.persistence.DAOFactory;
+import umu.tds.persistence.IAdaptadorPublicationDAO;
 import umu.tds.persistence.IAdaptadorUserDAO;
 
 public class Controller {
 	private static Controller unicaInstancia;
 
 	private IAdaptadorUserDAO adaptadorUser;
+	private IAdaptadorPublicationDAO adaptadorPublication;
 
 	private UserRepository userRepo;
+	private PublicationRepository publRepo;
 
 	private Controller() {
 		inicializarAdaptadores();
@@ -43,20 +50,22 @@ public class Controller {
 		}
 
 		adaptadorUser = factoria.getUserDAO();
+		adaptadorPublication = factoria.getPublicationDAO();
 	}
 
 	private void inicializarRepos() {
 		userRepo = UserRepository.getInstancia();
+		publRepo = PublicationRepository.getInstancia();
 	}
 
 	public boolean createUser(String email, String fullname, String username, String password, Date birthday,
 			String profilePic, String description) {
 		boolean userExist = userRepo.userExist(username);
 		boolean emailExist = userRepo.userExistEmail(email);
-		
+
 		if (userExist == true || emailExist == true)
 			return false;
-		
+
 		User user = new User(username, email, password, fullname, birthday, profilePic, description);
 		userRepo.addUser(user);
 
@@ -209,5 +218,20 @@ public class Controller {
 		user.setPassword(password);
 		userRepo.updateUser(user);
 		return true;
+	}
+
+	public boolean createPhoto(String user, String titulo, String descripcion, String path) {
+		User usuario = this.getUser(user);
+		Photo p = usuario.createPhoto(titulo, descripcion, path);
+		System.out.println("Photo creada");
+		this.publRepo.createPublication(p);
+		System.out.println("Publicación creada");
+		this.userRepo.updateUser(usuario);
+		System.out.println("Usuario actualizado");
+		return true;
+	}
+
+	public Optional<Publication> getPublication(String titulo) {
+		return this.publRepo.getPublication(titulo);
 	}
 }
