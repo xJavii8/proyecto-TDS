@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import umu.tds.persistence.DAOException;
 import umu.tds.persistence.DAOFactory;
@@ -30,33 +31,19 @@ public class UserRepository {
 
 	// Comprobamos si el usuario existe por su username
 	public boolean userExist(String username) {
-		User user = users.get(username);
-		if (user != null)
-			return true;
-		return false;
+		return Optional.ofNullable(users.get(username)).isPresent();
 	}
 
-	public User getUser(String username) {
-		User user = users.get(username);
-		if (user != null)
-			return user;
-		return null;
+	public Optional<User> getUser(String username) {
+		return Optional.ofNullable(users.get(username));
 	}
 
 	public boolean userExistEmail(String email) {
-		for (User u : users.values()) {
-			if (u.getEmail().equals(email))
-				return true;
-		}
-		return false;
+		return users.values().stream().anyMatch(u -> u.getEmail().equals(email));
 	}
 
-	public User getUserFromEmail(String email) {
-		for (User u : users.values()) {
-			if (u.getEmail().equals(email))
-				return u;
-		}
-		return null;
+	public Optional<User> getUserFromEmail(String email) {
+		return users.values().stream().filter(u -> u.getEmail().equals(email)).findFirst();
 	}
 
 	// Obtener la unica instancia de la clase ---> SINGLETONE
@@ -76,12 +63,8 @@ public class UserRepository {
 	}
 
 	// Obtener uusario
-	public User getUser(int codigo) {
-		for (User u : users.values()) {
-			if (u.getCodigo() == codigo)
-				return u;
-		}
-		return null;
+	public Optional<User> getUser(int codigo) {
+		return users.values().stream().filter(u -> u.getCodigo() == codigo).findFirst();
 	}
 
 	// A�adimos el usuario tanto a la lista de usuarios como al adaptador
