@@ -402,7 +402,7 @@ public class EditProfileVindow {
 		btnActualizarSensible.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				Matcher registerEmailMatch = StartWindow.emailPat.matcher(correoField.getText());
+				Matcher registerEmailMatch = StartWindow.EMAIL_PAT.matcher(correoField.getText());
 				if (correoField.getText().isEmpty()) {
 					JOptionPane.showMessageDialog(frame, "El campo \"Email\" no puede estar vacío.", null,
 							JOptionPane.ERROR_MESSAGE);
