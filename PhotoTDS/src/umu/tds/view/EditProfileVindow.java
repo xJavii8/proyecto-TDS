@@ -400,7 +400,7 @@ public class EditProfileVindow {
 		btnActualizarSensible.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				Matcher registerEmailMatch = StartWindow.EMAIL_PAT.matcher(correoField.getText());
+				Matcher registerEmailMatch = Constantes.EMAIL_PAT.matcher(correoField.getText());
 				if (correoField.getText().isEmpty()) {
 					JOptionPane.showMessageDialog(frame, "El campo \"Email\" no puede estar vacío.", null,
 							JOptionPane.ERROR_MESSAGE);
@@ -412,9 +412,9 @@ public class EditProfileVindow {
 				} else if (fortalezaPass < 50) {
 					JOptionPane.showMessageDialog(frame, "La contraseña no es lo suficientemente fuerte.", null,
 							JOptionPane.ERROR_MESSAGE);
-				} else if (contraseñaField.getPassword().length < StartWindow.MIN_PASSWORD_LENGTH) {
+				} else if (contraseñaField.getPassword().length < Constantes.MIN_PASSWORD_LENGTH) {
 					JOptionPane.showMessageDialog(frame,
-							"La contraseña ha de tener mínimo " + StartWindow.MIN_PASSWORD_LENGTH + " caracteres.",
+							"La contraseña ha de tener mínimo " + Constantes.MIN_PASSWORD_LENGTH + " caracteres.",
 							null, JOptionPane.ERROR_MESSAGE);
 				} else {
 					if (Controller.getInstancia().updateUserSensibleInfo(user, correoField.getText(),
