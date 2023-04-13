@@ -83,8 +83,10 @@ public class StartWindow {
 
 	public static final int MIN_PASSWORD_LENGTH = 8;
 	public static final String VALID_EMAIL_REGEX = "^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$";
+	public static final String VALID_FULLNAME_REGEX = "^[A-Z][a-z]+(\\s[A-Z][a-z]+)*$";
 
-	public static final Pattern emailPat = Pattern.compile(VALID_EMAIL_REGEX);
+	public static final Pattern EMAIL_PAT = Pattern.compile(VALID_EMAIL_REGEX);
+	public static final Pattern FULLNAME_PAT = Pattern.compile(VALID_FULLNAME_REGEX);
 
 	/**
 	 * Launch the application.
@@ -242,20 +244,9 @@ public class StartWindow {
 							"La contraseña ha de tener mínimo " + MIN_PASSWORD_LENGTH + " caracteres.", null,
 							JOptionPane.ERROR_MESSAGE);
 				} else {
-					Matcher loginEmailMatch = emailPat.matcher(userField_Login.getText());
-					boolean login = false;
-					boolean isEmail = false;
-					if (loginEmailMatch.matches()) {
-						isEmail = true;
-						login = Controller.getInstancia().login(userField_Login.getText(),
-								String.valueOf(passwordField_Login.getPassword()), isEmail);
-					} else {
-						login = Controller.getInstancia().login(userField_Login.getText(),
-								String.valueOf(passwordField_Login.getPassword()), isEmail);
-					}
-					if (login == true) {
-						String profilePicPath = Controller.getInstancia().getProfilePicPath(userField_Login.getText(),
-								isEmail);
+					if (Controller.getInstancia().login(userField_Login.getText(),
+							String.valueOf(passwordField_Login.getPassword()))) {
+						String profilePicPath = Controller.getInstancia().getProfilePicPath(userField_Login.getText());
 						MainWindow mainView = new MainWindow(userField_Login.getText(), profilePicPath);
 						frame.setVisible(false);
 						mainView.show();
@@ -581,7 +572,7 @@ public class StartWindow {
 		registerButton_Register.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				Matcher registerEmailMatch = emailPat.matcher(emailField_Register.getText());
+				Matcher registerEmailMatch = EMAIL_PAT.matcher(emailField_Register.getText());
 				int fortalezaPass = fortalezaContraseña(passwordField_Register);
 				if (emailField_Register.getText().isEmpty()) {
 					JOptionPane.showMessageDialog(frame, "El campo \"Email\" no puede estar vacío.", null,

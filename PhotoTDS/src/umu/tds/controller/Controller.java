@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
 
 import javax.swing.DefaultListModel;
 
@@ -17,6 +18,7 @@ import umu.tds.persistence.DAOException;
 import umu.tds.persistence.DAOFactory;
 import umu.tds.persistence.IAdaptadorPublicationDAO;
 import umu.tds.persistence.IAdaptadorUserDAO;
+import umu.tds.view.StartWindow;
 
 public class Controller {
 	private static Controller unicaInstancia;
@@ -72,10 +74,11 @@ public class Controller {
 		return true;
 	}
 
-	public boolean login(String username, String password, boolean isEmail) {
+	public boolean login(String username, String password) {
 
 		boolean userExist = false;
-		if (isEmail)
+		Matcher emailMatch = StartWindow.EMAIL_PAT.matcher(username);
+		if (emailMatch.matches())
 			userExist = userRepo.userExistEmail(username);
 		else
 			userExist = userRepo.userExist(username);
@@ -85,7 +88,7 @@ public class Controller {
 
 		User user;
 
-		if (isEmail)
+		if (emailMatch.matches())
 			user = userRepo.getUserFromEmail(username);
 		else
 			user = userRepo.getUser(username);
@@ -96,10 +99,10 @@ public class Controller {
 			return false;
 	}
 
-	public String getProfilePicPath(String username, boolean isEmail) {
+	public String getProfilePicPath(String username) {
 		String profilePic;
-
-		if (isEmail)
+		Matcher emailMatch = StartWindow.EMAIL_PAT.matcher(username);
+		if (emailMatch.matches())
 			profilePic = userRepo.getUserFromEmail(username).getProfilePic();
 		else
 			profilePic = userRepo.getUser(username).getProfilePic();
@@ -189,13 +192,29 @@ public class Controller {
 		return true;
 	}
 
-	public DefaultListModel<User> searchByUsername(String selfUsername, String username) {
+	public DefaultListModel<User> search(String selfUsername, String searchString) {
 		User selfUser = userRepo.getUser(selfUsername);
 		DefaultListModel<User> matchingUsers = new DefaultListModel<>();
 		List<User> allUsers = userRepo.getUser();
-		for (User u : allUsers) {
-			if (u.getUsername().startsWith(username) || u.getUsername().equals(username)) {
-				matchingUsers.addElement(u);
+		Matcher emailMatch = StartWindow.EMAIL_PAT.matcher(searchString);
+		Matcher fullnameMatch = StartWindow.FULLNAME_PAT.matcher(searchString);
+		if(emailMatch.matches()) {
+			for (User u : allUsers) {
+				if (u.getEmail().equals(searchString)) {
+					matchingUsers.addElement(u);
+				}
+			}
+		} else if(fullnameMatch.matches()) {
+			for (User u : allUsers) {
+				if (u.getFullName().startsWith(searchString) || u.getFullName().equals(searchString)) {
+					matchingUsers.addElement(u);
+				}
+			}
+		} else {
+			for (User u : allUsers) {
+				if (u.getUsername().startsWith(searchString) || u.getUsername().equals(searchString)) {
+					matchingUsers.addElement(u);
+				}
 			}
 		}
 

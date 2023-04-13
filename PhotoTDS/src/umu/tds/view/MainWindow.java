@@ -556,7 +556,7 @@ public class MainWindow {
 			if (texto.startsWith("#")) {
 
 			} else {
-				DefaultListModel<User> matchingUsers = Controller.getInstancia().searchByUsername(selfUsername, texto);
+				DefaultListModel<User> matchingUsers = Controller.getInstancia().search(selfUsername, texto);
 				JList<User> userList = new JList<>(matchingUsers);
 				userList.setCellRenderer(new UserListRender());
 				JScrollPane scrollUserPanel = new JScrollPane(userList);
@@ -630,7 +630,7 @@ public class MainWindow {
 			followers.setText(numFollowers + " seguidores");
 		BufferedImage searchedUserPic = null;
 		try {
-			String userPicPath = Controller.getInstancia().getProfilePicPath(username, false);
+			String userPicPath = Controller.getInstancia().getProfilePicPath(username);
 			if (userPicPath.contains("%")) {
 				try {
 					userPicPath = URLDecoder.decode(userPicPath, "UTF-8");
