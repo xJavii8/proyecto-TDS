@@ -81,13 +81,6 @@ public class StartWindow {
 	private JPasswordField passwordField_Register;
 	private String profilePic_Register;
 
-	public static final int MIN_PASSWORD_LENGTH = 8;
-	public static final String VALID_EMAIL_REGEX = "^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$";
-	public static final String VALID_FULLNAME_REGEX = "^[A-Z][a-z]+(\\s[A-Z][a-z]+)*$";
-
-	public static final Pattern EMAIL_PAT = Pattern.compile(VALID_EMAIL_REGEX);
-	public static final Pattern FULLNAME_PAT = Pattern.compile(VALID_FULLNAME_REGEX);
-
 	/**
 	 * Launch the application.
 	 */
@@ -125,7 +118,7 @@ public class StartWindow {
 
 		frame = new JFrame();
 		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(StartWindow.class.getResource("/images/ig64.png")));
-		frame.setSize(450, 299);
+		frame.setSize(Constantes.INITIAL_WIDTH, Constantes.INITIAL_HEIGHT);
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -239,9 +232,9 @@ public class StartWindow {
 				} else if (passwordField_Login.getPassword().length == 0) {
 					JOptionPane.showMessageDialog(frame, "El campo \"Contraseña\" no puede estar vacío.", null,
 							JOptionPane.ERROR_MESSAGE);
-				} else if (passwordField_Login.getPassword().length < MIN_PASSWORD_LENGTH) {
+				} else if (passwordField_Login.getPassword().length < Constantes.MIN_PASSWORD_LENGTH) {
 					JOptionPane.showMessageDialog(frame,
-							"La contraseña ha de tener mínimo " + MIN_PASSWORD_LENGTH + " caracteres.", null,
+							"La contraseña ha de tener mínimo " + Constantes.MIN_PASSWORD_LENGTH + " caracteres.", null,
 							JOptionPane.ERROR_MESSAGE);
 				} else {
 					if (Controller.getInstancia().login(userField_Login.getText(),
@@ -289,7 +282,7 @@ public class StartWindow {
 			public void actionPerformed(ActionEvent e) {
 				CardLayout cL = (CardLayout) panelCentral.getLayout();
 				cL.show(panelCentral, "panelRegister");
-				frame.setSize(frame.getWidth(), 496);
+				frame.setSize(Constantes.INITIAL_WIDTH, 496);
 				frame.setLocationRelativeTo(null);
 				userField_Login.setText(null);
 				passwordField_Login.setText(null);
@@ -536,7 +529,8 @@ public class StartWindow {
 							}
 							editorPane.setText("<html><img src=file:\"" + HTMLProfilePic + "\"" + " "
 									+ "width=75 height=75></img>");
-							frame.setSize(frame.getWidth() + 75, frame.getHeight() + 75);
+							frame.setSize(frame.getWidth() + Constantes.PHOTO_SELECTED_SIZE,
+									frame.getHeight() + Constantes.PHOTO_SELECTED_SIZE);
 							btnSelectPhoto_Register.setText("Borrar");
 						} else {
 							JOptionPane.showMessageDialog(frame, "La imagen debe ser formato .png o .jpg", null,
@@ -547,7 +541,8 @@ public class StartWindow {
 					profilePic_Register = null;
 					editorPane.setText("");
 					btnSelectPhoto_Register.setText("Seleccionar");
-					frame.setSize(frame.getWidth() - 75, frame.getHeight() - 75);
+					frame.setSize(frame.getWidth() - Constantes.PHOTO_SELECTED_SIZE,
+							frame.getHeight() - Constantes.PHOTO_SELECTED_SIZE);
 				}
 			}
 
@@ -572,7 +567,7 @@ public class StartWindow {
 		registerButton_Register.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				Matcher registerEmailMatch = EMAIL_PAT.matcher(emailField_Register.getText());
+				Matcher registerEmailMatch = Constantes.EMAIL_PAT.matcher(emailField_Register.getText());
 				int fortalezaPass = fortalezaContraseña(passwordField_Register);
 				if (emailField_Register.getText().isEmpty()) {
 					JOptionPane.showMessageDialog(frame, "El campo \"Email\" no puede estar vacío.", null,
@@ -591,9 +586,9 @@ public class StartWindow {
 				} else if (fortalezaPass < 50) {
 					JOptionPane.showMessageDialog(frame, "La contraseña no es lo suficientemente fuerte.", null,
 							JOptionPane.ERROR_MESSAGE);
-				} else if (passwordField_Register.getPassword().length < MIN_PASSWORD_LENGTH) {
+				} else if (passwordField_Register.getPassword().length < Constantes.MIN_PASSWORD_LENGTH) {
 					JOptionPane.showMessageDialog(frame,
-							"La contraseña ha de tener mínimo " + MIN_PASSWORD_LENGTH + " caracteres.", null,
+							"La contraseña ha de tener mínimo " + Constantes.MIN_PASSWORD_LENGTH + " caracteres.", null,
 							JOptionPane.ERROR_MESSAGE);
 				} else if (dateChooser_Register.getDate() == null) {
 					JOptionPane.showMessageDialog(frame, "El campo \"Fecha de nacimiento\" es incorrecto.", null,
@@ -613,7 +608,7 @@ public class StartWindow {
 								JOptionPane.INFORMATION_MESSAGE);
 						CardLayout cL = (CardLayout) panelCentral.getLayout();
 						cL.show(panelCentral, "panelLogin");
-						frame.setSize(450, 299);
+						frame.setSize(Constantes.INITIAL_WIDTH, Constantes.INITIAL_HEIGHT);
 						frame.setLocationRelativeTo(null);
 						editorPane.setText("");
 						btnSelectPhoto_Register.setText("Seleccionar");

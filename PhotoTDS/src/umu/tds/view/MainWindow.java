@@ -116,38 +116,10 @@ public class MainWindow {
 		frame.setVisible(true);
 	}
 
-	public void updateProfile(String username, String fullname, String profilePicPath) {
-		this.selfUsername = username;
-		this.selfProfilePicPath = profilePicPath;
-		this.selfNickname.setText(username);
-		this.selfFullname.setText(fullname);
-		BufferedImage rawPic = null;
-		try {
-			rawPic = ImageIO.read(new File(selfProfilePicPath));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		if (rawPic != null) {
-			ImageIcon pic = new ImageIcon(getCircularImage(rawPic));
-			if (pic.getIconHeight() != 128 || pic.getIconWidth() != 128) {
-				pic = new ImageIcon(pic.getImage().getScaledInstance(128, 128, Image.SCALE_DEFAULT));
-			}
-			selfProfilePic.setIcon(pic);
-
-			if (pic.getIconHeight() != 32 || pic.getIconWidth() != 32) {
-				pic = new ImageIcon(pic.getImage().getScaledInstance(32, 32, Image.SCALE_DEFAULT));
-			}
-			selfProfile.setIcon(pic);
-		}
-	}
-
 	/**
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		SimpleDateFormat formatter = new SimpleDateFormat("HH", Locale.US);
-		Date date = new Date(System.currentTimeMillis());
 		frame = new JFrame();
 		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindow.class.getResource("/images/ig64.png")));
 		frame.setSize(602, 583);
@@ -173,20 +145,7 @@ public class MainWindow {
 		panelNorte.add(logo, gbc_logo);
 
 		selfProfile = new JLabel("username");
-		BufferedImage rawPic = null;
-		try {
-			rawPic = ImageIO.read(new File(selfProfilePicPath));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		if (rawPic != null) {
-			ImageIcon pic = new ImageIcon(getCircularImage(rawPic));
-			if (pic.getIconHeight() != 32 || pic.getIconWidth() != 32) {
-				pic = new ImageIcon(pic.getImage().getScaledInstance(32, 32, Image.SCALE_DEFAULT));
-			}
-			selfProfile.setIcon(pic);
-		}
+		setIconSelfProfileLabel();
 
 		JLabel uploadPhoto = new JLabel("");
 		uploadPhoto.addMouseListener(new MouseAdapter() {
@@ -295,14 +254,8 @@ public class MainWindow {
 		panelPerfilPersonal.add(selfEditProfile, gbc_selfEditProfile);
 
 		selfProfilePic = new JLabel("");
+		setSelfProfilePic();
 
-		if (rawPic != null) {
-			ImageIcon pic = new ImageIcon(getCircularImage(rawPic));
-			if (pic.getIconHeight() != 128 || pic.getIconWidth() != 128) {
-				pic = new ImageIcon(pic.getImage().getScaledInstance(128, 128, Image.SCALE_DEFAULT));
-			}
-			selfProfilePic.setIcon(pic);
-		}
 		GridBagConstraints gbc_selfProfilePic = new GridBagConstraints();
 		gbc_selfProfilePic.gridwidth = 4;
 		gbc_selfProfilePic.gridheight = 4;
@@ -585,6 +538,50 @@ public class MainWindow {
 			}
 		});
 		menuBar.add(mntmModoClaroOscuro);
+	}
+
+	public void setIconSelfProfileLabel() {
+		BufferedImage rawPic = null;
+		try {
+			rawPic = ImageIO.read(new File(this.selfProfilePicPath));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		if (rawPic != null) {
+			ImageIcon pic = new ImageIcon(getCircularImage(rawPic));
+			if (pic.getIconHeight() != 32 || pic.getIconWidth() != 32) {
+				pic = new ImageIcon(pic.getImage().getScaledInstance(32, 32, Image.SCALE_DEFAULT));
+			}
+			selfProfile.setIcon(pic);
+		}
+	}
+
+	public void setSelfProfilePic() {
+		BufferedImage rawPic = null;
+		try {
+			rawPic = ImageIO.read(new File(this.selfProfilePicPath));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		if (rawPic != null) {
+			ImageIcon pic = new ImageIcon(getCircularImage(rawPic));
+
+			if (pic.getIconHeight() != 128 || pic.getIconWidth() != 128) {
+				pic = new ImageIcon(pic.getImage().getScaledInstance(128, 128, Image.SCALE_DEFAULT));
+			}
+			selfProfilePic.setIcon(pic);
+		}
+	}
+
+	public void updateProfile(String username, String fullname, String profilePicPath) {
+		this.selfUsername = username;
+		this.selfProfilePicPath = profilePicPath;
+		this.selfNickname.setText(username);
+		this.selfFullname.setText(fullname);
+		setIconSelfProfileLabel();
+		setSelfProfilePic();
 	}
 
 	private void buscar(String texto) {
