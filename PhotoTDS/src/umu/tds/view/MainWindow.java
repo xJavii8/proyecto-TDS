@@ -164,7 +164,7 @@ public class MainWindow {
 		uploadPhoto.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				AddPublicationWindow publicationView = new AddPublicationWindow();
+				AddPublicationWindow publicationView = new AddPublicationWindow(profile.getText());
 				publicationView.show();
 			}
 
