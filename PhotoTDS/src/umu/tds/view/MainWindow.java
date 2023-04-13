@@ -307,12 +307,12 @@ public class MainWindow {
 		panelPerfilPersonal.add(premium, gbc_premium);
 		panelPerfilPersonal.add(selfProfilePic, gbc_selfProfilePic);
 
-		JLabel selfPublications;
+		JLabel selfPublications = new JLabel("");
 		numSelfPub = Controller.getInstancia().getNumPublications(selfUsername);
 		if (numSelfPub == 1)
-			selfPublications = new JLabel(numSelfPub + " publicación");
+			selfPublications.setText(numSelfPub + " publicación");
 		else
-			selfPublications = new JLabel(numSelfPub + " publicaciones");
+			selfPublications.setText(numSelfPub + " publicaciones");
 		selfPublications.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		GridBagConstraints gbc_selfPublications = new GridBagConstraints();
 		gbc_selfPublications.insets = new Insets(0, 0, 5, 5);
@@ -320,12 +320,12 @@ public class MainWindow {
 		gbc_selfPublications.gridy = 3;
 		panelPerfilPersonal.add(selfPublications, gbc_selfPublications);
 
-		JLabel selfFollowing;
+		JLabel selfFollowing = new JLabel("");
 		numSelfFollowing = Controller.getInstancia().getNumUsersFollowing(selfUsername);
 		if (numSelfFollowing == 1)
-			selfFollowing = new JLabel(numSelfFollowing + " seguido");
+			selfFollowing.setText(numSelfFollowing + " seguido");
 		else
-			selfFollowing = new JLabel(numSelfFollowing + " seguidos");
+			selfFollowing.setText(numSelfFollowing + " seguidos");
 		selfFollowing.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		GridBagConstraints gbc_selfFollowing = new GridBagConstraints();
 		gbc_selfFollowing.insets = new Insets(0, 0, 5, 5);
@@ -333,12 +333,12 @@ public class MainWindow {
 		gbc_selfFollowing.gridy = 3;
 		panelPerfilPersonal.add(selfFollowing, gbc_selfFollowing);
 
-		JLabel selfFollows;
+		JLabel selfFollows = new JLabel("");
 		numSelfFollowers = Controller.getInstancia().getNumFollowers(selfUsername);
 		if (numSelfFollowers == 1)
-			selfFollows = new JLabel(numSelfFollowers + " seguidor");
+			selfFollows.setText(numSelfFollowers + " seguidor");
 		else
-			selfFollows = new JLabel(numSelfFollowers + " seguidores");
+			selfFollows.setText(numSelfFollowers + " seguidores");
 		selfFollows.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		GridBagConstraints gbc_selfFollows = new GridBagConstraints();
 		gbc_selfFollows.insets = new Insets(0, 0, 5, 5);
