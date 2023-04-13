@@ -43,7 +43,7 @@ public class AddPublicationWindow {
 	private JFrame frame;
 	private JTextField tituloField;
 	private String picPublication;
-	
+
 	private String user;
 
 	/**
@@ -181,6 +181,7 @@ public class AddPublicationWindow {
 					frame.setLocationRelativeTo(null);
 				}
 			}
+
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				btnSeleccionar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -202,31 +203,20 @@ public class AddPublicationWindow {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				String titulo = tituloField.getText();
-				boolean existe;
-				
+
 				Optional<Publication> publ = Controller.getInstancia().getPublication(titulo);
-				
-				if (publ.isEmpty()) {
-					existe = false;
-				}else {
-					existe = publ.get().getTitle().equals(titulo);
-				}
-				
-				
-				if (existe) {
-					JOptionPane.showMessageDialog(frame,
-							"Ya existe una  publicación con ese nombre" , null,
+
+				if (!publ.isEmpty() && publ.get().getTitle().equals(titulo)) {
+					JOptionPane.showMessageDialog(frame, "Ya existe una  publicación con ese nombre", null,
 							JOptionPane.ERROR_MESSAGE);
-				}else {
+				} else if (publ.isEmpty()) {
 					Controller.getInstancia().createPhoto(user, titulo, titulo, titulo);
-					JOptionPane.showMessageDialog(frame,
-							"Publicación subida" , null,
-							JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(frame, "Publicación subida", null, JOptionPane.INFORMATION_MESSAGE);
 					frame.dispose();
 				}
-				
+
 			}
-			
+
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				btnSubir.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
