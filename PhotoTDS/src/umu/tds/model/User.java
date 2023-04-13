@@ -80,6 +80,12 @@ public class User {
 		}
 		return precio;
 	}
+	
+	public Photo createPhoto(String titulo, String descripcion, String path) {
+		Photo p = new Photo(titulo, new Date(), descripcion, path);
+		this.publications.add(p);
+		return p;
+	}
 
 	// GETS AND SETS
 	public int getCodigo() {
