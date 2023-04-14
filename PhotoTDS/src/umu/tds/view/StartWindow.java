@@ -280,16 +280,13 @@ public class StartWindow {
 		frame.setJMenuBar(menuBar);
 		JMenuItem mntmModoClaroOscuro = new JMenuItem();
 
-		Color lightBars = new Color(230, 230, 230, 230);
-		Color darkBars = new Color(75, 77, 78);
-
 		if (UIManager.getLookAndFeel().getName() == "FlatLaf Light") {
-			menuBar.setBorder(new MatteBorder(1, 1, 1, 1, lightBars));
-			mntmModoClaroOscuro.setBorder(new MatteBorder(0, 0, 0, 1, lightBars));
+			menuBar.setBorder(new MatteBorder(1, 1, 1, 1, Constantes.LIGHT_BARS));
+			mntmModoClaroOscuro.setBorder(new MatteBorder(0, 0, 0, 1, Constantes.LIGHT_BARS));
 			mntmModoClaroOscuro.setText("Modo oscuro");
 		} else if (UIManager.getLookAndFeel().getName() == "FlatLaf Dark") {
-			menuBar.setBorder(new MatteBorder(1, 1, 1, 1, darkBars));
-			mntmModoClaroOscuro.setBorder(new MatteBorder(0, 0, 0, 1, darkBars));
+			menuBar.setBorder(new MatteBorder(1, 1, 1, 1, Constantes.DARK_BARS));
+			mntmModoClaroOscuro.setBorder(new MatteBorder(0, 0, 0, 1, Constantes.DARK_BARS));
 			mntmModoClaroOscuro.setText("Modo claro");
 		}
 		mntmModoClaroOscuro.addMouseListener(new MouseAdapter() {
@@ -298,15 +295,15 @@ public class StartWindow {
 				if (mntmModoClaroOscuro.getText() == "Modo oscuro") {
 					FlatDarkLaf.setup();
 					SwingUtilities.updateComponentTreeUI(frame);
-					menuBar.setBorder(new MatteBorder(1, 1, 1, 1, darkBars));
-					mntmModoClaroOscuro.setBorder(new MatteBorder(0, 0, 0, 1, darkBars));
+					menuBar.setBorder(new MatteBorder(1, 1, 1, 1, Constantes.DARK_BARS));
+					mntmModoClaroOscuro.setBorder(new MatteBorder(0, 0, 0, 1, Constantes.DARK_BARS));
 					mntmModoClaroOscuro.setText("Modo claro");
 				} else if (mntmModoClaroOscuro.getText() == "Modo claro") {
 					FlatLightLaf.setup();
 					SwingUtilities.updateComponentTreeUI(frame);
 					mntmModoClaroOscuro.setText("Modo oscuro");
-					menuBar.setBorder(new MatteBorder(1, 1, 1, 1, lightBars));
-					mntmModoClaroOscuro.setBorder(new MatteBorder(0, 0, 0, 1, lightBars));
+					menuBar.setBorder(new MatteBorder(1, 1, 1, 1, Constantes.LIGHT_BARS));
+					mntmModoClaroOscuro.setBorder(new MatteBorder(0, 0, 0, 1, Constantes.LIGHT_BARS));
 
 				}
 			}

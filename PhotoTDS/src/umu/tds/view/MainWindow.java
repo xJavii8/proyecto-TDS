@@ -72,8 +72,6 @@ public class MainWindow {
 	private String selfUsername;
 	private String selfProfilePicPath;
 	private JTextField searchField;
-	private Color lightBars;
-	private Color darkBars;
 	private JPanel panelCentral;
 	private JLabel selfProfile;
 	private SelfProfileWindow spw;
@@ -82,8 +80,6 @@ public class MainWindow {
 	 * Create the application.
 	 */
 	public MainWindow(String username, String profilePicPath) {
-		lightBars = new Color(230, 230, 230, 230);
-		darkBars = new Color(75, 77, 78);
 		this.selfUsername = username;
 		if (profilePicPath.contains("%")) {
 			try {
@@ -93,12 +89,16 @@ public class MainWindow {
 			}
 		}
 		this.selfProfilePicPath = profilePicPath;
-		this.spw = new SelfProfileWindow(selfUsername, selfProfile);
+		this.spw = new SelfProfileWindow(selfUsername, selfProfile, MainWindow.this);
 		initialize();
 	}
 
 	public void show() {
 		frame.setVisible(true);
+	}
+	
+	public JPanel getPanelCentral() {
+		return panelCentral;
 	}
 
 	/**
@@ -254,12 +254,12 @@ public class MainWindow {
 		JMenuItem mntmModoClaroOscuro = new JMenuItem();
 
 		if (UIManager.getLookAndFeel().getName() == "FlatLaf Light") {
-			menuBar.setBorder(new MatteBorder(1, 1, 1, 1, lightBars));
-			mntmModoClaroOscuro.setBorder(new MatteBorder(0, 0, 0, 1, lightBars));
+			menuBar.setBorder(new MatteBorder(1, 1, 1, 1, Constantes.LIGHT_BARS));
+			mntmModoClaroOscuro.setBorder(new MatteBorder(0, 0, 0, 1, Constantes.LIGHT_BARS));
 			mntmModoClaroOscuro.setText("Modo oscuro");
 		} else if (UIManager.getLookAndFeel().getName() == "FlatLaf Dark") {
-			menuBar.setBorder(new MatteBorder(1, 1, 1, 1, darkBars));
-			mntmModoClaroOscuro.setBorder(new MatteBorder(0, 0, 0, 1, darkBars));
+			menuBar.setBorder(new MatteBorder(1, 1, 1, 1, Constantes.DARK_BARS));
+			mntmModoClaroOscuro.setBorder(new MatteBorder(0, 0, 0, 1, Constantes.DARK_BARS));
 			mntmModoClaroOscuro.setText("Modo claro");
 		}
 		mntmModoClaroOscuro.addMouseListener(new MouseAdapter() {
@@ -269,16 +269,16 @@ public class MainWindow {
 					FlatDarkLaf.setup();
 					SwingUtilities.updateComponentTreeUI(frame);
 					uploadPhoto.setIcon(new ImageIcon(MainWindow.class.getResource("/images/uploadPhotoDark.png")));
-					menuBar.setBorder(new MatteBorder(1, 1, 1, 1, darkBars));
-					mntmModoClaroOscuro.setBorder(new MatteBorder(0, 0, 0, 1, darkBars));
+					menuBar.setBorder(new MatteBorder(1, 1, 1, 1, Constantes.DARK_BARS));
+					mntmModoClaroOscuro.setBorder(new MatteBorder(0, 0, 0, 1, Constantes.DARK_BARS));
 					mntmModoClaroOscuro.setText("Modo claro");
 				} else if (mntmModoClaroOscuro.getText() == "Modo claro") {
 					FlatLightLaf.setup();
 					SwingUtilities.updateComponentTreeUI(frame);
 					uploadPhoto.setIcon(new ImageIcon(MainWindow.class.getResource("/images/uploadPhoto.png")));
 					mntmModoClaroOscuro.setText("Modo oscuro");
-					menuBar.setBorder(new MatteBorder(1, 1, 1, 1, lightBars));
-					mntmModoClaroOscuro.setBorder(new MatteBorder(0, 0, 0, 1, lightBars));
+					menuBar.setBorder(new MatteBorder(1, 1, 1, 1, Constantes.LIGHT_BARS));
+					mntmModoClaroOscuro.setBorder(new MatteBorder(0, 0, 0, 1, Constantes.LIGHT_BARS));
 
 				}
 			}
@@ -302,57 +302,7 @@ public class MainWindow {
 
 			} else {
 				DefaultListModel<User> matchingUsers = Controller.getInstancia().search(selfUsername, texto);
-				JList<User> userList = new JList<>(matchingUsers);
-				userList.setCellRenderer(new UserListRender());
-				JScrollPane scrollUserPanel = new JScrollPane(userList);
-				JFrame matchingUsersPanel = new JFrame();
-
-				userList.addListSelectionListener(new ListSelectionListener() {
-
-					@Override
-					public void valueChanged(ListSelectionEvent e) {
-						if (!e.getValueIsAdjusting()) {
-							JPanel panelPerfil = new ProfileWindow(selfUsername,
-									userList.getSelectedValue().getUsername()).getPanelPerfil();
-							panelCentral.add(panelPerfil, "panelPerfil");
-							CardLayout cL = (CardLayout) panelCentral.getLayout();
-							cL.show(panelCentral, "panelPerfil");
-							matchingUsersPanel.dispose();
-						}
-					}
-				});
-
-				userList.addMouseListener(new MouseAdapter() {
-					@Override
-					public void mouseEntered(MouseEvent e) {
-						userList.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-					}
-
-					@Override
-					public void mouseExited(MouseEvent e) {
-						userList.setCursor(Cursor.getDefaultCursor());
-					}
-				});
-
-				JPanel panelNorte = new JPanel();
-				matchingUsersPanel.getContentPane().add(panelNorte, BorderLayout.NORTH);
-				JLabel foundUsers = new JLabel("Usuarios encontrados");
-				foundUsers.setFont(new Font("Bahnschrift", Font.BOLD, 16));
-				panelNorte.add(foundUsers);
-
-				if (UIManager.getLookAndFeel().getName() == "FlatLaf Light") {
-					userList.setBackground(lightBars);
-				} else if (UIManager.getLookAndFeel().getName() == "FlatLaf Dark") {
-					userList.setBackground(darkBars);
-				}
-
-				matchingUsersPanel.setIconImage(
-						Toolkit.getDefaultToolkit().getImage(MainWindow.class.getResource("/images/ig64.png")));
-				matchingUsersPanel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-				matchingUsersPanel.setSize(300, 300);
-				matchingUsersPanel.setLocationRelativeTo(null);
-				matchingUsersPanel.getContentPane().add(scrollUserPanel);
-				matchingUsersPanel.setVisible(true);
+				Utilities.listaUsuarios(MainWindow.this, selfUsername, matchingUsers);
 			}
 		}
 	}
