@@ -164,7 +164,7 @@ public class Utilities {
 				if (!e.getValueIsAdjusting()) {
 					JPanel panelCentral = mw.getPanelCentral();
 					JPanel panelPerfil = new ProfileWindow(user,
-							userList.getSelectedValue().getUsername()).getPanelPerfil();
+							userList.getSelectedValue().getUsername(), mw).getPanelPerfil();
 					panelCentral.add(panelPerfil, "panelPerfil");
 					CardLayout cL = (CardLayout) panelCentral.getLayout();
 					cL.show(panelCentral, "panelPerfil");

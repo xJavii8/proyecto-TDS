@@ -8,6 +8,7 @@ import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -23,14 +24,16 @@ public class ProfileWindow {
 	private String selfUser;
 	private String searchedUser;
 	private User profileUser;
+	private MainWindow mw;
 
 	/**
 	 * Create the application.
 	 */
-	public ProfileWindow(String selfUser, String searchedUser) {
+	public ProfileWindow(String selfUser, String searchedUser, MainWindow mw) {
 		this.selfUser = selfUser;
 		this.searchedUser = searchedUser;
 		this.profileUser = Controller.getInstancia().getUser(searchedUser);
+		this.mw = mw;
 		initialize();
 	}
 
@@ -94,6 +97,23 @@ public class ProfileWindow {
 		panelPerfil.add(publications, gbc_publications);
 
 		JLabel following = new JLabel();
+		following.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				DefaultListModel<User> followingList = Controller.getInstancia().getFollowingUsers(searchedUser);
+				Utilities.listaUsuarios(mw, searchedUser, followingList);
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				following.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				following.setCursor(Cursor.getDefaultCursor());
+			}
+		});
 		following.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		GridBagConstraints gbc_following = new GridBagConstraints();
 		gbc_following.insets = new Insets(0, 0, 5, 5);
@@ -102,6 +122,23 @@ public class ProfileWindow {
 		panelPerfil.add(following, gbc_following);
 
 		JLabel followers = new JLabel();
+		followers.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				DefaultListModel<User> followersList = Controller.getInstancia().getFollowers(searchedUser);
+				Utilities.listaUsuarios(mw, searchedUser, followersList);
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				followers.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				followers.setCursor(Cursor.getDefaultCursor());
+			}
+		});
 		followers.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		GridBagConstraints gbc_follows = new GridBagConstraints();
 		gbc_follows.insets = new Insets(0, 0, 5, 5);
