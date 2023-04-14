@@ -3,7 +3,6 @@ package umu.tds.view;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Cursor;
-import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -449,9 +448,7 @@ public class RegisterWindow {
 			public void actionPerformed(ActionEvent e) {
 				CardLayout cL = (CardLayout) panelCentral.getLayout();
 				cL.show(panelCentral, "panelLogin");
-				// Queda por modificar el frame
-				frame.setSize(450, 299);
-				frame.setLocationRelativeTo(null);
+				sw.setLoginSize();
 				emailField_Register.setText(null);
 				fullnameField_Register.setText(null);
 				dateChooser_Register.setDate(null);
