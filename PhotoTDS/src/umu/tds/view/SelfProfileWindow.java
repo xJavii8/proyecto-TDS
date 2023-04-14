@@ -2,17 +2,28 @@ package umu.tds.view;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.UIManager;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import umu.tds.controller.Controller;
 import umu.tds.model.User;
+import umu.tds.model.UserListRender;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Cursor;
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
+import javax.swing.JList;
+
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.Font;
+
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -27,20 +38,22 @@ public class SelfProfileWindow {
 	private JLabel nickname;
 	private JLabel fullname;
 	private JLabel publications;
-	
+	private MainWindow mw;
+
 	/**
 	 * Create the application.
 	 */
-	public SelfProfileWindow(String user, JLabel selfProfile) {
+	public SelfProfileWindow(String user, JLabel selfProfile, MainWindow mw) {
 		this.user = Controller.getInstancia().getUser(user);
 		this.selfProfile = selfProfile;
+		this.mw = mw;
 		initialize();
 	}
-	
+
 	public JPanel getPanelPerfilPersonal() {
 		return panelPerfilPersonal;
 	}
-	
+
 	public JLabel getPublicationsLabel() {
 		return publications;
 	}
@@ -52,7 +65,7 @@ public class SelfProfileWindow {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 602, 583);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+
 		panelPerfilPersonal = new JPanel();
 		frame.getContentPane().add(panelPerfilPersonal, BorderLayout.CENTER);
 		GridBagLayout gbl_panelPerfilPersonal = new GridBagLayout();
@@ -62,7 +75,7 @@ public class SelfProfileWindow {
 				Double.MIN_VALUE };
 		gbl_panelPerfilPersonal.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		panelPerfilPersonal.setLayout(gbl_panelPerfilPersonal);
-		
+
 		profilePic = new JLabel("");
 		profilePic.setIcon(Utilities.genSelfProfilePic(user.getProfilePic()));
 		GridBagConstraints gbc_profilePic = new GridBagConstraints();
@@ -72,7 +85,7 @@ public class SelfProfileWindow {
 		gbc_profilePic.gridx = 1;
 		gbc_profilePic.gridy = 1;
 		panelPerfilPersonal.add(profilePic, gbc_profilePic);
-		
+
 		nickname = new JLabel("");
 		nickname.setText(user.getUsername());
 		nickname.setFont(new Font("Bahnschrift", Font.BOLD, 16));
@@ -81,7 +94,7 @@ public class SelfProfileWindow {
 		gbc_nickname.gridx = 6;
 		gbc_nickname.gridy = 2;
 		panelPerfilPersonal.add(nickname, gbc_nickname);
-		
+
 		JButton edit = new JButton("Editar perfil");
 		edit.addMouseListener(new MouseAdapter() {
 			@Override
@@ -105,7 +118,7 @@ public class SelfProfileWindow {
 		gbc_edit.gridx = 7;
 		gbc_edit.gridy = 2;
 		panelPerfilPersonal.add(edit, gbc_edit);
-		
+
 		JButton premium = new JButton("Premium");
 		premium.addMouseListener(new MouseAdapter() {
 			@Override
@@ -129,7 +142,7 @@ public class SelfProfileWindow {
 		gbc_premium.gridx = 8;
 		gbc_premium.gridy = 2;
 		panelPerfilPersonal.add(premium, gbc_premium);
-		
+
 		publications = new JLabel("");
 		int numSelfPub = user.getPublications().size();
 		if (numSelfPub == 1)
@@ -142,8 +155,25 @@ public class SelfProfileWindow {
 		gbc_publications.gridx = 6;
 		gbc_publications.gridy = 3;
 		panelPerfilPersonal.add(publications, gbc_publications);
-		
+
 		JLabel siguiendo = new JLabel("");
+		siguiendo.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				DefaultListModel<User> following = Controller.getInstancia().getFollowingUsers(user.getUsername());
+				Utilities.listaUsuarios(mw, user.getUsername(), following);
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				siguiendo.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				siguiendo.setCursor(Cursor.getDefaultCursor());
+			}
+		});
 		int numSelfFollowing = user.getUsersFollowing().size();
 		if (numSelfFollowing == 1)
 			siguiendo.setText(numSelfFollowing + " seguido");
@@ -155,8 +185,25 @@ public class SelfProfileWindow {
 		gbc_siguiendo.gridx = 7;
 		gbc_siguiendo.gridy = 3;
 		panelPerfilPersonal.add(siguiendo, gbc_siguiendo);
-		
+
 		JLabel seguidores = new JLabel("");
+		seguidores.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				DefaultListModel<User> followers = Controller.getInstancia().getFollowers(user.getUsername());
+				Utilities.listaUsuarios(mw, user.getUsername(), followers);
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				seguidores.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				seguidores.setCursor(Cursor.getDefaultCursor());
+			}
+		});
 		int numSelfFollowers = user.getFollowers().size();
 		if (numSelfFollowers == 1)
 			seguidores.setText(numSelfFollowers + " seguidor");
@@ -168,7 +215,7 @@ public class SelfProfileWindow {
 		gbc_seguidores.gridx = 8;
 		gbc_seguidores.gridy = 3;
 		panelPerfilPersonal.add(seguidores, gbc_seguidores);
-		
+
 		fullname = new JLabel("");
 		fullname.setText(user.getFullName());
 		fullname.setFont(new Font("Bahnschrift", Font.BOLD, 16));
@@ -178,7 +225,7 @@ public class SelfProfileWindow {
 		gbc_fullname.gridy = 4;
 		panelPerfilPersonal.add(fullname, gbc_fullname);
 	}
-	
+
 	public void updateProfile(String username, String fullname, String profilePicPath) {
 		this.nickname.setText(username);
 		this.fullname.setText(fullname);
