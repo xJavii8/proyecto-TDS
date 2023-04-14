@@ -76,6 +76,7 @@ public class MainWindow {
 	private Color darkBars;
 	private JPanel panelCentral;
 	private JLabel selfProfile;
+	private SelfProfileWindow spw;
 
 	/**
 	 * Create the application.
@@ -92,6 +93,7 @@ public class MainWindow {
 			}
 		}
 		this.selfProfilePicPath = profilePicPath;
+		this.spw = new SelfProfileWindow(selfUsername, selfProfile);
 		initialize();
 	}
 
@@ -134,7 +136,7 @@ public class MainWindow {
 		uploadPhoto.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				AddPublicationWindow publicationView = new AddPublicationWindow(selfProfile.getText());
+				AddPublicationWindow publicationView = new AddPublicationWindow(selfProfile.getText(), spw);
 				publicationView.show();
 			}
 
@@ -229,7 +231,7 @@ public class MainWindow {
 		selfProfile.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				JPanel panelPerfilPersonal = new SelfProfileWindow(selfUsername).getPanelPerfilPersonal();
+				JPanel panelPerfilPersonal = spw.getPanelPerfilPersonal();
 				panelCentral.add(panelPerfilPersonal, "panelPerfilPersonal");
 				CardLayout cL = (CardLayout) panelCentral.getLayout();
 				cL.show(panelCentral, "panelPerfilPersonal");
