@@ -67,7 +67,7 @@ public class PremiumMenuWindow {
 		gbl_panelNoPremium.rowWeights = new double[] { 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		panelNoPremium.setLayout(gbl_panelNoPremium);
 
-		JLabel price = new JLabel("Precio: " + Controller.getInstancia().getUser(nickname).getFinalPrice());
+		JLabel price = new JLabel("Precio: " + Controller.getInstancia().getUser(nickname).getFinalPrice() + "€");
 		price.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		price.setHorizontalAlignment(SwingConstants.CENTER);
 		GridBagConstraints gbc_price = new GridBagConstraints();
