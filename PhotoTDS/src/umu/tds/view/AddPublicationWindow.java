@@ -31,6 +31,7 @@ import javax.swing.JFileChooser;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.EventObject;
 import java.util.Optional;
 
 import javax.swing.SwingConstants;
@@ -38,19 +39,24 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import java.awt.Toolkit;
 
-public class AddPublicationWindow {
+import pulsador.IEncendidoListener;
+import pulsador.Luz;
+
+public class AddPublicationWindow implements IEncendidoListener {
 
 	private JFrame frame;
 	private JTextField tituloField;
 	private String picPublication;
 
 	private String user;
+	private JLabel publications;
 
 	/**
 	 * Create the application.
 	 */
-	public AddPublicationWindow(String user) {
+	public AddPublicationWindow(String user, SelfProfileWindow spw) {
 		this.user = user;
+		this.publications = spw.getPublicationsLabel();
 		initialize();
 	}
 
@@ -122,8 +128,8 @@ public class AddPublicationWindow {
 		gbc_scrollPane.gridy = 2;
 		panelCentral.add(scrollPane, gbc_scrollPane);
 
-		JTextArea textArea = new JTextArea();
-		scrollPane.setViewportView(textArea);
+		JTextArea descripArea = new JTextArea();
+		scrollPane.setViewportView(descripArea);
 
 		JLabel lblFotoElegida = new JLabel("Foto elegida: ");
 		GridBagConstraints gbc_lblFotoElegida = new GridBagConstraints();
@@ -204,15 +210,28 @@ public class AddPublicationWindow {
 			public void mouseClicked(MouseEvent e) {
 				String titulo = tituloField.getText();
 
-				Optional<Publication> publ = Controller.getInstancia().getPublication(titulo);
-
-				if (!publ.isEmpty() && publ.get().getTitle().equals(titulo)) {
-					JOptionPane.showMessageDialog(frame, "Ya existe una  publicación con ese nombre", null,
+				if (titulo == "")
+					JOptionPane.showMessageDialog(frame, "El título no puede estar vacío", null,
 							JOptionPane.ERROR_MESSAGE);
-				} else if (publ.isEmpty()) {
-					Controller.getInstancia().createPhoto(user, titulo, titulo, titulo);
-					JOptionPane.showMessageDialog(frame, "Publicación subida", null, JOptionPane.INFORMATION_MESSAGE);
-					frame.dispose();
+				else if (picPublication == null)
+					JOptionPane.showMessageDialog(frame, "Debes seleccionar una foto", null, JOptionPane.ERROR_MESSAGE);
+				else {
+					Optional<Publication> publ = Controller.getInstancia().getPublication(titulo);
+
+					if (!publ.isEmpty() && publ.get().getTitle().equals(titulo)) {
+						JOptionPane.showMessageDialog(frame, "Ya existe una publicación con ese nombre", null,
+								JOptionPane.ERROR_MESSAGE);
+					} else if (publ.isEmpty()) {
+						Controller.getInstancia().createPhoto(user, titulo, descripArea.getText(), picPublication);
+						JOptionPane.showMessageDialog(frame, "Publicación subida", null,
+								JOptionPane.INFORMATION_MESSAGE);
+						int numSelfPub = Controller.getInstancia().getUser(user).getPublications().size();
+						if (numSelfPub == 1)
+							publications.setText(numSelfPub + " publicación");
+						else
+							publications.setText(numSelfPub + " publicaciones");
+						frame.dispose();
+					}
 				}
 
 			}
@@ -232,6 +251,44 @@ public class AddPublicationWindow {
 		gbc_btnSubir.gridx = 2;
 		gbc_btnSubir.gridy = 5;
 		panelCentral.add(btnSubir, gbc_btnSubir);
+
+		Luz luz = new Luz();
+		luz.addEncendidoListener(this);
+		luz.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				luz.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				luz.setCursor(Cursor.getDefaultCursor());
+			}
+		});
+		GridBagConstraints gbc_luz = new GridBagConstraints();
+		gbc_luz.insets = new Insets(0, 0, 5, 5);
+		gbc_luz.gridx = 3;
+		gbc_luz.gridy = 5;
+		panelCentral.add(luz, gbc_luz);
+	}
+
+	@Override
+	public void enteradoCambioEncendido(EventObject arg0) {
+		JFileChooser chooser = new JFileChooser();
+		FileNameExtensionFilter filtro = new FileNameExtensionFilter("XML (*.xml) para fotos", "xml");
+		chooser.setFileFilter(filtro);
+		int resultado = chooser.showOpenDialog(frame);
+		if (resultado == JFileChooser.APPROVE_OPTION) {
+			Controller.getInstancia().uploadPhotosXML(chooser.getSelectedFile().getAbsolutePath());
+			JOptionPane.showMessageDialog(frame, "Publicación/es subidas a través del XML", null,
+					JOptionPane.INFORMATION_MESSAGE);
+			int numSelfPub = Controller.getInstancia().getUser(user).getPublications().size();
+			if (numSelfPub == 1)
+				publications.setText(numSelfPub + " publicación");
+			else
+				publications.setText(numSelfPub + " publicaciones");
+			frame.dispose();
+		}
 	}
 
 }

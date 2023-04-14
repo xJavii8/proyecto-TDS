@@ -22,20 +22,27 @@ public class SelfProfileWindow {
 	private JFrame frame;
 	private JPanel panelPerfilPersonal;
 	private User user;
+	private JLabel selfProfile;
 	private JLabel profilePic;
 	private JLabel nickname;
 	private JLabel fullname;
+	private JLabel publications;
 	
 	/**
 	 * Create the application.
 	 */
-	public SelfProfileWindow(String user) {
+	public SelfProfileWindow(String user, JLabel selfProfile) {
 		this.user = Controller.getInstancia().getUser(user);
+		this.selfProfile = selfProfile;
 		initialize();
 	}
 	
 	public JPanel getPanelPerfilPersonal() {
 		return panelPerfilPersonal;
+	}
+	
+	public JLabel getPublicationsLabel() {
+		return publications;
 	}
 
 	/**
@@ -123,7 +130,7 @@ public class SelfProfileWindow {
 		gbc_premium.gridy = 2;
 		panelPerfilPersonal.add(premium, gbc_premium);
 		
-		JLabel publications = new JLabel("");
+		publications = new JLabel("");
 		int numSelfPub = user.getPublications().size();
 		if (numSelfPub == 1)
 			publications.setText(numSelfPub + " publicación");
@@ -175,6 +182,8 @@ public class SelfProfileWindow {
 	public void updateProfile(String username, String fullname, String profilePicPath) {
 		this.nickname.setText(username);
 		this.fullname.setText(fullname);
+		this.selfProfile.setText(username);
+		this.selfProfile.setIcon(Utilities.genIconSelfProfileLabel(profilePicPath));
 		this.profilePic.setIcon(Utilities.genSelfProfilePic(profilePicPath));
 		this.user = Controller.getInstancia().getUser(username);
 	}
