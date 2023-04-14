@@ -8,12 +8,7 @@ import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.MatteBorder;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.DocumentFilter;
-import javax.swing.text.PlainDocument;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
@@ -24,7 +19,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import java.awt.GridBagLayout;
 import javax.swing.JTextField;
-import javax.swing.LookAndFeel;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -32,17 +26,9 @@ import javax.swing.JPasswordField;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Date;
 import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.swing.JCheckBox;
 import javax.swing.JMenuBar;
@@ -54,21 +40,8 @@ import java.awt.Cursor;
 import java.awt.CardLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import com.toedter.calendar.JDateChooser;
 
 import umu.tds.controller.Controller;
-import umu.tds.model.User;
-
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JEditorPane;
-import javax.swing.JFileChooser;
-
-import java.time.Period;
-import java.util.function.Predicate;
-import javax.swing.JProgressBar;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 public class StartWindow {
 
