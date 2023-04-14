@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 
 import umu.tds.view.MainWindow;
+import umu.tds.view.Utilities;
 
 @SuppressWarnings("serial")
 public class UserListRender extends JPanel implements ListCellRenderer<User> {
@@ -35,28 +36,7 @@ public class UserListRender extends JPanel implements ListCellRenderer<User> {
 			boolean cellHasFocus) {
 		userLabel.setText(user.getUsername());
 		userLabel.setFont(new Font("Bahnschrift", Font.BOLD, 16));
-		BufferedImage rawPic = null;
-		try {
-			String URI = user.getProfilePic();
-			if (URI.contains("%")) {
-				try {
-					URI = URLDecoder.decode(URI, "UTF-8");
-				} catch (UnsupportedEncodingException e) {
-					e.printStackTrace();
-				}
-			}
-			rawPic = ImageIO.read(new File(URI));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		if (rawPic != null) {
-			ImageIcon pic = new ImageIcon(MainWindow.getCircularImage(rawPic));
-			if (pic.getIconHeight() != 32 || pic.getIconWidth() != 32) {
-				pic = new ImageIcon(pic.getImage().getScaledInstance(32, 32, Image.SCALE_DEFAULT));
-			}
-			userLabel.setIcon(pic);
-		}
+		userLabel.setIcon(Utilities.genIconSelfProfileLabel(user.getProfilePic()));
 
 		if (isSelected) {
 			setBackground(list.getSelectionBackground());
