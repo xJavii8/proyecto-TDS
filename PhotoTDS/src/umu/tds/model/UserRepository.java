@@ -72,6 +72,12 @@ public class UserRepository {
 		userAdapter.createUser(user);
 		users.put(user.getUsername(), user);
 	}
+	
+	public void editUser(String oldUsername, User newUser) {
+		users.remove(oldUsername);
+		users.put(newUser.getUsername(), newUser);
+		userAdapter.updateUser(newUser);
+	}
 
 	// Actualizamos el repositorio
 	private void uploadRepository() {
