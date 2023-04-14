@@ -239,11 +239,12 @@ public class Controller {
 	}
 
 	public boolean updateUser(User user, String fullname, String username, String description, String profilePicPath) {
+		String oldUsername = user.getUsername();
 		user.setFullName(fullname);
 		user.setUsername(username);
 		user.setDescription(description);
 		user.setProfilePic(profilePicPath);
-		adaptadorUser.updateUser(user);
+		userRepo.editUser(oldUsername, user);
 		return true;
 	}
 

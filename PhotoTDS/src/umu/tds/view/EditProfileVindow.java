@@ -47,7 +47,7 @@ public class EditProfileVindow {
 	private JTextField usernameField;
 	private User user;
 	private String newProfilePic;
-	private MainWindow mw;
+	private SelfProfileWindow spw;
 	private JTextField fullnameField;
 	private JTextField correoField;
 	private JPasswordField contraseñaField;
@@ -56,9 +56,9 @@ public class EditProfileVindow {
 	/**
 	 * Create the application.
 	 */
-	public EditProfileVindow(String username, MainWindow mw) {
+	public EditProfileVindow(String username, SelfProfileWindow spw) {
 		this.user = Controller.getInstancia().getUser(username);
-		this.mw = mw;
+		this.spw = spw;
 		initialize();
 	}
 
@@ -241,13 +241,16 @@ public class EditProfileVindow {
 				} else if (usernameField.getText().isEmpty()) {
 					JOptionPane.showMessageDialog(frame, "El campo \"Usuario\" no puede estar vacío.", null,
 							JOptionPane.ERROR_MESSAGE);
+				} else if(Controller.getInstancia().getUser(usernameField.getText()) != null) {
+					JOptionPane.showMessageDialog(frame, "Este nombre de usuario ya existe. Escoge otro.", null,
+							JOptionPane.ERROR_MESSAGE);
 				} else {
 					if (Controller.getInstancia().updateUser(user, fullnameField.getText(), usernameField.getText(),
 							textArea.getText(), newProfilePic)) {
 						JOptionPane.showMessageDialog(frame, "Perfil actualizado.", null,
 								JOptionPane.INFORMATION_MESSAGE);
 						frame.dispose();
-						mw.updateProfile(usernameField.getText(), fullnameField.getText(), newProfilePic);
+						spw.updateProfile(usernameField.getText(), fullnameField.getText(), newProfilePic);
 					} else {
 						JOptionPane.showMessageDialog(frame,
 								"Ha ocurrido un error al actualizar la información del perfil.", null,
@@ -459,7 +462,7 @@ public class EditProfileVindow {
 			@Override
 			public void keyReleased(KeyEvent e) {
 
-				fortalezaPass = StartWindow.fortalezaContraseña(contraseñaField);
+				fortalezaPass = Utilities.fortalezaContraseña(contraseñaField);
 				barraProgreso.setValue(fortalezaPass);
 
 				if (fortalezaPass >= 0 && fortalezaPass <= 25) {
@@ -475,7 +478,7 @@ public class EditProfileVindow {
 			}
 		});
 
-		fortalezaPass = StartWindow.fortalezaContraseña(contraseñaField);
+		fortalezaPass = Utilities.fortalezaContraseña(contraseñaField);
 		barraProgreso.setValue(fortalezaPass);
 
 		if (fortalezaPass >= 0 && fortalezaPass <= 25) {
