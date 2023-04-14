@@ -22,6 +22,11 @@ import umu.tds.persistence.IAdaptadorPublicationDAO;
 import umu.tds.persistence.IAdaptadorUserDAO;
 import umu.tds.view.Constantes;
 
+import umu.tds.fotos.CargadorFotos;
+import umu.tds.fotos.MapperFotosXMLtoJava;
+import umu.tds.fotos.Fotos;
+import umu.tds.fotos.Foto;
+
 
 public class Controller implements PropertyChangeListener {
 	private static Controller unicaInstancia;
@@ -35,7 +40,7 @@ public class Controller implements PropertyChangeListener {
 	private Optional<User> actualUser;
 
 	private Controller() {
-		umu.tds.fotos.CargadorFotos.getInstancia().addListener(this);
+		CargadorFotos.getInstancia().addListener(this);
 		inicializarAdaptadores();
 		inicializarRepos();
 	}
@@ -242,6 +247,24 @@ public class Controller implements PropertyChangeListener {
 	    matchingUsers.removeElement(selfUser);
 		return matchingUsers;
 	}
+	
+	public DefaultListModel<User> getFollowingUsers(String username) {
+		User user = userRepo.getUser(username).get();
+		DefaultListModel<User> users = new DefaultListModel<>();
+		List<User> followingUsers = user.getUsersFollowing();
+		for(User u : followingUsers)
+			users.addElement(u);
+		return users;
+	}
+	
+	public DefaultListModel<User> getFollowers(String username) {
+		User user = userRepo.getUser(username).get();
+		DefaultListModel<User> users = new DefaultListModel<>();
+		List<User> followers = user.getFollowers();
+		for(User u : followers)
+			users.addElement(u);
+		return users;
+	}
 
 	public boolean updateUser(User user, String fullname, String username, String description, String profilePicPath) {
 		String oldUsername = user.getUsername();
@@ -269,7 +292,7 @@ public class Controller implements PropertyChangeListener {
 	}
 	
 	public void uploadPhotosXML(String xmlPath) {
-		umu.tds.fotos.CargadorFotos.getInstancia().setXML(xmlPath);
+		CargadorFotos.getInstancia().setXML(xmlPath);
 	}
 	
 	public Optional<Publication> getPublication(String titulo) {
@@ -282,9 +305,8 @@ public class Controller implements PropertyChangeListener {
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		umu.tds.fotos.MapperFotosXMLtoJava.cargarFotos(evt.getNewValue().toString());
-		umu.tds.fotos.Fotos fotos = umu.tds.fotos.MapperFotosXMLtoJava.cargarFotos(evt.getNewValue().toString());
-		for(umu.tds.fotos.Foto f : fotos.getFoto()) {
+		Fotos fotos = MapperFotosXMLtoJava.cargarFotos(evt.getNewValue().toString());
+		for(Foto f : fotos.getFoto()) {
 			this.createPhoto(actualUser.get().getUsername(), f.getTitulo(), f.getDescripcion(), f.getPath());
 		}
 		
