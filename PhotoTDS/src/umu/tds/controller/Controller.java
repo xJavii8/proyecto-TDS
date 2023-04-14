@@ -1,5 +1,7 @@
 package umu.tds.controller;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,15 +16,14 @@ import umu.tds.model.Publication;
 import umu.tds.model.PublicationRepository;
 import umu.tds.model.User;
 import umu.tds.model.UserRepository;
-import umu.tds.persistence.AdaptadorUserTDS;
 import umu.tds.persistence.DAOException;
 import umu.tds.persistence.DAOFactory;
 import umu.tds.persistence.IAdaptadorPublicationDAO;
 import umu.tds.persistence.IAdaptadorUserDAO;
 import umu.tds.view.Constantes;
-import umu.tds.view.StartWindow;
 
-public class Controller {
+
+public class Controller implements PropertyChangeListener {
 	private static Controller unicaInstancia;
 
 	private IAdaptadorUserDAO adaptadorUser;
@@ -30,8 +31,11 @@ public class Controller {
 
 	private UserRepository userRepo;
 	private PublicationRepository publRepo;
+	
+	private Optional<User> actualUser;
 
 	private Controller() {
+		umu.tds.fotos.CargadorFotos.getInstancia().addListener(this);
 		inicializarAdaptadores();
 		inicializarRepos();
 	}
@@ -87,9 +91,10 @@ public class Controller {
 			user = userRepo.getUser(username);
 		if (user.isEmpty())
 			return false;
-		else if (user.get().getPassword().equals(password))
+		else if (user.get().getPassword().equals(password)) {
+			this.actualUser = user;
 			return true;
-		else
+		} else
 			return false;
 	}
 
@@ -262,12 +267,26 @@ public class Controller {
 		this.adaptadorUser.updateUser(usuario);
 		return true;
 	}
-
+	
+	public void uploadPhotosXML(String xmlPath) {
+		umu.tds.fotos.CargadorFotos.getInstancia().setXML(xmlPath);
+	}
+	
 	public Optional<Publication> getPublication(String titulo) {
 		return this.publRepo.getPublication(titulo);
 	}
 	
 	public List<Publication> getAllPublications(){
 		return new LinkedList<>(publRepo.getAllPublications());
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		umu.tds.fotos.MapperFotosXMLtoJava.cargarFotos(evt.getNewValue().toString());
+		umu.tds.fotos.Fotos fotos = umu.tds.fotos.MapperFotosXMLtoJava.cargarFotos(evt.getNewValue().toString());
+		for(umu.tds.fotos.Foto f : fotos.getFoto()) {
+			this.createPhoto(actualUser.get().getUsername(), f.getTitulo(), f.getDescripcion(), f.getPath());
+		}
+		
 	}
 }
