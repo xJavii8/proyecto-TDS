@@ -2,6 +2,7 @@ package umu.tds.controller;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -130,6 +131,19 @@ public class Controller implements PropertyChangeListener {
 		user.setPremium(true);
 		adaptadorUser.updateUser(user);
 		return true;
+	}
+	
+	public List<Publication> getTop10LikedPhotos(String username) {
+		Optional<User> userO = userRepo.getUser(username);
+		if (userO.isEmpty())
+			return null;
+
+		User user = userO.get();
+		return user.getPublications().stream()
+			    .sorted(Comparator.comparing(Publication::getLikes).reversed())
+			    .limit(Constantes.TOP_LIKED_PHOTOS_PREMIUM)
+			    .collect(Collectors.toList());
+		
 	}
 
 	public boolean createExcel(String username, String path) {
