@@ -294,6 +294,26 @@ public class MainWindow {
 			}
 		});
 		menuBar.add(mntmModoClaroOscuro);
+		
+		JMenuItem mmtmLogout = new JMenuItem("Cerrar sesión");
+		mmtmLogout.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				StartWindow.main(null);
+				frame.dispose();
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				mmtmLogout.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				mmtmLogout.setCursor(Cursor.getDefaultCursor());
+			}
+		});
+		menuBar.add(mmtmLogout);
 	}
 
 	private void buscar(String texto) {
