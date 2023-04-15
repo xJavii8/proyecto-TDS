@@ -19,4 +19,6 @@ public class Constantes {
 	
 	public static final Color LIGHT_BARS = new Color(230, 230, 230, 230);
 	public static final Color DARK_BARS = new Color(75, 77, 78);
+	
+	public static final int PREMIUM_PRICE = 10;
 }
