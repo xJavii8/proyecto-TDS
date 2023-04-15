@@ -35,6 +35,16 @@ public class Publication {
 		this.hashtags = new LinkedList<Hashtag>();
 		this.comments = new LinkedList<Comment>();
 	}
+	
+	public boolean addLike() {
+		this.likes += 1;
+		return true;
+	}
+	
+	public boolean removeLike() {
+		this.likes -= 1;
+		return true;
+	}
 
 	// GETS AND SETS
 	public String getTitle() {
