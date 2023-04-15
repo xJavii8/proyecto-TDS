@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import umu.tds.view.Constantes;
+
 public class User {
 	// ATRIBUTOS
 	private int codigo;
@@ -74,9 +76,10 @@ public class User {
 
 	public int getFinalPrice() {
 		List<Discount> descuentos = Discount.getDiscountTypes();
-		int precio = 10;
+		int precio = Constantes.PREMIUM_PRICE;
 		for (Discount d : descuentos) {
-			precio -= d.getPremiumDiscount(precio, this);
+			if(d.validDiscountForUser(this))
+				precio -= d.getPremiumDiscount(precio, this);
 		}
 		return precio;
 	}
