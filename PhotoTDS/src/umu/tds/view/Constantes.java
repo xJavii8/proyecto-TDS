@@ -21,4 +21,8 @@ public class Constantes {
 	public static final Color DARK_BARS = new Color(75, 77, 78);
 	
 	public static final int PREMIUM_PRICE = 10;
+	
+	public static final int SELF_USER_PIC_SIZE = 32;
+	public static final int PROFILE_PIC_SIZE = 128;
+	public static final int PUBLICATION_PIC_SIZE = 325;
 }

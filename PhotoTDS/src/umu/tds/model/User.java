@@ -85,7 +85,7 @@ public class User {
 	}
 	
 	public Photo createPhoto(String titulo, String descripcion, String path) {
-		Photo p = new Photo(titulo, new Date(), descripcion, path);
+		Photo p = new Photo(titulo, new Date(), descripcion, path, this.getUsername());
 		this.publications.add(p);
 		return p;
 	}

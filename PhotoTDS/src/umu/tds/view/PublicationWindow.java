@@ -1,0 +1,147 @@
+package umu.tds.view;
+
+import java.awt.EventQueue;
+
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import umu.tds.controller.Controller;
+import umu.tds.model.Photo;
+import umu.tds.model.Publication;
+import umu.tds.model.User;
+
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Cursor;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+
+import javax.swing.JLabel;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+public class PublicationWindow {
+
+	private JFrame frame;
+	private JPanel publicationPanel;
+	private Photo p;
+	private User userLogged;
+	private User user;
+	private MainWindow mw;
+	private JLabel southUserLabel;
+	private JLabel descriptionPhoto;
+
+	/**
+	 * Create the application.
+	 */
+	public PublicationWindow(String usernameLogged, Publication p, String username, MainWindow mw) {
+		this.userLogged = Controller.getInstancia().getUser(usernameLogged);
+		this.p = (Photo) p;
+		this.user = Controller.getInstancia().getUser(username);
+		this.mw = mw;
+		initialize();
+	}
+
+	public JPanel getPublicationPanel() {
+		return publicationPanel;
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		frame = new JFrame();
+		frame.setBounds(100, 100, 602, 583);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		publicationPanel = new JPanel();
+		frame.getContentPane().add(publicationPanel, BorderLayout.CENTER);
+		GridBagLayout gbl_panel = new GridBagLayout();
+		gbl_panel.columnWidths = new int[] { 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+		gbl_panel.rowHeights = new int[] { 15, 0, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 0, 0, 0 };
+		gbl_panel.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+				0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_panel.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+				Double.MIN_VALUE };
+		publicationPanel.setLayout(gbl_panel);
+
+		JLabel userLabel = new JLabel("");
+		userLabel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				JPanel panelCentral = mw.getPanelCentral();
+				if (user.getUsername().equals(userLogged.getUsername())) {
+					JPanel panelPerfilPersonal = new SelfProfileWindow(user.getUsername(), mw).getPanelPerfilPersonal();
+					panelCentral.add(panelPerfilPersonal, "panelPerfilPersonal");
+					CardLayout cL = (CardLayout) panelCentral.getLayout();
+					cL.show(panelCentral, "panelPerfilPersonal");
+				} else {
+					JPanel panelPerfil = new ProfileWindow(userLogged.getUsername(), user.getUsername(), mw)
+							.getPanelPerfil();
+					panelCentral.add(panelPerfil, "panelPerfil");
+					CardLayout cL = (CardLayout) panelCentral.getLayout();
+					cL.show(panelCentral, "panelPerfil");
+				}
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				userLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				userLabel.setCursor(Cursor.getDefaultCursor());
+			}
+		});
+		userLabel.setText(user.getUsername());
+		ImageIcon pic = Utilities.getCircleIcon(user.getProfilePic());
+		if (pic.getIconHeight() != Constantes.SELF_USER_PIC_SIZE
+				|| pic.getIconWidth() != Constantes.SELF_USER_PIC_SIZE) {
+			pic = new ImageIcon(pic.getImage().getScaledInstance(Constantes.SELF_USER_PIC_SIZE,
+					Constantes.SELF_USER_PIC_SIZE, Image.SCALE_DEFAULT));
+		}
+		userLabel.setIcon(pic);
+		userLabel.setFont(new Font("Bahnschrift", Font.BOLD, 16));
+		GridBagConstraints gbc_userLabel = new GridBagConstraints();
+		gbc_userLabel.insets = new Insets(0, 0, 5, 5);
+		gbc_userLabel.gridx = 1;
+		gbc_userLabel.gridy = 1;
+		publicationPanel.add(userLabel, gbc_userLabel);
+
+		JLabel photo = new JLabel("");
+		ImageIcon photoPub = new ImageIcon(new ImageIcon(p.getPath()).getImage().getScaledInstance(
+				Constantes.PUBLICATION_PIC_SIZE, Constantes.PUBLICATION_PIC_SIZE, Image.SCALE_SMOOTH));
+		photo.setIcon(photoPub);
+		GridBagConstraints gbc_photo = new GridBagConstraints();
+		gbc_photo.gridwidth = 15;
+		gbc_photo.gridheight = 10;
+		gbc_photo.insets = new Insets(0, 0, 5, 5);
+		gbc_photo.gridx = 1;
+		gbc_photo.gridy = 3;
+		publicationPanel.add(photo, gbc_photo);
+
+		southUserLabel = new JLabel("");
+		southUserLabel.setText(p.getUser());
+		southUserLabel.setFont(new Font("Bahnschrift", Font.BOLD, 16));
+		GridBagConstraints gbc_southUserLabel = new GridBagConstraints();
+		gbc_southUserLabel.insets = new Insets(0, 0, 5, 5);
+		gbc_southUserLabel.gridx = 1;
+		gbc_southUserLabel.gridy = 14;
+		publicationPanel.add(southUserLabel, gbc_southUserLabel);
+
+		descriptionPhoto = new JLabel("");
+		descriptionPhoto.setFont(new Font("Bahnschrift", Font.PLAIN, 16));
+		descriptionPhoto.setText(p.getDescription());
+		GridBagConstraints gbc_descriptionPhoto = new GridBagConstraints();
+		gbc_descriptionPhoto.insets = new Insets(0, 0, 5, 5);
+		gbc_descriptionPhoto.gridx = 2;
+		gbc_descriptionPhoto.gridy = 14;
+		publicationPanel.add(descriptionPhoto, gbc_descriptionPhoto);
+	}
+
+}

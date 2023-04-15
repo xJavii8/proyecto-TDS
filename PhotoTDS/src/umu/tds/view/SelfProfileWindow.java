@@ -15,6 +15,8 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Cursor;
 import java.awt.GridBagLayout;
+import java.awt.Image;
+
 import javax.swing.JLabel;
 import javax.swing.JList;
 
@@ -24,6 +26,7 @@ import java.awt.Toolkit;
 import java.awt.Font;
 
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -43,9 +46,9 @@ public class SelfProfileWindow {
 	/**
 	 * Create the application.
 	 */
-	public SelfProfileWindow(String user, JLabel selfProfile, MainWindow mw) {
+	public SelfProfileWindow(String user, MainWindow mw) {
 		this.user = Controller.getInstancia().getUser(user);
-		this.selfProfile = selfProfile;
+		this.selfProfile = mw.getSelfProfile();
 		this.mw = mw;
 		initialize();
 	}
@@ -77,7 +80,12 @@ public class SelfProfileWindow {
 		panelPerfilPersonal.setLayout(gbl_panelPerfilPersonal);
 
 		profilePic = new JLabel("");
-		profilePic.setIcon(Utilities.genSelfProfilePic(user.getProfilePic()));
+		ImageIcon pic = Utilities.getCircleIcon(user.getProfilePic());
+		if (pic.getIconHeight() != Constantes.PROFILE_PIC_SIZE || pic.getIconWidth() != Constantes.PROFILE_PIC_SIZE) {
+			pic = new ImageIcon(pic.getImage().getScaledInstance(Constantes.PROFILE_PIC_SIZE,
+					Constantes.PROFILE_PIC_SIZE, Image.SCALE_DEFAULT));
+		}
+		profilePic.setIcon(pic);
 		GridBagConstraints gbc_profilePic = new GridBagConstraints();
 		gbc_profilePic.gridheight = 4;
 		gbc_profilePic.gridwidth = 4;
@@ -230,8 +238,18 @@ public class SelfProfileWindow {
 		this.nickname.setText(username);
 		this.fullname.setText(fullname);
 		this.selfProfile.setText(username);
-		this.selfProfile.setIcon(Utilities.genIconSelfProfileLabel(profilePicPath));
-		this.profilePic.setIcon(Utilities.genSelfProfilePic(profilePicPath));
+		ImageIcon pic = Utilities.getCircleIcon(profilePicPath);
+		if (pic.getIconHeight() != Constantes.PROFILE_PIC_SIZE || pic.getIconWidth() != Constantes.PROFILE_PIC_SIZE) {
+			pic = new ImageIcon(pic.getImage().getScaledInstance(Constantes.PROFILE_PIC_SIZE,
+					Constantes.PROFILE_PIC_SIZE, Image.SCALE_DEFAULT));
+		}
+		this.profilePic.setIcon(pic);
+		if (pic.getIconHeight() != Constantes.SELF_USER_PIC_SIZE
+				|| pic.getIconWidth() != Constantes.SELF_USER_PIC_SIZE) {
+			pic = new ImageIcon(pic.getImage().getScaledInstance(Constantes.SELF_USER_PIC_SIZE,
+					Constantes.SELF_USER_PIC_SIZE, Image.SCALE_DEFAULT));
+		}
+		this.selfProfile.setIcon(pic);
 		this.user = Controller.getInstancia().getUser(username);
 	}
 

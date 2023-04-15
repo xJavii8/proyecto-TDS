@@ -6,6 +6,7 @@ import java.util.List;
 
 public class Publication {
 	private int codigo;
+	private String user;
 	private String title;
 	private Date datePublication;
 	private String description;
@@ -14,21 +15,23 @@ public class Publication {
 	private List<Comment> comments;
 
 	// M�TODO CONSTRUCTOR
-	public Publication(String title, Date datePublication, String description, int likes) {
+	public Publication(String title, Date datePublication, String description, int likes, String user) {
 		super();
 		this.title = title;
 		this.datePublication = datePublication;
 		this.description = description;
 		this.likes = likes;
+		this.user = user;
 		this.hashtags = new LinkedList<Hashtag>();
 		this.comments = new LinkedList<Comment>();
 	}
-	
-	public Publication(String title, Date datePublication, String description) {
+
+	public Publication(String title, Date datePublication, String description, String user) {
 		super();
 		this.title = title;
 		this.datePublication = datePublication;
 		this.description = description;
+		this.user = user;
 		this.hashtags = new LinkedList<Hashtag>();
 		this.comments = new LinkedList<Comment>();
 	}
@@ -64,6 +67,14 @@ public class Publication {
 
 	public void setLikes(int likes) {
 		this.likes = likes;
+	}
+
+	public String getUser() {
+		return user;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
 	}
 
 	public List<Hashtag> getHashtags() {

@@ -10,8 +10,8 @@ public class Album extends Publication {
 	private static final int MAX_NUM_PHOTOS = 16;
 	private List<Photo> photos;
 
-	public Album(String title, Date datePublication, String description, int likes) {
-		super(title, datePublication, description, likes);
+	public Album(String title, Date datePublication, String description, int likes, String user) {
+		super(title, datePublication, description, likes, user);
 		// TODO Auto-generated constructor stub
 	}
 

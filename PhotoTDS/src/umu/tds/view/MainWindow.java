@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.Locale;
+import java.util.Optional;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -45,6 +46,7 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 
 import umu.tds.controller.Controller;
+import umu.tds.model.Publication;
 import umu.tds.model.User;
 import umu.tds.model.UserListRender;
 
@@ -75,6 +77,7 @@ public class MainWindow {
 	private JPanel panelCentral;
 	private JLabel selfProfile;
 	private SelfProfileWindow spw;
+	private JTextField textField;
 
 	/**
 	 * Create the application.
@@ -89,16 +92,20 @@ public class MainWindow {
 			}
 		}
 		this.selfProfilePicPath = profilePicPath;
-		this.spw = new SelfProfileWindow(selfUsername, selfProfile, MainWindow.this);
+		this.spw = new SelfProfileWindow(selfUsername, MainWindow.this);
 		initialize();
 	}
 
 	public void show() {
 		frame.setVisible(true);
 	}
-	
+
 	public JPanel getPanelCentral() {
 		return panelCentral;
+	}
+	
+	public JLabel getSelfProfile() {
+		return selfProfile;
 	}
 
 	/**
@@ -130,7 +137,13 @@ public class MainWindow {
 		panelNorte.add(logo, gbc_logo);
 
 		selfProfile = new JLabel("username");
-		selfProfile.setIcon(Utilities.genIconSelfProfileLabel(selfProfilePicPath));
+		ImageIcon pic = Utilities.getCircleIcon(selfProfilePicPath);
+		if (pic.getIconHeight() != Constantes.SELF_USER_PIC_SIZE
+				|| pic.getIconWidth() != Constantes.SELF_USER_PIC_SIZE) {
+			pic = new ImageIcon(pic.getImage().getScaledInstance(Constantes.SELF_USER_PIC_SIZE,
+					Constantes.SELF_USER_PIC_SIZE, Image.SCALE_DEFAULT));
+		}
+		selfProfile.setIcon(pic);
 
 		JLabel uploadPhoto = new JLabel("");
 		uploadPhoto.addMouseListener(new MouseAdapter() {
@@ -206,9 +219,35 @@ public class MainWindow {
 		GridBagLayout gbl_panelPrincipal = new GridBagLayout();
 		gbl_panelPrincipal.columnWidths = new int[] { 0, 0, 0, 122, 128, 0, 0, 0 };
 		gbl_panelPrincipal.rowHeights = new int[] { 0, 0, 0, 0 };
-		gbl_panelPrincipal.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE };
+		gbl_panelPrincipal.columnWeights = new double[] { 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, Double.MIN_VALUE };
 		gbl_panelPrincipal.rowWeights = new double[] { 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		panelPrincipal.setLayout(gbl_panelPrincipal);
+
+		textField = new JTextField();
+		GridBagConstraints gbc_textField = new GridBagConstraints();
+		gbc_textField.insets = new Insets(0, 0, 0, 5);
+		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textField.gridx = 3;
+		gbc_textField.gridy = 2;
+		panelPrincipal.add(textField, gbc_textField);
+		textField.setColumns(10);
+
+		JButton btnNewButton = new JButton("New button");
+		btnNewButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Publication p = Controller.getInstancia().getPublication(textField.getText()).get();
+				JPanel panelPublication = new PublicationWindow(selfUsername, p, p.getUser(), MainWindow.this).getPublicationPanel();
+				panelCentral.add(panelPublication, "panelPublication");
+				CardLayout cL = (CardLayout) panelCentral.getLayout();
+				cL.show(panelCentral, "panelPublication");
+			}
+		});
+		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
+		gbc_btnNewButton.insets = new Insets(0, 0, 0, 5);
+		gbc_btnNewButton.gridx = 4;
+		gbc_btnNewButton.gridy = 2;
+		panelPrincipal.add(btnNewButton, gbc_btnNewButton);
 
 		logo.addMouseListener(new MouseAdapter() {
 			@Override
@@ -294,7 +333,7 @@ public class MainWindow {
 			}
 		});
 		menuBar.add(mntmModoClaroOscuro);
-		
+
 		JMenuItem mmtmLogout = new JMenuItem("Cerrar sesión");
 		mmtmLogout.addMouseListener(new MouseAdapter() {
 			@Override
@@ -302,7 +341,7 @@ public class MainWindow {
 				StartWindow.main(null);
 				frame.dispose();
 			}
-			
+
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				mmtmLogout.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));

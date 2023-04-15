@@ -4,11 +4,13 @@ import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -59,7 +61,12 @@ public class ProfileWindow {
 		panelPerfil.setLayout(gbl_panelPerfil);
 
 		JLabel profilePic = new JLabel("");
-		profilePic.setIcon(Utilities.genSelfProfilePic(profileUser.getProfilePic()));
+		ImageIcon pic = Utilities.getCircleIcon(profileUser.getProfilePic());
+		if (pic.getIconHeight() != Constantes.PROFILE_PIC_SIZE || pic.getIconWidth() != Constantes.PROFILE_PIC_SIZE) {
+			pic = new ImageIcon(pic.getImage().getScaledInstance(Constantes.PROFILE_PIC_SIZE,
+					Constantes.PROFILE_PIC_SIZE, Image.SCALE_DEFAULT));
+		}
+		profilePic.setIcon(pic);
 		GridBagConstraints gbc_profilePic = new GridBagConstraints();
 		gbc_profilePic.gridwidth = 4;
 		gbc_profilePic.gridheight = 4;
@@ -145,7 +152,7 @@ public class ProfileWindow {
 		gbc_follows.gridx = 8;
 		gbc_follows.gridy = 3;
 		panelPerfil.add(followers, gbc_follows);
-		
+
 		JLabel fullname = new JLabel("");
 		fullname.setText(profileUser.getFullName());
 		fullname.setFont(new Font("Bahnschrift", Font.BOLD, 16));
@@ -154,7 +161,7 @@ public class ProfileWindow {
 		gbc_fullname.gridx = 6;
 		gbc_fullname.gridy = 4;
 		panelPerfil.add(fullname, gbc_fullname);
-		
+
 		int numPub = Controller.getInstancia().getNumPublications(searchedUser);
 		if (numPub == 1)
 			publications.setText(numPub + " publicación");
