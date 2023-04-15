@@ -20,6 +20,7 @@ public class User {
 	private List<User> usersFollowing;
 	private List<User> followers;
 	private List<Publication> publications;
+	private List<Publication> likedPublications;
 
 	// MÉTODO CONSTRUCTOR
 	public User(String username, String email, String password, String fullName, Date birthDay, String profilePic,
@@ -37,6 +38,7 @@ public class User {
 		this.usersFollowing = new LinkedList<User>();
 		this.followers = new LinkedList<User>();
 		this.publications = new LinkedList<Publication>();
+		this.likedPublications = new LinkedList<Publication>();
 	}
 
 	public User(String username, String email, String password, String fullName, Date birthDay, String profilePic,
@@ -78,16 +80,26 @@ public class User {
 		List<Discount> descuentos = Discount.getDiscountTypes();
 		int precio = Constantes.PREMIUM_PRICE;
 		for (Discount d : descuentos) {
-			if(d.validDiscountForUser(this))
+			if (d.validDiscountForUser(this))
 				precio -= d.getPremiumDiscount(precio, this);
 		}
 		return precio;
 	}
-	
+
 	public Photo createPhoto(String titulo, String descripcion, String path) {
 		Photo p = new Photo(titulo, new Date(), descripcion, path, this.getUsername());
 		this.publications.add(p);
 		return p;
+	}
+
+	public boolean addLike(Publication p) {
+		this.likedPublications.add(p);
+		return true;
+	}
+	
+	public boolean removeLike(Publication p) {
+		this.likedPublications.remove(p);
+		return true;
 	}
 
 	// GETS AND SETS
@@ -177,6 +189,14 @@ public class User {
 
 	public void setFollowers(List<User> followers) {
 		this.followers = followers;
+	}
+
+	public List<Publication> getLikedPublications() {
+		return likedPublications;
+	}
+
+	public void setLikedPublications(List<Publication> likedPublications) {
+		this.likedPublications = likedPublications;
 	}
 
 	public List<Publication> getPublications() {

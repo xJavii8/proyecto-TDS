@@ -4,13 +4,16 @@ import java.awt.Color;
 import java.util.regex.Pattern;
 
 public class Constantes {
-	// StartWindow
 	public static final int INITIAL_WIDTH = 450;
 	public static final int INITIAL_HEIGHT = 299;
 	
-	public static final int PHOTO_SELECTED_SIZE = 75;
+	public static final int HTML_PHOTO_SELECTED_SIZE = 75;
 	
 	public static final int MIN_PASSWORD_LENGTH = 8;
+	
+	public static final int MAX_DESCRIP_REGISTER_LENGTH = 200;
+	public static final int MAX_TITLE_PUB_LENGTH = 15;
+	public static final int MAX_DESCRIP_PUB_LENGTH = 60;
 	
 	public static final String VALID_EMAIL_REGEX = "^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$";
 	public static final String VALID_FULLNAME_REGEX = "^[A-Z][a-z]+(\\s[A-Z][a-z]+)*$";
@@ -24,5 +27,5 @@ public class Constantes {
 	
 	public static final int SELF_USER_PIC_SIZE = 32;
 	public static final int PROFILE_PIC_SIZE = 128;
-	public static final int PUBLICATION_PIC_SIZE = 325;
+	public static final int PUBLICATION_PIC_SIZE = 240;
 }
