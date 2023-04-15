@@ -55,7 +55,8 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 							new Propiedad("datePublication", dateToString(publication.getDatePublication())),
 							new Propiedad("description", publication.getDescription()),
 							new Propiedad("likes", String.valueOf(publication.getLikes())),
-							new Propiedad("path", ((Photo) publication).getPath())
+							new Propiedad("path", ((Photo) publication).getPath()),
+							new Propiedad("user", publication.getUser())
 					// new Propiedad("comentarios", ),
 					// new Propiedad("hashtags", );
 					)));
@@ -67,10 +68,11 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 							new Propiedad("datePublication", dateToString(publication.getDatePublication())),
 							new Propiedad("description", publication.getDescription()),
 							new Propiedad("likes", String.valueOf(publication.getLikes())),
-							new Propiedad("photos", obtenerCodigosPhotos(((Album) publication).getPhotos())
+							new Propiedad("photos", obtenerCodigosPhotos(((Album) publication).getPhotos())),
+							new Propiedad("user", publication.getUser())
 							// new Propiedad("comentarios", ),
 							// new Propiedad("hashtags", );
-							))));
+							)));
 		}
 
 		// registrar entidad cliente
@@ -108,7 +110,7 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 		String datePublication;
 		String description;
 		String likes;
-
+		String user;
 		String path;
 
 		// String comments
@@ -121,9 +123,10 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 		description = serverPersistencia.recuperarPropiedadEntidad(ePublication, "description");
 		likes = serverPersistencia.recuperarPropiedadEntidad(ePublication, "likes");
 		path = serverPersistencia.recuperarPropiedadEntidad(ePublication, "path");
+		user = serverPersistencia.recuperarPropiedadEntidad(ePublication, "user");
 
 		// Hay que pasar la string a fecha
-		Photo p = new Photo(title, stringToDate(datePublication), description, Integer.parseInt(likes), path);
+		Photo p = new Photo(title, stringToDate(datePublication), description, Integer.parseInt(likes), path, user);
 		p.setCodigo(codigo);
 
 		PoolDAO.getUnicaInstancia().addObjeto(codigo, p);
@@ -139,7 +142,7 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 		String datePublication;
 		String description;
 		String likes;
-
+		String user;
 		String path;
 
 		String photos;
@@ -157,8 +160,9 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 		likes = serverPersistencia.recuperarPropiedadEntidad(ePublication, "likes");
 		path = serverPersistencia.recuperarPropiedadEntidad(ePublication, "path");
 		photos = serverPersistencia.recuperarPropiedadEntidad(ePublication, "photos");
+		user = serverPersistencia.recuperarPropiedadEntidad(ePublication, "user");
 
-		Album p = new Album(title, stringToDate(datePublication), description, Integer.parseInt(likes));
+		Album p = new Album(title, stringToDate(datePublication), description, Integer.parseInt(likes), user);
 		p.setCodigo(codigo);
 
 		PoolDAO.getUnicaInstancia().addObjeto(codigo, p);
@@ -180,9 +184,9 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 	}
 
 	private void updatePhoto(Photo p) {
-		Entidad ePublication = serverPersistencia.recuperarEntidad(p.getCodigo());
+		Entidad ePhoto = serverPersistencia.recuperarEntidad(p.getCodigo());
 
-		for (Propiedad pro : ePublication.getPropiedades()) {
+		for (Propiedad pro : ePhoto.getPropiedades()) {
 			if (pro.getNombre().equals("tittle")) {
 				pro.setValor(String.valueOf(p.getTitle()));
 			} else if (pro.getNombre().equals("datePublication")) {
@@ -191,6 +195,8 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 				pro.setValor(String.valueOf(p.getDescription()));
 			} else if (pro.getNombre().equals("likes")) {
 				pro.setValor(String.valueOf(p.getLikes()));
+			} else if(pro.getNombre().equals("user")) {
+				pro.setValor(p.getUser());
 			} else if (pro.getNombre().equals("path")) {
 				pro.setValor(String.valueOf(p.getPath()));
 			}
@@ -198,20 +204,22 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 		}
 	}
 
-	private void updateAlbum(Album p) {
-		Entidad ePublication = serverPersistencia.recuperarEntidad(p.getCodigo());
+	private void updateAlbum(Album a) {
+		Entidad eAlbum = serverPersistencia.recuperarEntidad(a.getCodigo());
 
-		for (Propiedad pro : ePublication.getPropiedades()) {
+		for (Propiedad pro : eAlbum.getPropiedades()) {
 			if (pro.getNombre().equals("tittle")) {
-				pro.setValor(String.valueOf(p.getTitle()));
+				pro.setValor(String.valueOf(a.getTitle()));
 			} else if (pro.getNombre().equals("datePublication")) {
-				pro.setValor(dateToString(p.getDatePublication()));
+				pro.setValor(dateToString(a.getDatePublication()));
 			} else if (pro.getNombre().equals("description")) {
-				pro.setValor(String.valueOf(p.getDescription()));
+				pro.setValor(String.valueOf(a.getDescription()));
 			} else if (pro.getNombre().equals("likes")) {
-				pro.setValor(String.valueOf(p.getLikes()));
+				pro.setValor(String.valueOf(a.getLikes()));
+			} else if(pro.getNombre().equals("user")) {
+				pro.setValor(a.getUser());
 			} else if (pro.getNombre().equals("fotos")) {
-				pro.setValor(obtenerCodigosPhotos(p.getPhotos()));
+				pro.setValor(obtenerCodigosPhotos(a.getPhotos()));
 			}
 			serverPersistencia.modificarPropiedad(pro);
 		}
@@ -223,7 +231,11 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 	}
 
 	public List<Publication> readAllPublications() {
-		List<Entidad> ePublications = serverPersistencia.recuperarEntidades("user");
+		List<Entidad> ePhotos = serverPersistencia.recuperarEntidades("photo");
+		List<Entidad> eAlbums = serverPersistencia.recuperarEntidades("album");
+		List<Entidad> ePublications = new LinkedList<Entidad>(ePhotos);
+		ePublications.addAll(eAlbums);
+		
 		List<Publication> publications = new LinkedList<Publication>();
 
 		for (Entidad ePublication : ePublications) {
