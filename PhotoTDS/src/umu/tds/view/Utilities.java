@@ -54,7 +54,7 @@ public class Utilities {
 		return masked;
 	}
 
-	public static ImageIcon genIconSelfProfileLabel(String picPath) {
+	public static ImageIcon getCircleIcon(String picPath) {
 		BufferedImage rawPic = null;
 		try {
 			if (picPath.contains("%")) {
@@ -69,33 +69,7 @@ public class Utilities {
 			e.printStackTrace();
 		}
 
-		ImageIcon pic = new ImageIcon(getCircularImage(rawPic));
-		if (pic.getIconHeight() != 32 || pic.getIconWidth() != 32) {
-			pic = new ImageIcon(pic.getImage().getScaledInstance(32, 32, Image.SCALE_DEFAULT));
-		}
-		return pic;
-	}
-
-	public static ImageIcon genSelfProfilePic(String picPath) {
-		BufferedImage rawPic = null;
-		try {
-			if (picPath.contains("%")) {
-				try {
-					picPath = URLDecoder.decode(picPath, "UTF-8");
-				} catch (UnsupportedEncodingException e) {
-					e.printStackTrace();
-				}
-			}
-			rawPic = ImageIO.read(new File(picPath));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		ImageIcon pic = new ImageIcon(getCircularImage(rawPic));
-		if (pic.getIconHeight() != 128 || pic.getIconWidth() != 128) {
-			pic = new ImageIcon(pic.getImage().getScaledInstance(128, 128, Image.SCALE_DEFAULT));
-		}
-		return pic;
+		return new ImageIcon(getCircularImage(rawPic));
 	}
 	
 	public static int fortalezaContraseña(JPasswordField contraseña) {

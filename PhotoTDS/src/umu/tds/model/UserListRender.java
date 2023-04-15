@@ -17,6 +17,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 
+import umu.tds.view.Constantes;
 import umu.tds.view.MainWindow;
 import umu.tds.view.Utilities;
 
@@ -36,7 +37,13 @@ public class UserListRender extends JPanel implements ListCellRenderer<User> {
 			boolean cellHasFocus) {
 		userLabel.setText(user.getUsername());
 		userLabel.setFont(new Font("Bahnschrift", Font.BOLD, 16));
-		userLabel.setIcon(Utilities.genIconSelfProfileLabel(user.getProfilePic()));
+		ImageIcon pic = Utilities.getCircleIcon(user.getProfilePic());
+		if (pic.getIconHeight() != Constantes.SELF_USER_PIC_SIZE
+				|| pic.getIconWidth() != Constantes.SELF_USER_PIC_SIZE) {
+			pic = new ImageIcon(pic.getImage().getScaledInstance(Constantes.SELF_USER_PIC_SIZE,
+					Constantes.SELF_USER_PIC_SIZE, Image.SCALE_DEFAULT));
+		}
+		userLabel.setIcon(pic);
 
 		if (isSelected) {
 			setBackground(list.getSelectionBackground());
