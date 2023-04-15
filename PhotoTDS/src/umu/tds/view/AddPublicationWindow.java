@@ -41,6 +41,8 @@ import java.awt.Toolkit;
 
 import pulsador.IEncendidoListener;
 import pulsador.Luz;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class AddPublicationWindow implements IEncendidoListener {
 
@@ -101,6 +103,14 @@ public class AddPublicationWindow implements IEncendidoListener {
 		panelCentral.add(lblTítulo, gbc_lblTítulo);
 
 		tituloField = new JTextField();
+		tituloField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (tituloField.getText().length() > Constantes.MAX_TITLE_PUB_LENGTH) {
+					tituloField.setText(tituloField.getText().substring(0, Constantes.MAX_TITLE_PUB_LENGTH));
+				}
+			}
+		});
 
 		GridBagConstraints gbc_tituloField = new GridBagConstraints();
 		gbc_tituloField.fill = GridBagConstraints.BOTH;
@@ -129,6 +139,14 @@ public class AddPublicationWindow implements IEncendidoListener {
 		panelCentral.add(scrollPane, gbc_scrollPane);
 
 		JTextArea descripArea = new JTextArea();
+		descripArea.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (descripArea.getText().length() > Constantes.MAX_DESCRIP_PUB_LENGTH) {
+					descripArea.setText(descripArea.getText().substring(0, Constantes.MAX_DESCRIP_PUB_LENGTH));
+				}
+			}
+		});
 		scrollPane.setViewportView(descripArea);
 
 		JLabel lblFotoElegida = new JLabel("Foto elegida: ");

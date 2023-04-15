@@ -1,7 +1,5 @@
 package umu.tds.view;
 
-import java.awt.EventQueue;
-
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -34,6 +32,11 @@ public class PublicationWindow {
 	private MainWindow mw;
 	private JLabel southUserLabel;
 	private JLabel descriptionPhoto;
+	private JLabel likeButton;
+	private JLabel likes;
+	private JLabel comment;
+	private boolean liked;
+	private JLabel titulo;
 
 	/**
 	 * Create the application.
@@ -42,6 +45,7 @@ public class PublicationWindow {
 		this.userLogged = Controller.getInstancia().getUser(usernameLogged);
 		this.p = (Photo) p;
 		this.user = Controller.getInstancia().getUser(username);
+		this.liked = Controller.getInstancia().userLikedPub(userLogged.getUsername(), p);
 		this.mw = mw;
 		initialize();
 	}
@@ -61,12 +65,12 @@ public class PublicationWindow {
 		publicationPanel = new JPanel();
 		frame.getContentPane().add(publicationPanel, BorderLayout.CENTER);
 		GridBagLayout gbl_panel = new GridBagLayout();
-		gbl_panel.columnWidths = new int[] { 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-		gbl_panel.rowHeights = new int[] { 15, 0, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 0, 0, 0 };
+		gbl_panel.columnWidths = new int[] { 15, 0, 51, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+		gbl_panel.rowHeights = new int[] { 15, 0, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 0, 0, 0, 0, 0 };
 		gbl_panel.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 				0.0, 0.0, 0.0, Double.MIN_VALUE };
-		gbl_panel.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-				Double.MIN_VALUE };
+		gbl_panel.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+				0.0, 0.0, Double.MIN_VALUE };
 		publicationPanel.setLayout(gbl_panel);
 
 		JLabel userLabel = new JLabel("");
@@ -116,14 +120,105 @@ public class PublicationWindow {
 		JLabel photo = new JLabel("");
 		ImageIcon photoPub = new ImageIcon(new ImageIcon(p.getPath()).getImage().getScaledInstance(
 				Constantes.PUBLICATION_PIC_SIZE, Constantes.PUBLICATION_PIC_SIZE, Image.SCALE_SMOOTH));
+
+		titulo = new JLabel(p.getTitle());
+		titulo.setFont(new Font("Bahnschrift", Font.PLAIN, 16));
+		GridBagConstraints gbc_titulo = new GridBagConstraints();
+		gbc_titulo.insets = new Insets(0, 0, 5, 5);
+		gbc_titulo.gridx = 2;
+		gbc_titulo.gridy = 1;
+		publicationPanel.add(titulo, gbc_titulo);
 		photo.setIcon(photoPub);
 		GridBagConstraints gbc_photo = new GridBagConstraints();
-		gbc_photo.gridwidth = 15;
-		gbc_photo.gridheight = 10;
+		gbc_photo.gridwidth = 13;
+		gbc_photo.gridheight = 9;
 		gbc_photo.insets = new Insets(0, 0, 5, 5);
-		gbc_photo.gridx = 1;
+		gbc_photo.gridx = 2;
 		gbc_photo.gridy = 3;
 		publicationPanel.add(photo, gbc_photo);
+
+		likeButton = new JLabel("");
+		if (liked) {
+			likeButton.setIcon(new ImageIcon(PublicationWindow.class.getResource("/images/liked.png")));
+		} else {
+			likeButton.setIcon(new ImageIcon(PublicationWindow.class.getResource("/images/notLiked.png")));
+		}
+		GridBagConstraints gbc_likeButton = new GridBagConstraints();
+		gbc_likeButton.insets = new Insets(0, 0, 5, 5);
+		gbc_likeButton.gridx = 1;
+		gbc_likeButton.gridy = 13;
+		publicationPanel.add(likeButton, gbc_likeButton);
+
+		comment = new JLabel("");
+		comment.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				comment.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				comment.setCursor(Cursor.getDefaultCursor());
+			}
+		});
+		comment.setIcon(new ImageIcon(PublicationWindow.class.getResource("/images/comment.png")));
+		GridBagConstraints gbc_comment = new GridBagConstraints();
+		gbc_comment.insets = new Insets(0, 0, 5, 5);
+		gbc_comment.gridx = 2;
+		gbc_comment.gridy = 13;
+		publicationPanel.add(comment, gbc_comment);
+
+		likes = new JLabel("");
+		if (p.getLikes() == 1) {
+			likes.setText(p.getLikes() + " like");
+		} else {
+			likes.setText(p.getLikes() + " likes");
+		}
+		likes.setFont(new Font("Bahnschrift", Font.BOLD, 16));
+		GridBagConstraints gbc_likes = new GridBagConstraints();
+		gbc_likes.insets = new Insets(0, 0, 5, 5);
+		gbc_likes.gridx = 1;
+		gbc_likes.gridy = 14;
+		publicationPanel.add(likes, gbc_likes);
+
+		likeButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (liked) {
+					Controller.getInstancia().dislike(userLogged.getUsername(), p);
+					likeButton.setIcon(new ImageIcon(PublicationWindow.class.getResource("/images/notLiked.png")));
+					liked = false;
+					if (p.getLikes() == 1) {
+						likes.setText(p.getLikes() + " like");
+					} else {
+						likes.setText(p.getLikes() + " likes");
+					}
+				} else {
+					Controller.getInstancia().like(userLogged.getUsername(), p);
+					likeButton.setIcon(new ImageIcon(PublicationWindow.class.getResource("/images/liked.png")));
+					liked = true;
+					if (p.getLikes() == 1) {
+						likes.setText(p.getLikes() + " like");
+					} else {
+						likes.setText(p.getLikes() + " likes");
+					}
+				}
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				likeButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				likeButton.setCursor(Cursor.getDefaultCursor());
+			}
+		});
 
 		southUserLabel = new JLabel("");
 		southUserLabel.setText(p.getUser());
@@ -131,16 +226,17 @@ public class PublicationWindow {
 		GridBagConstraints gbc_southUserLabel = new GridBagConstraints();
 		gbc_southUserLabel.insets = new Insets(0, 0, 5, 5);
 		gbc_southUserLabel.gridx = 1;
-		gbc_southUserLabel.gridy = 14;
+		gbc_southUserLabel.gridy = 15;
 		publicationPanel.add(southUserLabel, gbc_southUserLabel);
 
 		descriptionPhoto = new JLabel("");
-		descriptionPhoto.setFont(new Font("Bahnschrift", Font.PLAIN, 16));
+		descriptionPhoto.setFont(new Font("Bahnschrift", Font.PLAIN, 14));
 		descriptionPhoto.setText(p.getDescription());
 		GridBagConstraints gbc_descriptionPhoto = new GridBagConstraints();
+		gbc_descriptionPhoto.gridwidth = 14;
 		gbc_descriptionPhoto.insets = new Insets(0, 0, 5, 5);
 		gbc_descriptionPhoto.gridx = 2;
-		gbc_descriptionPhoto.gridy = 14;
+		gbc_descriptionPhoto.gridy = 15;
 		publicationPanel.add(descriptionPhoto, gbc_descriptionPhoto);
 	}
 
