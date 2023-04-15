@@ -18,11 +18,14 @@ import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import umu.tds.controller.Controller;
+import umu.tds.model.Publication;
+
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 public class PremiumMenuWindow {
 
@@ -186,6 +189,10 @@ public class PremiumMenuWindow {
 		top10.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				List<Publication> top10 = Controller.getInstancia().getTop10LikedPhotos(nickname);
+				for(Publication p : top10) {
+					System.out.println(p.getTitle());
+				}
 			}
 
 			@Override

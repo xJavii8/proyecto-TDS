@@ -78,12 +78,12 @@ public class User {
 
 	public int getFinalPrice() {
 		List<Discount> descuentos = Discount.getDiscountTypes();
-		int precio = Constantes.PREMIUM_PRICE;
+		int descuento = 0;
 		for (Discount d : descuentos) {
 			if (d.validDiscountForUser(this))
-				precio -= d.getPremiumDiscount(precio, this);
+				descuento += d.getPremiumDiscount(Constantes.PREMIUM_PRICE, this);
 		}
-		return precio;
+		return (Constantes.PREMIUM_PRICE - descuento);
 	}
 
 	public Photo createPhoto(String titulo, String descripcion, String path) {
@@ -96,7 +96,7 @@ public class User {
 		this.likedPublications.add(p);
 		return true;
 	}
-	
+
 	public boolean removeLike(Publication p) {
 		this.likedPublications.remove(p);
 		return true;
