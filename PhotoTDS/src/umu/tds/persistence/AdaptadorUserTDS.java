@@ -55,7 +55,8 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 				new Propiedad("profilePic", user.getProfilePic()), new Propiedad("description", user.getDescription()),
 				new Propiedad("usersFollowing", obtenerCodigosUsuarios(user.getUsersFollowing())),
 				new Propiedad("followers", obtenerCodigosUsuarios(user.getFollowers())),
-				new Propiedad("publications", obtenerCodigosPublicaciones(user.getPublications())))));
+				new Propiedad("publications", obtenerCodigosPublicaciones(user.getPublications())),
+				new Propiedad("likedPublications", obtenerCodigosPublicaciones(user.getLikedPublications())))));
 
 		// registrar entidad cliente
 		eUser = serverPersistencia.registrarEntidad(eUser);
@@ -82,6 +83,7 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 		String usersFollowing;
 		String followers;
 		String publications;
+		String getLikedPublications;
 
 		// recuperar entidad
 		eUser = serverPersistencia.recuperarEntidad(userCode);
@@ -98,6 +100,7 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 		usersFollowing = serverPersistencia.recuperarPropiedadEntidad(eUser, "usersFollowing");
 		followers = serverPersistencia.recuperarPropiedadEntidad(eUser, "followers");
 		publications = serverPersistencia.recuperarPropiedadEntidad(eUser, "publications");
+		getLikedPublications = serverPersistencia.recuperarPropiedadEntidad(eUser, "likedPublications");
 
 		Date birthDay = new Date();
 		try {
@@ -118,6 +121,7 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 		user.setUsersFollowing(obtenerUsersDesdeCodigos(usersFollowing));
 		user.setFollowers(obtenerUsersDesdeCodigos(followers));
 		user.setPublications(obtenerPublicationsDesdeCodigos(publications));
+		user.setLikedPublications(obtenerPublicationsDesdeCodigos(getLikedPublications));
 
 		return user;
 
@@ -148,6 +152,8 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 				p.setValor(obtenerCodigosUsuarios(user.getFollowers()));
 			} else if (p.getNombre().equals("publications")) {
 				p.setValor(obtenerCodigosPublicaciones(user.getPublications()));
+			} else if(p.getNombre().equals("likedPublications")) {
+				p.setValor(obtenerCodigosPublicaciones(user.getLikedPublications()));
 			}
 			serverPersistencia.modificarPropiedad(p);
 		}

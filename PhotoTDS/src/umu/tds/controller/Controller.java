@@ -302,6 +302,33 @@ public class Controller implements PropertyChangeListener {
 	public List<Publication> getAllPublications(){
 		return new LinkedList<>(publRepo.getAllPublications());
 	}
+	
+	public void like(String user, Publication p) {
+		p.addLike();
+		User u = this.getUser(user);
+		u.addLike(p);
+		adaptadorPublication.updatePublication(p);
+		adaptadorUser.updateUser(u);
+	}
+	
+	public void dislike(String user, Publication p) {
+		p.removeLike();
+		User u = this.getUser(user);
+		u.removeLike(p);
+		adaptadorPublication.updatePublication(p);
+		adaptadorUser.updateUser(u);
+	}
+	
+	public boolean userLikedPub(String user, Publication p) {
+		User u = this.getUser(user);
+		List<Publication> allLikedP = u.getLikedPublications();
+		for(Publication likedP : allLikedP) {
+			if(likedP.equals(p)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {

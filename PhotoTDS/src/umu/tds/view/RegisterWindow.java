@@ -252,8 +252,8 @@ public class RegisterWindow {
 		description_Register.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				if (description_Register.getText().length() > 200) {
-					description_Register.setText(description_Register.getText().substring(0, 200));
+				if (description_Register.getText().length() > Constantes.MAX_DESCRIP_REGISTER_LENGTH) {
+					description_Register.setText(description_Register.getText().substring(0, Constantes.MAX_DESCRIP_REGISTER_LENGTH));
 				}
 			}
 		});
@@ -299,8 +299,8 @@ public class RegisterWindow {
 							}
 							editorPane.setText("<html><img src=file:\"" + HTMLProfilePic + "\"" + " "
 									+ "width=75 height=75></img>");
-							frame.setSize(frame.getWidth() + Constantes.PHOTO_SELECTED_SIZE,
-									frame.getHeight() + Constantes.PHOTO_SELECTED_SIZE);
+							frame.setSize(frame.getWidth() + Constantes.HTML_PHOTO_SELECTED_SIZE,
+									frame.getHeight() + Constantes.HTML_PHOTO_SELECTED_SIZE);
 							btnSelectPhoto_Register.setText("Borrar");
 						} else {
 							JOptionPane.showMessageDialog(frame, "La imagen debe ser formato .png o .jpg", null,
@@ -311,8 +311,8 @@ public class RegisterWindow {
 					profilePic_Register = null;
 					editorPane.setText("");
 					btnSelectPhoto_Register.setText("Seleccionar");
-					frame.setSize(frame.getWidth() - Constantes.PHOTO_SELECTED_SIZE,
-							frame.getHeight() - Constantes.PHOTO_SELECTED_SIZE);
+					frame.setSize(frame.getWidth() - Constantes.HTML_PHOTO_SELECTED_SIZE,
+							frame.getHeight() - Constantes.HTML_PHOTO_SELECTED_SIZE);
 				}
 			}
 
