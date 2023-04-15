@@ -8,7 +8,7 @@ public abstract class Discount {
 	public static List<Discount> getDiscountTypes() {
 		List<Discount> tipos = new LinkedList<>();
 		tipos.add(new AgeDiscount());
-		// Añadir el resto cuando estén listos
+		tipos.add(new LikesDiscount());
 		return tipos;
 	}
 	

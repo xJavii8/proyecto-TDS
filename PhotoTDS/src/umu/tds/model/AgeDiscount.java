@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 
+import umu.tds.view.Constantes;
+
 public class AgeDiscount extends Discount {
 
 	@Override
@@ -11,7 +13,7 @@ public class AgeDiscount extends Discount {
 		int age = Period
 				.between(user.getBirthDay().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), LocalDate.now())
 				.getYears();
-		if (age >= 18 && age <= 25)
+		if (age >= Constantes.MIN_AGE_PREMIUM_DISCOUNT && age <= Constantes.MAX_AGE_PREMIUM_DISCOUNT)
 			return true;
 		else
 			return false;
@@ -19,10 +21,10 @@ public class AgeDiscount extends Discount {
 
 	@Override
 	public int getPremiumDiscount(int price, User user) {
-		int age = 25 - Period
+		int age = Constantes.MAX_AGE_PREMIUM_DISCOUNT - Period
 				.between(user.getBirthDay().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), LocalDate.now())
 				.getYears();
-		return Math.toIntExact(Math.round(age * price * 0.04));
+		return Math.toIntExact(Math.round(age * price * Constantes.DISCOUNT_PER_AGE));
 	}
 
 }
