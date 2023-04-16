@@ -71,7 +71,8 @@ public class EditProfileVindow {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(EditProfileVindow.class.getResource("/images/ig32.png")));
+		frame.setIconImage(
+				Toolkit.getDefaultToolkit().getImage(EditProfileVindow.class.getResource("/images/ig32.png")));
 		frame.setSize(450, 450);
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -241,7 +242,8 @@ public class EditProfileVindow {
 				} else if (usernameField.getText().isEmpty()) {
 					JOptionPane.showMessageDialog(frame, "El campo \"Usuario\" no puede estar vacío.", null,
 							JOptionPane.ERROR_MESSAGE);
-				} else if(Controller.getInstancia().getUser(usernameField.getText()) != null) {
+				} else if (!user.getUsername().equals(usernameField.getText())
+						&& Controller.getInstancia().getUser(usernameField.getText()) != null) {
 					JOptionPane.showMessageDialog(frame, "Este nombre de usuario ya existe. Escoge otro.", null,
 							JOptionPane.ERROR_MESSAGE);
 				} else {
@@ -417,8 +419,8 @@ public class EditProfileVindow {
 							JOptionPane.ERROR_MESSAGE);
 				} else if (contraseñaField.getPassword().length < Constantes.MIN_PASSWORD_LENGTH) {
 					JOptionPane.showMessageDialog(frame,
-							"La contraseña ha de tener mínimo " + Constantes.MIN_PASSWORD_LENGTH + " caracteres.",
-							null, JOptionPane.ERROR_MESSAGE);
+							"La contraseña ha de tener mínimo " + Constantes.MIN_PASSWORD_LENGTH + " caracteres.", null,
+							JOptionPane.ERROR_MESSAGE);
 				} else {
 					if (Controller.getInstancia().updateUserSensibleInfo(user, correoField.getText(),
 							String.valueOf(contraseñaField.getPassword()))) {

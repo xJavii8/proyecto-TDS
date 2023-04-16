@@ -41,6 +41,7 @@ public class SelfProfileWindow {
 	private JLabel nickname;
 	private JLabel fullname;
 	private JLabel publications;
+	private JLabel siguiendo;
 	private MainWindow mw;
 
 	/**
@@ -59,6 +60,10 @@ public class SelfProfileWindow {
 
 	public JLabel getPublicationsLabel() {
 		return publications;
+	}
+	
+	public JLabel getFollowingLabel() {
+		return siguiendo;
 	}
 
 	/**
@@ -164,7 +169,7 @@ public class SelfProfileWindow {
 		gbc_publications.gridy = 3;
 		panelPerfilPersonal.add(publications, gbc_publications);
 
-		JLabel siguiendo = new JLabel("");
+		siguiendo = new JLabel("");
 		siguiendo.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
