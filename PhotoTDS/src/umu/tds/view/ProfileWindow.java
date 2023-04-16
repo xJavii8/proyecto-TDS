@@ -190,6 +190,12 @@ public class ProfileWindow {
 					Controller.getInstancia().unfollow(selfUser, searchedUser);
 					followButton.setText("Seguir");
 				}
+				
+				int numFollowingUsers = Controller.getInstancia().getNumUsersFollowing(selfUser);
+				if (numFollowingUsers == 1)
+					mw.getSPW().getFollowingLabel().setText(numFollowingUsers + " seguido");
+				else
+					mw.getSPW().getFollowingLabel().setText(numFollowingUsers + " seguidos");
 
 				int numFollowers = Controller.getInstancia().getNumFollowers(searchedUser);
 				if (numFollowers == 1)

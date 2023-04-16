@@ -16,7 +16,7 @@ public class Constantes {
 	public static final int MAX_DESCRIP_PUB_LENGTH = 60;
 
 	public static final String VALID_EMAIL_REGEX = "^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$";
-	public static final String VALID_FULLNAME_REGEX = "^[A-Z][a-z]+(\\s[A-Z][a-z]+)*$";
+	public static final String VALID_FULLNAME_REGEX = "^[A-ZÁÉÍÓÚ][a-záéíóú\\s]*$";
 	public static final Pattern EMAIL_PAT = Pattern.compile(VALID_EMAIL_REGEX);
 	public static final Pattern FULLNAME_PAT = Pattern.compile(VALID_FULLNAME_REGEX);
 
