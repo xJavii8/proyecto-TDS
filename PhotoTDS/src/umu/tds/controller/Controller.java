@@ -241,7 +241,7 @@ public class Controller implements PropertyChangeListener {
 	public DefaultListModel<User> search(String selfUsername, String searchString) {
 		User selfUser = userRepo.getUser(selfUsername).get();
 		DefaultListModel<User> matchingUsers = new DefaultListModel<>();
-		List<User> allUsers = userRepo.getUser();
+		List<User> allUsers = userRepo.getAllUsers();
 		Matcher emailMatch = Constantes.EMAIL_PAT.matcher(searchString);
 		Matcher fullnameMatch = Constantes.FULLNAME_PAT.matcher(searchString);
 		if (emailMatch.matches()) {
@@ -305,6 +305,17 @@ public class Controller implements PropertyChangeListener {
 		return true;
 	}
 	
+	public boolean deletePhoto(Publication p) {
+		if(this.getPublication(p.getTitle()) == null)
+			return false;
+		
+		User usuario = this.getUser(p.getUser());
+		usuario.deletePhoto(p);
+		this.publRepo.removePublication(p);
+		this.adaptadorUser.updateUser(usuario);
+		return true;
+	}
+	
 	public void uploadPhotosXML(String xmlPath) {
 		CargadorFotos.getInstancia().setXML(xmlPath);
 	}
@@ -342,6 +353,17 @@ public class Controller implements PropertyChangeListener {
 			}
 		}
 		return false;
+	}
+	
+	public DefaultListModel<User> getUsersWhoLikedPublication(Publication publication) {
+		DefaultListModel<User> usersWhoLikedPublication = new DefaultListModel<>();
+	    List<User> allUsers = userRepo.getAllUsers();
+	    for (User user : allUsers) {
+	        if (user.getLikedPublications().contains(publication)) {
+	            usersWhoLikedPublication.addElement(user);
+	        }
+	    }
+	    return usersWhoLikedPublication;
 	}
 
 	@Override

@@ -55,7 +55,7 @@ public class UserRepository {
 	}
 
 	// Devolver todos los usuarios
-	public List<User> getUser() {
+	public List<User> getAllUsers() {
 		ArrayList<User> lista = new ArrayList<User>();
 		for (User u : users.values())
 			lista.add(u);

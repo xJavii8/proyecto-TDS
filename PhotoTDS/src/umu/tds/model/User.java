@@ -91,6 +91,12 @@ public class User {
 		this.publications.add(p);
 		return p;
 	}
+	
+	public boolean deletePhoto(Publication p) {
+		int pIndex = publications.indexOf(p);
+		this.publications.remove(pIndex);
+		return true;
+	}
 
 	public boolean addLike(Publication p) {
 		this.likedPublications.add(p);
