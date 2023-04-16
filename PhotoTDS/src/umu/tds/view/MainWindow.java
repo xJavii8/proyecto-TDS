@@ -92,6 +92,7 @@ public class MainWindow {
 			}
 		}
 		this.selfProfilePicPath = profilePicPath;
+		this.selfProfile = new JLabel(username);
 		this.spw = new SelfProfileWindow(selfUsername, MainWindow.this);
 		initialize();
 	}
@@ -106,6 +107,10 @@ public class MainWindow {
 	
 	public JLabel getSelfProfile() {
 		return selfProfile;
+	}
+	
+	public SelfProfileWindow getSPW() {
+		return spw;
 	}
 
 	/**
@@ -136,7 +141,6 @@ public class MainWindow {
 		gbc_logo.gridy = 1;
 		panelNorte.add(logo, gbc_logo);
 
-		selfProfile = new JLabel("username");
 		ImageIcon pic = Utilities.getCircleIcon(selfProfilePicPath);
 		if (pic.getIconHeight() != Constantes.SELF_USER_PIC_SIZE
 				|| pic.getIconWidth() != Constantes.SELF_USER_PIC_SIZE) {
