@@ -347,6 +347,9 @@ public class RegisterWindow {
 				} else if (fullnameField_Register.getText().isEmpty()) {
 					JOptionPane.showMessageDialog(frame, "El campo \"Nombre completo\" no puede estar vacío.", null,
 							JOptionPane.ERROR_MESSAGE);
+				} else if(!Character.isUpperCase(fullnameField_Register.getText().charAt(0))) {
+					JOptionPane.showMessageDialog(frame, "El campo \"Nombre completo\" ha de empezar con mayúscula.", null,
+							JOptionPane.ERROR_MESSAGE);
 				} else if (userField_Register.getText().isEmpty()) {
 					JOptionPane.showMessageDialog(frame, "El campo \"Usuario\" no puede estar vacío.", null,
 							JOptionPane.ERROR_MESSAGE);
