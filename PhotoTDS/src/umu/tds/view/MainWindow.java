@@ -112,6 +112,10 @@ public class MainWindow {
 	public SelfProfileWindow getSPW() {
 		return spw;
 	}
+	
+	public void setSPW(SelfProfileWindow spw) {
+		this.spw = spw;
+	}
 
 	/**
 	 * Initialize the contents of the frame.
