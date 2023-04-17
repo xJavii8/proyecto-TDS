@@ -23,8 +23,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import umu.tds.app.PhotoTDS.view.PanelFoto;
-import umu.tds.app.PhotoTDS.view.VentanaInicio;
+
 import umu.tds.controller.Controller;
 import umu.tds.model.Photo;
 import umu.tds.model.User;
@@ -215,12 +214,19 @@ public class ProfileWindow {
 		
 		List<JLabel> publicacionesIconos = new LinkedList<>();
 		p = Controller.getInstancia().getPhothosProfile(selfUser);
+		if (p.isEmpty()) {
+			System.out.println("Vacio");
+		}else {
+			System.out.println("Lleno");
+		}
+		
 		for (Photo p: p) {
 			JLabel etiqueta = new JLabel();
 			Image imagen = createImageIconFromPath(p.getPath()).getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
 			ImageIcon icon = new ImageIcon(imagen);
 			etiqueta.setIcon(icon);
 			publicacionesIconos.add(etiqueta);
+			System.out.println(p.toString());
 		}
 		
 		DefaultListModel<Component> photoList = new DefaultListModel<>();
@@ -230,7 +236,7 @@ public class ProfileWindow {
 		list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 		list.setVisibleRowCount(-1);
 		list.ensureIndexIsVisible(list.getHeight());
-		list.setCellRenderer(createListRenderer());
+		//list.setCellRenderer();
 		scrollPane.setViewportView(list);
 
 		int numPub = Controller.getInstancia().getNumPublications(searchedUser);
