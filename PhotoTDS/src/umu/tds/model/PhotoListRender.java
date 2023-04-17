@@ -2,7 +2,6 @@ package umu.tds.model;
 
 import java.awt.Component;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.Image;
 
 import javax.swing.ImageIcon;
@@ -12,7 +11,6 @@ import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 
 import umu.tds.view.Constantes;
-import umu.tds.view.Utilities;
 
 @SuppressWarnings("serial")
 public class PhotoListRender extends JPanel implements ListCellRenderer<Photo> {

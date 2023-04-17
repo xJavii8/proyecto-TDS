@@ -4,6 +4,8 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import java.awt.GridBagLayout;
+
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionListener;
@@ -14,6 +16,7 @@ import java.awt.BorderLayout;
 import java.awt.Cursor;
 
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
@@ -24,6 +27,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import umu.tds.controller.Controller;
+import umu.tds.model.Photo;
 import umu.tds.model.Publication;
 
 import javax.swing.JEditorPane;
@@ -52,6 +56,7 @@ public class AddPublicationWindow implements IEncendidoListener {
 
 	private String user;
 	private JLabel publications;
+	private JList<Photo> publicationList;
 
 	/**
 	 * Create the application.
@@ -59,6 +64,7 @@ public class AddPublicationWindow implements IEncendidoListener {
 	public AddPublicationWindow(String user, SelfProfileWindow spw) {
 		this.user = user;
 		this.publications = spw.getPublicationsLabel();
+		this.publicationList = spw.getPublicationList();
 		initialize();
 	}
 
@@ -243,6 +249,8 @@ public class AddPublicationWindow implements IEncendidoListener {
 						Controller.getInstancia().createPhoto(user, titulo, descripArea.getText(), picPublication);
 						JOptionPane.showMessageDialog(frame, "Publicación subida", null,
 								JOptionPane.INFORMATION_MESSAGE);
+						DefaultListModel<Photo> photoList = Controller.getInstancia().getPhothosProfile(user);
+						publicationList.setModel(photoList);
 						int numSelfPub = Controller.getInstancia().getUser(user).getPublications().size();
 						if (numSelfPub == 1)
 							publications.setText(numSelfPub + " publicación");
