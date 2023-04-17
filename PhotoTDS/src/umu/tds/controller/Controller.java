@@ -348,17 +348,17 @@ public class Controller implements PropertyChangeListener {
 		return this.publRepo.getPublication(titulo);
 	}
 	
-	public List<Photo> getPhothosProfile (String user){
+	public DefaultListModel<Photo> getPhothosProfile (String user){
 		Optional<User> userOpt = this.userRepo.getUser(user);
 		if (userOpt.isEmpty()) {
 			return null;
 		}
 		User u = userOpt.get();
 		List<Publication> publicacionesUs = publRepo.getAllPublicationsUser(u.getUsername());
-		List<Photo> photosUser = new LinkedList<>();
+		DefaultListModel<Photo> photosUser = new DefaultListModel<>();
 		for (Publication p : publicacionesUs) {
 			if (p instanceof Photo) {
-				photosUser.add((Photo) p);
+				photosUser.addElement((Photo) p);
 			}
 		}
 		return photosUser;
