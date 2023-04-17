@@ -8,6 +8,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import umu.tds.controller.Controller;
+import umu.tds.model.Photo;
+import umu.tds.model.PhotoListRender;
 import umu.tds.model.User;
 import umu.tds.model.UserListRender;
 
@@ -43,6 +45,7 @@ public class SelfProfileWindow {
 	private JLabel publications;
 	private JLabel siguiendo;
 	private MainWindow mw;
+	private JScrollPane scrollPane;
 
 	/**
 	 * Create the application.
@@ -77,11 +80,11 @@ public class SelfProfileWindow {
 		panelPerfilPersonal = new JPanel();
 		frame.getContentPane().add(panelPerfilPersonal, BorderLayout.CENTER);
 		GridBagLayout gbl_panelPerfilPersonal = new GridBagLayout();
-		gbl_panelPerfilPersonal.columnWidths = new int[] { 15, 0, 0, 0, 15, 15, 0, 112, 0, 15, 0, 0 };
-		gbl_panelPerfilPersonal.rowHeights = new int[] { 15, 0, 0, 0, 0, 0, 0 };
-		gbl_panelPerfilPersonal.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+		gbl_panelPerfilPersonal.columnWidths = new int[] { 15, 15, 15, 0, 0, 112, 0, 15, 0 };
+		gbl_panelPerfilPersonal.rowHeights = new int[] { 15, 0, 0, 0, 0, 0, 15, 0 };
+		gbl_panelPerfilPersonal.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 				Double.MIN_VALUE };
-		gbl_panelPerfilPersonal.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_panelPerfilPersonal.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE };
 		panelPerfilPersonal.setLayout(gbl_panelPerfilPersonal);
 
 		profilePic = new JLabel("");
@@ -93,7 +96,6 @@ public class SelfProfileWindow {
 		profilePic.setIcon(pic);
 		GridBagConstraints gbc_profilePic = new GridBagConstraints();
 		gbc_profilePic.gridheight = 4;
-		gbc_profilePic.gridwidth = 4;
 		gbc_profilePic.insets = new Insets(0, 0, 5, 5);
 		gbc_profilePic.gridx = 1;
 		gbc_profilePic.gridy = 1;
@@ -104,7 +106,7 @@ public class SelfProfileWindow {
 		nickname.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		GridBagConstraints gbc_nickname = new GridBagConstraints();
 		gbc_nickname.insets = new Insets(0, 0, 5, 5);
-		gbc_nickname.gridx = 6;
+		gbc_nickname.gridx = 3;
 		gbc_nickname.gridy = 2;
 		panelPerfilPersonal.add(nickname, gbc_nickname);
 
@@ -128,7 +130,7 @@ public class SelfProfileWindow {
 		});
 		GridBagConstraints gbc_edit = new GridBagConstraints();
 		gbc_edit.insets = new Insets(0, 0, 5, 5);
-		gbc_edit.gridx = 7;
+		gbc_edit.gridx = 4;
 		gbc_edit.gridy = 2;
 		panelPerfilPersonal.add(edit, gbc_edit);
 
@@ -152,7 +154,7 @@ public class SelfProfileWindow {
 		});
 		GridBagConstraints gbc_premium = new GridBagConstraints();
 		gbc_premium.insets = new Insets(0, 0, 5, 5);
-		gbc_premium.gridx = 8;
+		gbc_premium.gridx = 5;
 		gbc_premium.gridy = 2;
 		panelPerfilPersonal.add(premium, gbc_premium);
 
@@ -165,7 +167,7 @@ public class SelfProfileWindow {
 		publications.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		GridBagConstraints gbc_publications = new GridBagConstraints();
 		gbc_publications.insets = new Insets(0, 0, 5, 5);
-		gbc_publications.gridx = 6;
+		gbc_publications.gridx = 3;
 		gbc_publications.gridy = 3;
 		panelPerfilPersonal.add(publications, gbc_publications);
 
@@ -195,7 +197,7 @@ public class SelfProfileWindow {
 		siguiendo.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		GridBagConstraints gbc_siguiendo = new GridBagConstraints();
 		gbc_siguiendo.insets = new Insets(0, 0, 5, 5);
-		gbc_siguiendo.gridx = 7;
+		gbc_siguiendo.gridx = 4;
 		gbc_siguiendo.gridy = 3;
 		panelPerfilPersonal.add(siguiendo, gbc_siguiendo);
 
@@ -225,7 +227,7 @@ public class SelfProfileWindow {
 		seguidores.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		GridBagConstraints gbc_seguidores = new GridBagConstraints();
 		gbc_seguidores.insets = new Insets(0, 0, 5, 5);
-		gbc_seguidores.gridx = 8;
+		gbc_seguidores.gridx = 5;
 		gbc_seguidores.gridy = 3;
 		panelPerfilPersonal.add(seguidores, gbc_seguidores);
 
@@ -234,9 +236,54 @@ public class SelfProfileWindow {
 		fullname.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		GridBagConstraints gbc_fullname = new GridBagConstraints();
 		gbc_fullname.insets = new Insets(0, 0, 5, 5);
-		gbc_fullname.gridx = 6;
+		gbc_fullname.gridx = 3;
 		gbc_fullname.gridy = 4;
 		panelPerfilPersonal.add(fullname, gbc_fullname);
+		
+		scrollPane = new JScrollPane();
+		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+		gbc_scrollPane.insets = new Insets(0, 0, 5, 5);
+		gbc_scrollPane.fill = GridBagConstraints.BOTH;
+		gbc_scrollPane.gridwidth = 3;
+		gbc_scrollPane.gridx = 3;
+		gbc_scrollPane.gridy = 5;
+		panelPerfilPersonal.add(scrollPane, gbc_scrollPane);
+		
+		DefaultListModel<Photo> photoList = Controller.getInstancia().getPhothosProfile(user.getUsername());
+		
+		JList<Photo> publicationList = new JList<>(photoList);
+		scrollPane.setViewportView(publicationList);
+		publicationList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+		publicationList.setVisibleRowCount(-1);
+		publicationList.ensureIndexIsVisible(publicationList.getHeight());
+		publicationList.setCellRenderer(new PhotoListRender());
+		
+		publicationList.addListSelectionListener(new ListSelectionListener() {
+
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				if (!e.getValueIsAdjusting()) {
+					JPanel panelCentral = mw.getPanelCentral();
+					JPanel panelPublication = new PublicationWindow(user.getUsername(),
+							publicationList.getSelectedValue(), publicationList.getSelectedValue().getUser(), mw).getPublicationPanel();
+					panelCentral.add(panelPublication, "panelPublication");
+					CardLayout cL = (CardLayout) panelCentral.getLayout();
+					cL.show(panelCentral, "panelPublication");
+				}
+			}
+		});
+		
+		publicationList.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				publicationList.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				publicationList.setCursor(Cursor.getDefaultCursor());
+			}
+		});
 	}
 
 	public void updateProfile(String username, String fullname, String profilePicPath) {
