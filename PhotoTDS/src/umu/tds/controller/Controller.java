@@ -134,17 +134,21 @@ public class Controller implements PropertyChangeListener {
 		return true;
 	}
 	
-	public List<Publication> getTop10LikedPhotos(String username) {
+	public DefaultListModel<Photo> getTop10LikedPhotos(String username) {
 		Optional<User> userO = userRepo.getUser(username);
 		if (userO.isEmpty())
 			return null;
 
 		User user = userO.get();
-		return user.getPublications().stream()
-			    .sorted(Comparator.comparing(Publication::getLikes).reversed())
-			    .limit(Constantes.TOP_LIKED_PHOTOS_PREMIUM)
-			    .collect(Collectors.toList());
-		
+		List<Photo> top10PhotosList = user.getPublications().stream()
+		        .filter(publication -> publication instanceof Photo)
+		        .map(publication -> (Photo) publication)
+		        .sorted(Comparator.comparing(Photo::getLikes).reversed())
+		        .limit(Constantes.TOP_LIKED_PHOTOS_PREMIUM)
+		        .collect(Collectors.toList());
+		DefaultListModel<Photo> top10PhotosDLM = new DefaultListModel<>();
+		top10PhotosList.forEach(top10PhotosDLM::addElement);
+		return top10PhotosDLM;		
 	}
 
 	public boolean createExcel(String username, String path) {
