@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
+import java.util.stream.Collectors;
 
 import umu.tds.persistence.DAOException;
 import umu.tds.persistence.DAOFactory;
@@ -64,7 +64,11 @@ public class PublicationRepository {
 		return new LinkedHashSet<>(this.publications.values());
 	}
 	
-	
+	public List<Publication> getAllPublicationsUser(String u) {
+		return this.getAllPublications().stream()
+			.filter(p -> p.getUser().equals(u))
+			.collect(Collectors.toList());
+	}
 	
 	
 	//Recargar repositorio
