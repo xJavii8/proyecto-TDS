@@ -16,6 +16,14 @@ public class Comment {
 		this.author = author;
 		this.publishedDate = publishedDate;
 	}
+	
+	public Comment(String text, String author, Date publishedDate) {
+		super();
+		this.text = text;
+		this.author = author;
+		this.publishedDate = publishedDate;
+	}
+
 
 	// GETTERS AND SETTERS
 	public int getCode() {

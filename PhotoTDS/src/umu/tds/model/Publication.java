@@ -35,12 +35,12 @@ public class Publication {
 		this.hashtags = new LinkedList<Hashtag>();
 		this.comments = new LinkedList<Comment>();
 	}
-	
+
 	public boolean addLike() {
 		this.likes += 1;
 		return true;
 	}
-	
+
 	public boolean removeLike() {
 		this.likes -= 1;
 		return true;
@@ -93,6 +93,22 @@ public class Publication {
 
 	public void setHashtags(List<Hashtag> hashtags) {
 		this.hashtags = hashtags;
+	}
+
+	public Comment addComment(String comment, String user) {
+		Comment com = new Comment(codigo, comment, user, new Date());
+		this.comments.add(com);
+		return com;
+	}
+
+	public boolean removeComment(Comment comment) {
+
+		if (this.comments.remove(comment)) {
+			return true;
+		} else {
+			return false;
+		}
+
 	}
 
 	public List<Comment> getComments() {
