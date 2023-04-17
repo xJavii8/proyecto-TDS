@@ -2,9 +2,12 @@ package umu.tds.view;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
 import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 
 import java.awt.GridBagConstraints;
@@ -15,11 +18,16 @@ import java.awt.CardLayout;
 import java.awt.Cursor;
 
 import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import umu.tds.controller.Controller;
+import umu.tds.model.Photo;
+import umu.tds.model.PhotoListRender;
 import umu.tds.model.Publication;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 
@@ -32,18 +40,24 @@ public class PremiumMenuWindow {
 	private JFrame frame;
 	private String nickname;
 	private boolean isPremium;
+	private MainWindow mw;
 
 	/**
 	 * Create the application.
 	 */
-	public PremiumMenuWindow(String nickname) {
+	public PremiumMenuWindow(String nickname, MainWindow mw) {
 		this.nickname = nickname;
 		this.isPremium = Controller.getInstancia().isPremium(nickname);
+		this.mw = mw;
 		initialize();
 	}
 
 	public void show() {
 		frame.setVisible(true);
+	}
+	
+	public void dispose() {
+		frame.dispose();
 	}
 
 	/**
@@ -184,15 +198,13 @@ public class PremiumMenuWindow {
 		gbc_pdf.gridx = 1;
 		gbc_pdf.gridy = 2;
 		panelPremium.add(pdf, gbc_pdf);
-
+		
 		JButton top10 = new JButton("Ver 10 fotos con más \"me gusta\"");
 		top10.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				List<Publication> top10 = Controller.getInstancia().getTop10LikedPhotos(nickname);
-				for(Publication p : top10) {
-					System.out.println(p.getTitle());
-				}
+				DefaultListModel<Photo> top10 = Controller.getInstancia().getTop10LikedPhotos(nickname);
+				Utilities.top10LikedPublications(mw, nickname, top10, PremiumMenuWindow.this);
 			}
 
 			@Override

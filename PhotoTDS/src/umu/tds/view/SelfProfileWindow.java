@@ -152,7 +152,7 @@ public class SelfProfileWindow {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				PremiumMenuWindow pmw = new PremiumMenuWindow(nickname.getText());
+				PremiumMenuWindow pmw = new PremiumMenuWindow(nickname.getText(), mw);
 				pmw.show();
 			}
 		});
