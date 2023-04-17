@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import javax.swing.DefaultListModel;
 
+import umu.tds.model.Comment;
 import umu.tds.model.Photo;
 import umu.tds.model.Publication;
 import umu.tds.model.PublicationRepository;
@@ -297,6 +298,29 @@ public class Controller implements PropertyChangeListener {
 		return true;
 	}
 
+	
+	public boolean addComment(Publication publ, String comment, String user) {
+
+		publ.addComment(comment, this.userRepo.getUser(user).get().getUsername());
+		this.publRepo.updatePublication(publ);
+		return true;
+	}
+	
+	public boolean removeComment (Publication publ, Comment comment) {
+		Optional<Comment> com =  publ.getComments().stream()
+		.filter(f -> f.getAuthor().equals(comment.getAuthor()))
+		.filter(f -> f.getText().equals(comment.getText()))
+		.filter(f -> f.getPublishedDate().equals(comment.getPublishedDate()))
+		.findFirst();
+		
+		if (com.isEmpty()) {
+			return false;
+		}
+		
+		return publ.removeComment(comment);
+	}
+	
+	
 	public boolean createPhoto(String user, String titulo, String descripcion, String path) {
 		User usuario = this.getUser(user);
 		Photo p = usuario.createPhoto(titulo, descripcion, path);
