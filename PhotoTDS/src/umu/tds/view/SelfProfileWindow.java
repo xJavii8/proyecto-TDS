@@ -46,6 +46,7 @@ public class SelfProfileWindow {
 	private JLabel siguiendo;
 	private MainWindow mw;
 	private JScrollPane scrollPane;
+	private JList<Photo> publicationList;
 
 	/**
 	 * Create the application.
@@ -64,9 +65,13 @@ public class SelfProfileWindow {
 	public JLabel getPublicationsLabel() {
 		return publications;
 	}
-	
+
 	public JLabel getFollowingLabel() {
 		return siguiendo;
+	}
+
+	public JList<Photo> getPublicationList() {
+		return publicationList;
 	}
 
 	/**
@@ -80,10 +85,9 @@ public class SelfProfileWindow {
 		panelPerfilPersonal = new JPanel();
 		frame.getContentPane().add(panelPerfilPersonal, BorderLayout.CENTER);
 		GridBagLayout gbl_panelPerfilPersonal = new GridBagLayout();
-		gbl_panelPerfilPersonal.columnWidths = new int[] { 15, 15, 15, 0, 0, 112, 0, 15, 0 };
+		gbl_panelPerfilPersonal.columnWidths = new int[] { 15, 15, 15, 0, 92, 112, 0, 15, 0 };
 		gbl_panelPerfilPersonal.rowHeights = new int[] { 15, 0, 0, 0, 0, 0, 15, 0 };
-		gbl_panelPerfilPersonal.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-				Double.MIN_VALUE };
+		gbl_panelPerfilPersonal.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		gbl_panelPerfilPersonal.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE };
 		panelPerfilPersonal.setLayout(gbl_panelPerfilPersonal);
 
@@ -239,7 +243,7 @@ public class SelfProfileWindow {
 		gbc_fullname.gridx = 3;
 		gbc_fullname.gridy = 4;
 		panelPerfilPersonal.add(fullname, gbc_fullname);
-		
+
 		scrollPane = new JScrollPane();
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
 		gbc_scrollPane.insets = new Insets(0, 0, 5, 5);
@@ -248,16 +252,16 @@ public class SelfProfileWindow {
 		gbc_scrollPane.gridx = 3;
 		gbc_scrollPane.gridy = 5;
 		panelPerfilPersonal.add(scrollPane, gbc_scrollPane);
-		
+
 		DefaultListModel<Photo> photoList = Controller.getInstancia().getPhothosProfile(user.getUsername());
-		
-		JList<Photo> publicationList = new JList<>(photoList);
+
+		publicationList = new JList<>(photoList);
 		scrollPane.setViewportView(publicationList);
 		publicationList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 		publicationList.setVisibleRowCount(-1);
 		publicationList.ensureIndexIsVisible(publicationList.getHeight());
 		publicationList.setCellRenderer(new PhotoListRender());
-		
+
 		publicationList.addListSelectionListener(new ListSelectionListener() {
 
 			@Override
@@ -265,14 +269,15 @@ public class SelfProfileWindow {
 				if (!e.getValueIsAdjusting()) {
 					JPanel panelCentral = mw.getPanelCentral();
 					JPanel panelPublication = new PublicationWindow(user.getUsername(),
-							publicationList.getSelectedValue(), publicationList.getSelectedValue().getUser(), mw).getPublicationPanel();
+							publicationList.getSelectedValue(), publicationList.getSelectedValue().getUser(), mw)
+							.getPublicationPanel();
 					panelCentral.add(panelPublication, "panelPublication");
 					CardLayout cL = (CardLayout) panelCentral.getLayout();
 					cL.show(panelCentral, "panelPublication");
 				}
 			}
 		});
-		
+
 		publicationList.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
