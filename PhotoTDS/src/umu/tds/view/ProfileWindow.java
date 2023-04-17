@@ -26,11 +26,14 @@ import javax.swing.JPanel;
 
 import umu.tds.controller.Controller;
 import umu.tds.model.Photo;
+import umu.tds.model.PhotoListRender;
 import umu.tds.model.User;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.UIManager;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 public class ProfileWindow {
 
@@ -40,32 +43,6 @@ public class ProfileWindow {
 	private String searchedUser;
 	private User profileUser;
 	private MainWindow mw;
-	
-	private static List<Photo> p;
-
-	
-	private ImageIcon createImageIconFromPath(String path) {
-	    if (path == null) {
-	        System.err.println("Path is null!!!");
-	        return null;
-	    }
-
-	    java.net.URL imgURL = getClass().getResource(path);
-
-	    if (imgURL != null) {
-	        return new ImageIcon(imgURL);
-	    } else {
-	        ImageIcon img = new ImageIcon(path);
-	        if (img != null) {
-	            return img;
-	        }else {
-	        	return null;
-	        }
-	    }
-	}
-	
-	
-	
 	
 	
 	/**
@@ -93,11 +70,11 @@ public class ProfileWindow {
 
 		panelPerfil = new JPanel();
 		GridBagLayout gbl_panelPerfil = new GridBagLayout();
-		gbl_panelPerfil.columnWidths = new int[] { 39, 0, 0, 0, 112, 0, 0, 0 };
-		gbl_panelPerfil.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-		gbl_panelPerfil.columnWeights = new double[] { 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0,
+		gbl_panelPerfil.columnWidths = new int[] { 15, 0, 0, 15, 15, 112, 0, 0, 0, 0 };
+		gbl_panelPerfil.rowHeights = new int[] { 15, 0, 0, 0, 0, 15, 0, 15 };
+		gbl_panelPerfil.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 				Double.MIN_VALUE };
-		gbl_panelPerfil.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_panelPerfil.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0 };
 		panelPerfil.setLayout(gbl_panelPerfil);
 
 		JLabel profilePic = new JLabel("");
@@ -108,19 +85,20 @@ public class ProfileWindow {
 		}
 		profilePic.setIcon(pic);
 		GridBagConstraints gbc_profilePic = new GridBagConstraints();
+		gbc_profilePic.gridwidth = 2;
 		gbc_profilePic.gridheight = 4;
 		gbc_profilePic.anchor = GridBagConstraints.WEST;
 		gbc_profilePic.insets = new Insets(0, 0, 5, 5);
-		gbc_profilePic.gridx = 0;
-		gbc_profilePic.gridy = 0;
+		gbc_profilePic.gridx = 1;
+		gbc_profilePic.gridy = 1;
 		panelPerfil.add(profilePic, gbc_profilePic);
 
 		JLabel nickname = new JLabel(searchedUser);
 		nickname.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		GridBagConstraints gbc_nickname = new GridBagConstraints();
 		gbc_nickname.insets = new Insets(0, 0, 5, 5);
-		gbc_nickname.gridx = 2;
-		gbc_nickname.gridy = 1;
+		gbc_nickname.gridx = 4;
+		gbc_nickname.gridy = 2;
 		panelPerfil.add(nickname, gbc_nickname);
 
 		JButton followButton = new JButton("");
@@ -130,16 +108,16 @@ public class ProfileWindow {
 			followButton.setText("Seguir");
 		GridBagConstraints gbc_followButton = new GridBagConstraints();
 		gbc_followButton.insets = new Insets(0, 0, 5, 5);
-		gbc_followButton.gridx = 4;
-		gbc_followButton.gridy = 1;
+		gbc_followButton.gridx = 5;
+		gbc_followButton.gridy = 2;
 		panelPerfil.add(followButton, gbc_followButton);
 
 		JLabel publications = new JLabel();
 		publications.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		GridBagConstraints gbc_publications = new GridBagConstraints();
 		gbc_publications.insets = new Insets(0, 0, 5, 5);
-		gbc_publications.gridx = 2;
-		gbc_publications.gridy = 2;
+		gbc_publications.gridx = 4;
+		gbc_publications.gridy = 3;
 		panelPerfil.add(publications, gbc_publications);
 
 		JLabel following = new JLabel();
@@ -163,8 +141,8 @@ public class ProfileWindow {
 		following.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		GridBagConstraints gbc_following = new GridBagConstraints();
 		gbc_following.insets = new Insets(0, 0, 5, 5);
-		gbc_following.gridx = 4;
-		gbc_following.gridy = 2;
+		gbc_following.gridx = 5;
+		gbc_following.gridy = 3;
 		panelPerfil.add(following, gbc_following);
 
 		JLabel followers = new JLabel();
@@ -187,9 +165,9 @@ public class ProfileWindow {
 		});
 		followers.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		GridBagConstraints gbc_follows = new GridBagConstraints();
-		gbc_follows.insets = new Insets(0, 0, 5, 0);
-		gbc_follows.gridx = 6;
-		gbc_follows.gridy = 2;
+		gbc_follows.insets = new Insets(0, 0, 5, 5);
+		gbc_follows.gridx = 7;
+		gbc_follows.gridy = 3;
 		panelPerfil.add(followers, gbc_follows);
 
 		JLabel fullname = new JLabel("");
@@ -197,47 +175,53 @@ public class ProfileWindow {
 		fullname.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		GridBagConstraints gbc_fullname = new GridBagConstraints();
 		gbc_fullname.insets = new Insets(0, 0, 5, 5);
-		gbc_fullname.gridx = 2;
-		gbc_fullname.gridy = 3;
+		gbc_fullname.gridx = 4;
+		gbc_fullname.gridy = 4;
 		panelPerfil.add(fullname, gbc_fullname);
+		
+		DefaultListModel<Photo> photoList = Controller.getInstancia().getPhothosProfile(searchedUser);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
-		gbc_scrollPane.gridheight = 2;
 		gbc_scrollPane.insets = new Insets(0, 0, 5, 5);
 		gbc_scrollPane.fill = GridBagConstraints.BOTH;
 		gbc_scrollPane.gridwidth = 4;
-		gbc_scrollPane.gridx = 1;
-		gbc_scrollPane.gridy = 5;
+		gbc_scrollPane.gridx = 4;
+		gbc_scrollPane.gridy = 6;
 		panelPerfil.add(scrollPane, gbc_scrollPane);
+		JList<Photo> publicationList = new JList<>(photoList);
+		scrollPane.setViewportView(publicationList);
+		publicationList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+		publicationList.setVisibleRowCount(-1);
+		publicationList.ensureIndexIsVisible(publicationList.getHeight());
+		publicationList.setCellRenderer(new PhotoListRender());
 		
+		publicationList.addListSelectionListener(new ListSelectionListener() {
+
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				if (!e.getValueIsAdjusting()) {
+					JPanel panelCentral = mw.getPanelCentral();
+					JPanel panelPublication = new PublicationWindow(selfUser,
+							publicationList.getSelectedValue(), publicationList.getSelectedValue().getUser(), mw).getPublicationPanel();
+					panelCentral.add(panelPublication, "panelPublication");
+					CardLayout cL = (CardLayout) panelCentral.getLayout();
+					cL.show(panelCentral, "panelPublication");
+				}
+			}
+		});
 		
-		List<JLabel> publicacionesIconos = new LinkedList<>();
-		p = Controller.getInstancia().getPhothosProfile(selfUser);
-		if (p.isEmpty()) {
-			System.out.println("Vacio");
-		}else {
-			System.out.println("Lleno");
-		}
-		
-		for (Photo p: p) {
-			JLabel etiqueta = new JLabel();
-			Image imagen = createImageIconFromPath(p.getPath()).getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
-			ImageIcon icon = new ImageIcon(imagen);
-			etiqueta.setIcon(icon);
-			publicacionesIconos.add(etiqueta);
-			System.out.println(p.toString());
-		}
-		
-		DefaultListModel<Component> photoList = new DefaultListModel<>();
-		photoList.addAll(publicacionesIconos);
-		
-		JList<Component> list = new JList(photoList);
-		list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-		list.setVisibleRowCount(-1);
-		list.ensureIndexIsVisible(list.getHeight());
-		//list.setCellRenderer();
-		scrollPane.setViewportView(list);
+		publicationList.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				publicationList.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				publicationList.setCursor(Cursor.getDefaultCursor());
+			}
+		});
 
 		int numPub = Controller.getInstancia().getNumPublications(searchedUser);
 		if (numPub == 1)
