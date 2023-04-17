@@ -23,7 +23,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-
 import umu.tds.controller.Controller;
 import umu.tds.model.Photo;
 import umu.tds.model.PhotoListRender;
@@ -43,8 +42,7 @@ public class ProfileWindow {
 	private String searchedUser;
 	private User profileUser;
 	private MainWindow mw;
-	
-	
+
 	/**
 	 * Create the application.
 	 */
@@ -65,16 +63,15 @@ public class ProfileWindow {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
+		frame.setBounds(100, 100, 602, 583);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		panelPerfil = new JPanel();
 		GridBagLayout gbl_panelPerfil = new GridBagLayout();
-		gbl_panelPerfil.columnWidths = new int[] { 15, 0, 0, 15, 15, 112, 0, 0, 0, 0 };
-		gbl_panelPerfil.rowHeights = new int[] { 15, 0, 0, 0, 0, 15, 0, 15 };
-		gbl_panelPerfil.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-				Double.MIN_VALUE };
-		gbl_panelPerfil.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0 };
+		gbl_panelPerfil.columnWidths = new int[] { 15, 15, 15, 0, 92, 114, 0, 15, 0 };
+		gbl_panelPerfil.rowHeights = new int[] { 15, 0, 0, 0, 0, 0, 15, 0 };
+		gbl_panelPerfil.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_panelPerfil.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE };
 		panelPerfil.setLayout(gbl_panelPerfil);
 
 		JLabel profilePic = new JLabel("");
@@ -85,9 +82,7 @@ public class ProfileWindow {
 		}
 		profilePic.setIcon(pic);
 		GridBagConstraints gbc_profilePic = new GridBagConstraints();
-		gbc_profilePic.gridwidth = 2;
 		gbc_profilePic.gridheight = 4;
-		gbc_profilePic.anchor = GridBagConstraints.WEST;
 		gbc_profilePic.insets = new Insets(0, 0, 5, 5);
 		gbc_profilePic.gridx = 1;
 		gbc_profilePic.gridy = 1;
@@ -97,7 +92,7 @@ public class ProfileWindow {
 		nickname.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		GridBagConstraints gbc_nickname = new GridBagConstraints();
 		gbc_nickname.insets = new Insets(0, 0, 5, 5);
-		gbc_nickname.gridx = 4;
+		gbc_nickname.gridx = 3;
 		gbc_nickname.gridy = 2;
 		panelPerfil.add(nickname, gbc_nickname);
 
@@ -108,7 +103,7 @@ public class ProfileWindow {
 			followButton.setText("Seguir");
 		GridBagConstraints gbc_followButton = new GridBagConstraints();
 		gbc_followButton.insets = new Insets(0, 0, 5, 5);
-		gbc_followButton.gridx = 5;
+		gbc_followButton.gridx = 4;
 		gbc_followButton.gridy = 2;
 		panelPerfil.add(followButton, gbc_followButton);
 
@@ -116,7 +111,7 @@ public class ProfileWindow {
 		publications.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		GridBagConstraints gbc_publications = new GridBagConstraints();
 		gbc_publications.insets = new Insets(0, 0, 5, 5);
-		gbc_publications.gridx = 4;
+		gbc_publications.gridx = 3;
 		gbc_publications.gridy = 3;
 		panelPerfil.add(publications, gbc_publications);
 
@@ -141,7 +136,7 @@ public class ProfileWindow {
 		following.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		GridBagConstraints gbc_following = new GridBagConstraints();
 		gbc_following.insets = new Insets(0, 0, 5, 5);
-		gbc_following.gridx = 5;
+		gbc_following.gridx = 4;
 		gbc_following.gridy = 3;
 		panelPerfil.add(following, gbc_following);
 
@@ -166,7 +161,7 @@ public class ProfileWindow {
 		followers.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		GridBagConstraints gbc_follows = new GridBagConstraints();
 		gbc_follows.insets = new Insets(0, 0, 5, 5);
-		gbc_follows.gridx = 7;
+		gbc_follows.gridx = 5;
 		gbc_follows.gridy = 3;
 		panelPerfil.add(followers, gbc_follows);
 
@@ -175,42 +170,43 @@ public class ProfileWindow {
 		fullname.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		GridBagConstraints gbc_fullname = new GridBagConstraints();
 		gbc_fullname.insets = new Insets(0, 0, 5, 5);
-		gbc_fullname.gridx = 4;
+		gbc_fullname.gridx = 3;
 		gbc_fullname.gridy = 4;
 		panelPerfil.add(fullname, gbc_fullname);
-		
-		DefaultListModel<Photo> photoList = Controller.getInstancia().getPhothosProfile(searchedUser);
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
 		gbc_scrollPane.insets = new Insets(0, 0, 5, 5);
 		gbc_scrollPane.fill = GridBagConstraints.BOTH;
-		gbc_scrollPane.gridwidth = 4;
-		gbc_scrollPane.gridx = 4;
-		gbc_scrollPane.gridy = 6;
+		gbc_scrollPane.gridwidth = 3;
+		gbc_scrollPane.gridx = 3;
+		gbc_scrollPane.gridy = 5;
 		panelPerfil.add(scrollPane, gbc_scrollPane);
+
+		DefaultListModel<Photo> photoList = Controller.getInstancia().getPhothosProfile(searchedUser);
+
 		JList<Photo> publicationList = new JList<>(photoList);
 		scrollPane.setViewportView(publicationList);
 		publicationList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 		publicationList.setVisibleRowCount(-1);
 		publicationList.ensureIndexIsVisible(publicationList.getHeight());
 		publicationList.setCellRenderer(new PhotoListRender());
-		
+
 		publicationList.addListSelectionListener(new ListSelectionListener() {
 
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
 				if (!e.getValueIsAdjusting()) {
 					JPanel panelCentral = mw.getPanelCentral();
-					JPanel panelPublication = new PublicationWindow(selfUser,
-							publicationList.getSelectedValue(), publicationList.getSelectedValue().getUser(), mw).getPublicationPanel();
+					JPanel panelPublication = new PublicationWindow(selfUser, publicationList.getSelectedValue(),
+							publicationList.getSelectedValue().getUser(), mw).getPublicationPanel();
 					panelCentral.add(panelPublication, "panelPublication");
 					CardLayout cL = (CardLayout) panelCentral.getLayout();
 					cL.show(panelCentral, "panelPublication");
 				}
 			}
 		});
-		
+
 		publicationList.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -251,7 +247,7 @@ public class ProfileWindow {
 					Controller.getInstancia().unfollow(selfUser, searchedUser);
 					followButton.setText("Seguir");
 				}
-				
+
 				int numFollowingUsers = Controller.getInstancia().getNumUsersFollowing(selfUser);
 				if (numFollowingUsers == 1)
 					mw.getSPW().getFollowingLabel().setText(numFollowingUsers + " seguido");
