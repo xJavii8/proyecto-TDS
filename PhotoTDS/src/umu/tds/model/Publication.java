@@ -25,6 +25,17 @@ public class Publication {
 		this.hashtags = new LinkedList<Hashtag>();
 		this.comments = new LinkedList<Comment>();
 	}
+	
+	public Publication(String title, Date datePublication, String description, int likes, String user, List<Comment> comments) {
+		super();
+		this.title = title;
+		this.datePublication = datePublication;
+		this.description = description;
+		this.likes = likes;
+		this.user = user;
+		this.hashtags = new LinkedList<Hashtag>();
+		this.comments = comments;
+	}
 
 	public Publication(String title, Date datePublication, String description, String user) {
 		super();

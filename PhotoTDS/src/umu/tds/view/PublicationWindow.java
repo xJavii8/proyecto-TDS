@@ -341,7 +341,12 @@ public class PublicationWindow {
 		gbc_descriptionPhoto.gridy = 15;
 		publicationPanel.add(descriptionPhoto, gbc_descriptionPhoto);
 		
-		viewComments = new JLabel("Ver " + p.getComments().size() + " comentarios");
+		viewComments = new JLabel("");
+		int commentsSize = p.getComments().size();
+		if(commentsSize == 1)
+			viewComments.setText("Ver " + commentsSize + " comentario");
+		else
+			viewComments.setText("Ver " + commentsSize + " comentarios");
 		viewComments.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -360,7 +365,7 @@ public class PublicationWindow {
 			}
 		});
 		viewComments.setForeground(Color.GRAY);
-		if(p.getComments().size() == 0)
+		if(commentsSize == 0)
 			viewComments.setVisible(false);
 		viewComments.setFont(new Font("Bahnschrift", Font.PLAIN, 16));
 		GridBagConstraints gbc_viewComments = new GridBagConstraints();
