@@ -21,20 +21,16 @@ public class PDFGen {
 			e.printStackTrace();
 		}
 		doc.open();
-		PdfPTable tabla = new PdfPTable(4);
-		tabla.addCell("Número");
+		PdfPTable tabla = new PdfPTable(3);
 		tabla.addCell("Usuario");
 		tabla.addCell("Email");
 		tabla.addCell("Descripción");
 
 		if (!followers.isEmpty()) {
-			int numUser = 1;
 			for (User u : followers) {
-				tabla.addCell(Integer.toString(numUser));
 				tabla.addCell(u.getUsername());
 				tabla.addCell(u.getEmail());
 				tabla.addCell(u.getDescription());
-				numUser++;
 			}
 		}
 
