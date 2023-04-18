@@ -446,6 +446,7 @@ public class Controller implements PropertyChangeListener {
 		return publRepo.getAllPublications().stream().filter(publication -> publication.getHashtags().contains(hashtag))
 				.collect(Collectors.toList());
 	}
+
 	
 	public void like(String user, Publication p) {
 		p.addLike();
