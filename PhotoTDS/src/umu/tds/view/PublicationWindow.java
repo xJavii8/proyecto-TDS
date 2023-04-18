@@ -30,6 +30,7 @@ import javax.swing.JButton;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JList;
+import java.awt.Color;
 
 public class PublicationWindow {
 
@@ -49,8 +50,7 @@ public class PublicationWindow {
 	private JButton borrar;
 	private JPanel panelCentral;
 	private JPanel panelPerfilPersonal;
-	private JScrollPane scrollPane;
-	private JList<Comment> comentarios;
+	private JLabel viewComments;
 
 	/**
 	 * Create the application.
@@ -70,26 +70,23 @@ public class PublicationWindow {
 	public JPanel getPublicationPanel() {
 		return publicationPanel;
 	}
-	
-	
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 620, 608);
+		frame.setBounds(100, 100, 620, 583);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		publicationPanel = new JPanel();
 		frame.getContentPane().add(publicationPanel, BorderLayout.CENTER);
 		GridBagLayout gbl_panel = new GridBagLayout();
-		gbl_panel.columnWidths = new int[] { 15, 25, 50, 0, 15, 0, 0, 75, 0, 0, 120, 0, 0, 0, 0, 0, 15, 0 };
-		gbl_panel.rowHeights = new int[] { 15, 0, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 0, 0, 0, 15, 0, 0, 15, 0 };
-		gbl_panel.columnWeights = new double[] { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+		gbl_panel.columnWidths = new int[] { 15, 25, 50, 0, 15, 0, 0, 75, 0, 0, 200, 0 };
+		gbl_panel.rowHeights = new int[] { 15, 0, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 0, 0, 0, 0, 0, 0 };
+		gbl_panel.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_panel.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 				0.0, 0.0, 0.0, Double.MIN_VALUE };
-		gbl_panel.rowWeights = new double[] { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-				0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE };
 		publicationPanel.setLayout(gbl_panel);
 		ImageIcon pic = Utilities.getCircleIcon(user.getProfilePic());
 		if (pic.getIconHeight() != Constantes.SELF_USER_PIC_SIZE
@@ -107,6 +104,8 @@ public class PublicationWindow {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (user.getUsername().equals(userLogged.getUsername())) {
+					panelPerfilPersonal = new SelfProfileWindow(userLogged.getUsername(), mw).getPanelPerfilPersonal();
+					panelCentral.add(panelPerfilPersonal, "panelPerfilPersonal");
 					CardLayout cL = (CardLayout) panelCentral.getLayout();
 					cL.show(panelCentral, "panelPerfilPersonal");
 				} else {
@@ -186,7 +185,7 @@ public class PublicationWindow {
 		}
 		photo.setIcon(photoPub);
 		GridBagConstraints gbc_photo = new GridBagConstraints();
-		gbc_photo.gridwidth = 12;
+		gbc_photo.gridwidth = 7;
 		gbc_photo.gridheight = 9;
 		gbc_photo.insets = new Insets(0, 0, 5, 5);
 		gbc_photo.gridx = 3;
@@ -234,7 +233,6 @@ public class PublicationWindow {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				CommentsWindow commentW = new CommentsWindow();
-				frame.setVisible(false);
 				commentW.show();
 			}
 
@@ -301,6 +299,8 @@ public class PublicationWindow {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (user.getUsername().equals(userLogged.getUsername())) {
+					panelPerfilPersonal = new SelfProfileWindow(userLogged.getUsername(), mw).getPanelPerfilPersonal();
+					panelCentral.add(panelPerfilPersonal, "panelPerfilPersonal");
 					CardLayout cL = (CardLayout) panelCentral.getLayout();
 					cL.show(panelCentral, "panelPerfilPersonal");
 				} else {
@@ -335,36 +335,41 @@ public class PublicationWindow {
 		descriptionPhoto.setText(p.getDescription());
 		GridBagConstraints gbc_descriptionPhoto = new GridBagConstraints();
 		gbc_descriptionPhoto.anchor = GridBagConstraints.WEST;
-		gbc_descriptionPhoto.gridwidth = 12;
-		gbc_descriptionPhoto.insets = new Insets(0, 0, 5, 5);
+		gbc_descriptionPhoto.gridwidth = 7;
+		gbc_descriptionPhoto.insets = new Insets(0, 0, 5, 0);
 		gbc_descriptionPhoto.gridx = 4;
 		gbc_descriptionPhoto.gridy = 15;
 		publicationPanel.add(descriptionPhoto, gbc_descriptionPhoto);
 		
-				
-		scrollPane = new JScrollPane();
-		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
-		gbc_scrollPane.gridheight = 2;
-		gbc_scrollPane.gridwidth = 11;
-		gbc_scrollPane.insets = new Insets(0, 0, 5, 5);
-		gbc_scrollPane.fill = GridBagConstraints.BOTH;
-		gbc_scrollPane.gridx = 3;
-		gbc_scrollPane.gridy = 17;
-		publicationPanel.add(scrollPane, gbc_scrollPane);
-		
-		//Le pasamos el título de la publicación y nos saca la lista de comentarios
-		DefaultListModel<Comment> comments = Controller.getInstancia().getComments(p.getTitle());
-		
-		comentarios = new JList<>(comments);
-		scrollPane.setViewportView(comentarios);
-		comentarios.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-		comentarios.setVisibleRowCount(-1);
-		comentarios.ensureIndexIsVisible(comentarios.getHeight());
-		
-		//Tengo que hacer el Cell Render
-		//comentarios.setCellRenderer(new PhotoListRender());
-		
-		
+		viewComments = new JLabel("Ver " + p.getComments().size() + " comentarios");
+		viewComments.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				CommentsWindow commentW = new CommentsWindow();
+				commentW.show();
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				viewComments.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				viewComments.setCursor(Cursor.getDefaultCursor());
+			}
+		});
+		viewComments.setForeground(Color.GRAY);
+		if(p.getComments().size() == 0)
+			viewComments.setVisible(false);
+		viewComments.setFont(new Font("Bahnschrift", Font.PLAIN, 16));
+		GridBagConstraints gbc_viewComments = new GridBagConstraints();
+		gbc_viewComments.gridwidth = 5;
+		gbc_viewComments.insets = new Insets(0, 0, 5, 0);
+		gbc_viewComments.gridx = 3;
+		gbc_viewComments.gridy = 16;
+		publicationPanel.add(viewComments, gbc_viewComments);
+
 	}
 
 }
