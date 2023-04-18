@@ -12,7 +12,6 @@ public class Album extends Publication {
 
 	public Album(String title, Date datePublication, String description, int likes, String user) {
 		super(title, datePublication, description, likes, user);
-		// TODO Auto-generated constructor stub
 	}
 
 	public boolean addPhoto(Photo pho) {
