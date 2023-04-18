@@ -263,7 +263,6 @@ public class SelfProfileWindow {
 		publicationList.setCellRenderer(new PhotoListRender());
 
 		publicationList.addListSelectionListener(new ListSelectionListener() {
-
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
 				if (!e.getValueIsAdjusting()) {
