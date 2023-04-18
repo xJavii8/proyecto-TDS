@@ -12,6 +12,7 @@ import javax.swing.ListCellRenderer;
 
 import umu.tds.controller.Controller;
 import umu.tds.view.Constantes;
+import umu.tds.view.Utilities;
 
 @SuppressWarnings("serial")
 public class CommentListRender extends JPanel implements ListCellRenderer<Comment> {
@@ -31,11 +32,14 @@ public class CommentListRender extends JPanel implements ListCellRenderer<Commen
 		
 		
 		User usuario = Controller.getInstancia().getUser(value.getAuthor());
-		ImageIcon publicationIcon = new ImageIcon(new ImageIcon(usuario.getProfilePic()).getImage()
-				.getScaledInstance(Constantes.PROFILE_PUBLICATION_PIC_SIZE, Constantes.PROFILE_PUBLICATION_PIC_SIZE, Image.SCALE_SMOOTH));
-		
-		commentLabel.setIcon(publicationIcon);
-		commentLabel.setText(value.getText());
+		ImageIcon pic = Utilities.getCircleIcon(usuario.getProfilePic());
+		if (pic.getIconHeight() != Constantes.SELF_USER_PIC_SIZE
+				|| pic.getIconWidth() != Constantes.SELF_USER_PIC_SIZE) {
+			pic = new ImageIcon(pic.getImage().getScaledInstance(Constantes.SELF_USER_PIC_SIZE,
+					Constantes.SELF_USER_PIC_SIZE, Image.SCALE_DEFAULT));
+		}
+		commentLabel.setIcon(pic);
+		commentLabel.setText(value.getAuthor() + " - " + value.getText());
 		
 		if (isSelected) {
 			setBackground(list.getSelectionBackground());

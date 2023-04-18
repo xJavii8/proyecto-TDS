@@ -24,6 +24,7 @@ import umu.tds.view.Utilities;
 public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 	private static ServicioPersistencia serverPersistencia;
 	private static AdaptadorPublicationTDS unicaInstancia = null;
+	private static AdaptadorCommentTDS adaptadorComment = null;
 
 	public static AdaptadorPublicationTDS getUnicaInstancia() {
 		if (unicaInstancia == null) {
@@ -34,6 +35,7 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 
 	private AdaptadorPublicationTDS() {
 		serverPersistencia = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
+		adaptadorComment = AdaptadorCommentTDS.getUnicaInstancia();
 	}
 
 	public void createPublication(Publication publication) {
@@ -130,7 +132,7 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 
 		// Hay que pasar la string a fecha
 		Photo p = new Photo(title, Utilities.stringToDate(datePublication), description, Integer.parseInt(likes), path,
-				user);
+				user, obtenerComentariosDesdeCodigos(comments));
 		p.setCodigo(codigo);
 
 		PoolDAO.getUnicaInstancia().addObjeto(codigo, p);
@@ -165,7 +167,6 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 		path = serverPersistencia.recuperarPropiedadEntidad(ePublication, "path");
 		photos = serverPersistencia.recuperarPropiedadEntidad(ePublication, "photos");
 		user = serverPersistencia.recuperarPropiedadEntidad(ePublication, "user");
-		comments = serverPersistencia.recuperarPropiedadEntidad(ePublication, "comentarios");
 
 		Album p = new Album(title, Utilities.stringToDate(datePublication), description, Integer.parseInt(likes), user);
 		p.setCodigo(codigo);
@@ -205,8 +206,6 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 			} else if (pro.getNombre().equals("path")) {
 				pro.setValor(String.valueOf(p.getPath()));
 			} else if (pro.getNombre().equals("comentarios")) {
-				
-				AdaptadorCommentTDS adaptadorComment = AdaptadorCommentTDS.getUnicaInstancia();
 				p.getComments().stream().forEach(c -> adaptadorComment.createComment(c));
 				pro.setValor(obtenerCodigosComentarios(p.getComments()));
 			}
@@ -269,6 +268,15 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 			aux += c.getCodigo() + " ";
 		}
 		return aux.trim();
+	}
+	
+	private List<Comment> obtenerComentariosDesdeCodigos(String comentarios) {
+		List<Comment> commentList = new LinkedList<Comment>();
+		StringTokenizer strTok = new StringTokenizer(comentarios, " ");
+		while (strTok.hasMoreTokens()) {
+			commentList.add(adaptadorComment.readComment(Integer.valueOf((String) strTok.nextElement())));
+		}
+		return commentList;
 	}
 
 }
