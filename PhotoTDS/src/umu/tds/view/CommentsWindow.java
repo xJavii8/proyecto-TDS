@@ -11,21 +11,38 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.JList;
 import javax.swing.JTextPane;
+
+import umu.tds.controller.Controller;
+import umu.tds.model.Comment;
+import umu.tds.model.CommentListRender;
+import umu.tds.model.PhotoListRender;
+import umu.tds.model.Publication;
+import umu.tds.model.User;
+
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.Toolkit;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.Date;
 
 public class CommentsWindow {
 
 	private JFrame frame;
-	private JTextField textField;
+	private JTextField textoComentario;
+	private User user;
+	private Publication pub;
+	private JList<Comment> commentsList;
 
 	/**
 	 * Create the application.
 	 */
-	public CommentsWindow() {
+	public CommentsWindow(Publication pub, User user) {
+		this.pub = pub;
+		this.user = user;
 		initialize();
 	}
 	
@@ -67,8 +84,19 @@ public class CommentsWindow {
 		gbc_scrollPane.gridy = 2;
 		frame.getContentPane().add(scrollPane, gbc_scrollPane);
 		
-		JList list = new JList();
-		scrollPane.setViewportView(list);
+		
+		DefaultListModel<Comment> comments = Controller.getInstancia().getComments(pub.getTitle());
+		if (comments.isEmpty()) {
+			System.out.println("Empty");
+		}else {
+			System.out.println("NOT EMPTY");
+		}
+		commentsList = new JList<>(comments);
+		scrollPane.setViewportView(commentsList);
+		commentsList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+		commentsList.setVisibleRowCount(-1);
+		commentsList.ensureIndexIsVisible(commentsList.getHeight());
+		commentsList.setCellRenderer(new CommentListRender());
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
 		GridBagConstraints gbc_scrollPane_1 = new GridBagConstraints();
@@ -78,11 +106,17 @@ public class CommentsWindow {
 		gbc_scrollPane_1.gridy = 5;
 		frame.getContentPane().add(scrollPane_1, gbc_scrollPane_1);
 		
-		textField = new JTextField();
-		scrollPane_1.setViewportView(textField);
-		textField.setColumns(10);
+		textoComentario = new JTextField();
+		scrollPane_1.setViewportView(textoComentario);
+		textoComentario.setColumns(10);
 		
 		JButton btnEnviar = new JButton("Enviar");
+		btnEnviar.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Controller.getInstancia().addComment(pub, textoComentario.getText(), user.getUsername()); //Publication   //Comentario texto  //User
+			}
+		});
 		GridBagConstraints gbc_btnEnviar = new GridBagConstraints();
 		gbc_btnEnviar.insets = new Insets(0, 0, 5, 5);
 		gbc_btnEnviar.gridx = 4;

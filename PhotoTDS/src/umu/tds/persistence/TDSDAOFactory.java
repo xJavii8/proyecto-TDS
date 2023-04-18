@@ -12,4 +12,9 @@ public class TDSDAOFactory extends DAOFactory {
 	public IAdaptadorPublicationDAO getPublicationDAO() {
 		return AdaptadorPublicationTDS.getUnicaInstancia();
 	}
+	
+	@Override
+	public IAdaptadorCommentDAO getCommentDAO() {
+		return AdaptadorCommentTDS.getUnicaInstancia();
+	}
 }
