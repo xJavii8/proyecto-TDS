@@ -286,7 +286,14 @@ public class Controller implements PropertyChangeListener {
 	}
 	
 	public DefaultListModel<Comment> getComments (String tituloPub){
-		return (DefaultListModel<Comment>) publRepo.getPublication(tituloPub).get().getComments();
+		Publication publ = publRepo.getPublication(tituloPub).get();
+		DefaultListModel<Comment> comments = new DefaultListModel<>();
+		List<Comment> comentarios = publ.getComments();
+		for (Comment c : comentarios) {
+			comments.addElement(c);
+		}
+		
+		return comments;
 	}
 
 	public boolean updateUser(User user, String fullname, String username, String description, String profilePicPath) {
