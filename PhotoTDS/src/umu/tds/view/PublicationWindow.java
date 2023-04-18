@@ -70,6 +70,8 @@ public class PublicationWindow {
 	public JPanel getPublicationPanel() {
 		return publicationPanel;
 	}
+	
+	
 
 	/**
 	 * Initialize the contents of the frame.
@@ -82,8 +84,8 @@ public class PublicationWindow {
 		publicationPanel = new JPanel();
 		frame.getContentPane().add(publicationPanel, BorderLayout.CENTER);
 		GridBagLayout gbl_panel = new GridBagLayout();
-		gbl_panel.columnWidths = new int[] { 15, 25, 50, 0, 15, 0, 0, 75, 0, 0, 0, 0, 0, 0, 0, 0, 15, 0 };
-		gbl_panel.rowHeights = new int[] { 15, 0, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 0, 0, 0, 0, 0, 0, 0, 0 };
+		gbl_panel.columnWidths = new int[] { 15, 25, 50, 0, 15, 0, 0, 75, 0, 0, 120, 0, 0, 0, 0, 0, 15, 0 };
+		gbl_panel.rowHeights = new int[] { 15, 0, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 0, 0, 0, 15, 0, 0, 15, 0 };
 		gbl_panel.columnWeights = new double[] { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 				0.0, 0.0, 0.0, Double.MIN_VALUE };
 		gbl_panel.rowWeights = new double[] { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -231,6 +233,9 @@ public class PublicationWindow {
 		comment.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				CommentsWindow commentW = new CommentsWindow();
+				frame.setVisible(false);
+				commentW.show();
 			}
 
 			@Override
