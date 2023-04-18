@@ -12,7 +12,7 @@ import tds.driver.ServicioPersistencia;
 import umu.tds.model.Comment;
 import umu.tds.view.Utilities;
 
-public class AdaptadorCommentTDS {
+public class AdaptadorCommentTDS implements IAdaptadorCommentDAO {
 	private static ServicioPersistencia serverPersistencia;
 	private static AdaptadorCommentTDS unicaInstancia = null;
 
@@ -29,7 +29,7 @@ public class AdaptadorCommentTDS {
 
 	public void createComment(Comment c) {
 		Entidad eComment = null;
-
+		System.out.println("Hola");
 		try {
 			eComment = serverPersistencia.recuperarEntidad(c.getCodigo());
 		} catch (NullPointerException e) {
@@ -47,6 +47,7 @@ public class AdaptadorCommentTDS {
 
 		eComment = serverPersistencia.registrarEntidad(eComment);
 		c.setCodigo(eComment.getId());
+		System.out.println("Comentario Creado con id: " + Integer.toString(eComment.getId()));
 
 	}
 
@@ -105,6 +106,24 @@ public class AdaptadorCommentTDS {
 		}
 
 		return comentarios;
+	}
+
+	@Override
+	public void updateComentario(Comment u) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteComentario(Comment u) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<Comment> readAllComment() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
