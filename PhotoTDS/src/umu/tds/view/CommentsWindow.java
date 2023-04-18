@@ -92,18 +92,9 @@ public class CommentsWindow {
 		gbc_scrollPane.gridy = 2;
 		frame.getContentPane().add(scrollPane, gbc_scrollPane);
 		
-		
 		DefaultListModel<Comment> comments = Controller.getInstancia().getComments(pub.getTitle());
-		if (comments.isEmpty()) {
-			System.out.println("Empty");
-		}else {
-			System.out.println("NOT EMPTY");
-		}
 		commentsList = new JList<>(comments);
 		scrollPane.setViewportView(commentsList);
-		commentsList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-		commentsList.setVisibleRowCount(-1);
-		commentsList.ensureIndexIsVisible(commentsList.getHeight());
 		commentsList.setCellRenderer(new CommentListRender());
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
@@ -122,7 +113,9 @@ public class CommentsWindow {
 		btnEnviar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				Controller.getInstancia().addComment(pub, textoComentario.getText(), user.getUsername()); //Publication   //Comentario texto  //User
+				Controller.getInstancia().addComment(pub, textoComentario.getText(), user.getUsername());
+				DefaultListModel<Comment> comments = Controller.getInstancia().getComments(pub.getTitle());
+				commentsList.setModel(comments);
 			}
 		});
 		GridBagConstraints gbc_btnEnviar = new GridBagConstraints();

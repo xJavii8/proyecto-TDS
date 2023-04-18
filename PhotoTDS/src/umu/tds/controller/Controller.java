@@ -315,7 +315,6 @@ public class Controller implements PropertyChangeListener {
 
 	
 	public boolean addComment(Publication publ, String comment, String user) {
-
 		publ.addComment(comment, this.userRepo.getUser(user).get().getUsername());
 		this.publRepo.updatePublication(publ);
 		return true;

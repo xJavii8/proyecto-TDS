@@ -1,13 +1,14 @@
 package umu.tds.model;
 
 import java.util.Date;
+import java.util.List;
 
 public class Photo extends Publication {
 	private String path;
 
 	// Método constructor
-	public Photo(String title, Date datePublication, String description, int likes, String path, String user) {
-		super(title, datePublication, description, likes, user);
+	public Photo(String title, Date datePublication, String description, int likes, String path, String user, List<Comment> comentarios) {
+		super(title, datePublication, description, likes, user, comentarios);
 		this.path = path;
 	}
 	

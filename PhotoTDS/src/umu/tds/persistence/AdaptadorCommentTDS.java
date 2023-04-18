@@ -29,7 +29,6 @@ public class AdaptadorCommentTDS implements IAdaptadorCommentDAO {
 
 	public void createComment(Comment c) {
 		Entidad eComment = null;
-		System.out.println("Hola");
 		try {
 			eComment = serverPersistencia.recuperarEntidad(c.getCodigo());
 		} catch (NullPointerException e) {
@@ -47,7 +46,6 @@ public class AdaptadorCommentTDS implements IAdaptadorCommentDAO {
 
 		eComment = serverPersistencia.registrarEntidad(eComment);
 		c.setCodigo(eComment.getId());
-		System.out.println("Comentario Creado con id: " + Integer.toString(eComment.getId()));
 
 	}
 
@@ -106,24 +104,6 @@ public class AdaptadorCommentTDS implements IAdaptadorCommentDAO {
 		}
 
 		return comentarios;
-	}
-
-	@Override
-	public void updateComentario(Comment u) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void deleteComentario(Comment u) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public List<Comment> readAllComment() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }
