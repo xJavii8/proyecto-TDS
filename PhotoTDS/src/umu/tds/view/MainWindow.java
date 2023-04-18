@@ -9,11 +9,15 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.ResourceBundle.Control;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -46,6 +50,8 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 
 import umu.tds.controller.Controller;
+import umu.tds.model.Photo;
+import umu.tds.model.PhotoListRender;
 import umu.tds.model.Publication;
 import umu.tds.model.User;
 import umu.tds.model.UserListRender;
@@ -78,6 +84,8 @@ public class MainWindow {
 	private JLabel selfProfile;
 	private SelfProfileWindow spw;
 	private JTextField textField;
+	private JList<Photo> photosList;
+	
 
 	/**
 	 * Create the application.
@@ -225,15 +233,15 @@ public class MainWindow {
 		JPanel panelPrincipal = new JPanel();
 		panelCentral.add(panelPrincipal, "panelPrincipal");
 		GridBagLayout gbl_panelPrincipal = new GridBagLayout();
-		gbl_panelPrincipal.columnWidths = new int[] { 0, 0, 0, 122, 128, 0, 0, 0 };
-		gbl_panelPrincipal.rowHeights = new int[] { 0, 0, 0, 0 };
-		gbl_panelPrincipal.columnWeights = new double[] { 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, Double.MIN_VALUE };
-		gbl_panelPrincipal.rowWeights = new double[] { 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_panelPrincipal.columnWidths = new int[] { 15, 15, 15, 122, 128, 0, 0, 15, 15, 0 };
+		gbl_panelPrincipal.rowHeights = new int[] { 15, 15, 0, 15, 15, 0, 15, 15, 0 };
+		gbl_panelPrincipal.columnWeights = new double[] { 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_panelPrincipal.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE };
 		panelPrincipal.setLayout(gbl_panelPrincipal);
 
 		textField = new JTextField();
 		GridBagConstraints gbc_textField = new GridBagConstraints();
-		gbc_textField.insets = new Insets(0, 0, 0, 5);
+		gbc_textField.insets = new Insets(0, 0, 5, 5);
 		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textField.gridx = 3;
 		gbc_textField.gridy = 2;
@@ -252,11 +260,53 @@ public class MainWindow {
 			}
 		});
 		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
-		gbc_btnNewButton.insets = new Insets(0, 0, 0, 5);
+		gbc_btnNewButton.insets = new Insets(0, 0, 5, 5);
 		gbc_btnNewButton.gridx = 4;
 		gbc_btnNewButton.gridy = 2;
 		panelPrincipal.add(btnNewButton, gbc_btnNewButton);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+		gbc_scrollPane.gridwidth = 4;
+		gbc_scrollPane.insets = new Insets(0, 0, 5, 5);
+		gbc_scrollPane.fill = GridBagConstraints.BOTH;
+		gbc_scrollPane.gridx = 3;
+		gbc_scrollPane.gridy = 5;
+		panelPrincipal.add(scrollPane, gbc_scrollPane);
+		
+		
+	
+	
+		DefaultListModel<Photo> photos = Controller.getInstancia().getAllPhotos(selfUsername);
+		
+		
+		
+		photosList = new JList<>(photos);
+		photosList.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				if (!e.getValueIsAdjusting()) {
+					JPanel panelCentral = getPanelCentral();
+					JPanel panelPublication = new PublicationWindow(selfUsername,
+							(Publication)photosList.getSelectedValue(),
+							photosList.getSelectedValue().getUser(), MainWindow.this)
+							.getPublicationPanel();
+							
+					panelCentral.add(panelPublication, "panelPublication");
+					CardLayout cL = (CardLayout) panelCentral.getLayout();
+					cL.show(panelCentral, "panelPublication");
+				}
+			}
+		});
+		scrollPane.setViewportView(photosList);
+		photosList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+		photosList.setVisibleRowCount(-1);
+		photosList.ensureIndexIsVisible(photosList.getHeight());
+		photosList.setCellRenderer(new PhotoListRender());
 
+		
+		
+		
+		
 		logo.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
