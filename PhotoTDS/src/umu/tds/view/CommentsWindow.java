@@ -27,6 +27,7 @@ import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Date;
+import java.awt.Toolkit;
 
 public class CommentsWindow {
 
@@ -35,11 +36,6 @@ public class CommentsWindow {
 	private User user;
 	private Publication pub;
 	private JList<Comment> commentsList;
-
-	/**
-	 * Launch the application.
-	 */
-	
 
 	/**
 	 * Create the application.
@@ -59,7 +55,9 @@ public class CommentsWindow {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
+		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(CommentsWindow.class.getResource("/images/ig64.png")));
+		frame.setSize(450, 300);
+		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{15, 15, 15, 0, 0, 15, 15, 15, 0};
