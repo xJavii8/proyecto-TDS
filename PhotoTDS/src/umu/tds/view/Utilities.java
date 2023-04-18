@@ -17,6 +17,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
@@ -243,5 +246,21 @@ public class Utilities {
 		publicationListPanel.setVisible(true);
 	}
 	
+	public static Date stringToDate(String fechaString) {
+		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+		Date fecha = null;
+		try {
+			fecha = formato.parse(fechaString);
+		} catch (ParseException e) {
+			System.err.println("Error al convertir la fecha: " + e.getMessage());
+		}
+		return fecha;
+	}
+
+	public static String dateToString(Date fechaDate) {
+		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+		String fechaString = formato.format(fechaDate);
+		return fechaString;
+	}
 
 }

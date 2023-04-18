@@ -6,7 +6,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import umu.tds.controller.Controller;
+import umu.tds.model.Comment;
 import umu.tds.model.Photo;
+import umu.tds.model.PhotoListRender;
 import umu.tds.model.Publication;
 import umu.tds.model.User;
 
@@ -25,6 +27,9 @@ import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JButton;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.JList;
 
 public class PublicationWindow {
 
@@ -44,6 +49,8 @@ public class PublicationWindow {
 	private JButton borrar;
 	private JPanel panelCentral;
 	private JPanel panelPerfilPersonal;
+	private JScrollPane scrollPane;
+	private JList<Comment> comentarios;
 
 	/**
 	 * Create the application.
@@ -69,18 +76,18 @@ public class PublicationWindow {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 602, 583);
+		frame.setBounds(100, 100, 620, 608);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		publicationPanel = new JPanel();
 		frame.getContentPane().add(publicationPanel, BorderLayout.CENTER);
 		GridBagLayout gbl_panel = new GridBagLayout();
 		gbl_panel.columnWidths = new int[] { 15, 25, 50, 0, 15, 0, 0, 75, 0, 0, 0, 0, 0, 0, 0, 0, 15, 0 };
-		gbl_panel.rowHeights = new int[] { 15, 0, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 0, 0, 0, 0, 0 };
-		gbl_panel.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+		gbl_panel.rowHeights = new int[] { 15, 0, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 0, 0, 0, 0, 0, 0, 0, 0 };
+		gbl_panel.columnWeights = new double[] { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 				0.0, 0.0, 0.0, Double.MIN_VALUE };
-		gbl_panel.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-				0.0, 0.0, Double.MIN_VALUE };
+		gbl_panel.rowWeights = new double[] { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+				0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE };
 		publicationPanel.setLayout(gbl_panel);
 		ImageIcon pic = Utilities.getCircleIcon(user.getProfilePic());
 		if (pic.getIconHeight() != Constantes.SELF_USER_PIC_SIZE
@@ -328,6 +335,31 @@ public class PublicationWindow {
 		gbc_descriptionPhoto.gridx = 4;
 		gbc_descriptionPhoto.gridy = 15;
 		publicationPanel.add(descriptionPhoto, gbc_descriptionPhoto);
+		
+				
+		scrollPane = new JScrollPane();
+		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+		gbc_scrollPane.gridheight = 2;
+		gbc_scrollPane.gridwidth = 11;
+		gbc_scrollPane.insets = new Insets(0, 0, 5, 5);
+		gbc_scrollPane.fill = GridBagConstraints.BOTH;
+		gbc_scrollPane.gridx = 3;
+		gbc_scrollPane.gridy = 17;
+		publicationPanel.add(scrollPane, gbc_scrollPane);
+		
+		//Le pasamos el título de la publicación y nos saca la lista de comentarios
+		DefaultListModel<Comment> comments = Controller.getInstancia().getComments(p.getTitle());
+		
+		comentarios = new JList<>(comments);
+		scrollPane.setViewportView(comentarios);
+		comentarios.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+		comentarios.setVisibleRowCount(-1);
+		comentarios.ensureIndexIsVisible(comentarios.getHeight());
+		
+		//Tengo que hacer el Cell Render
+		//comentarios.setCellRenderer(new PhotoListRender());
+		
+		
 	}
 
 }
