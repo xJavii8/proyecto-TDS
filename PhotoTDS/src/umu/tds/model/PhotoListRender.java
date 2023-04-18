@@ -1,6 +1,7 @@
 package umu.tds.model;
 
 import java.awt.Component;
+
 import java.awt.FlowLayout;
 import java.awt.Image;
 

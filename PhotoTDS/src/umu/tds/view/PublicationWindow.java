@@ -233,7 +233,7 @@ public class PublicationWindow {
 		comment.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				CommentsWindow commentW = new CommentsWindow();
+				CommentsWindow commentW = new CommentsWindow((Publication)p, userLogged);
 				frame.setVisible(false);
 				commentW.show();
 			}
