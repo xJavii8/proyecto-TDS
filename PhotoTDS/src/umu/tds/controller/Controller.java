@@ -434,6 +434,19 @@ public class Controller implements PropertyChangeListener {
 				.collect(Collectors.toList());
 	}
 
+	public DefaultListModel<Photo> getAllPhotos(String u){
+		DefaultListModel<Photo> p = new DefaultListModel<Photo>();
+		List<Publication> allPub = this.getAllPublications();
+		
+		for (Publication pub : allPub) {
+			if (pub instanceof Photo && !pub.getUser().equals(u)) {
+				p.addElement((Photo) pub);
+			}
+		}
+		
+		return p;
+	}
+	
 	public void like(String user, Publication p) {
 		p.addLike();
 		User u = this.getUser(user);
