@@ -59,7 +59,7 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 							new Propiedad("likes", String.valueOf(publication.getLikes())),
 							new Propiedad("path", ((Photo) publication).getPath()),
 							new Propiedad("user", publication.getUser()),
-					        new Propiedad("comentarios", obtenerCodigosComentarios(publication.getComments()))
+							new Propiedad("comentarios", obtenerCodigosComentarios(publication.getComments()))
 					// new Propiedad("hashtags", );
 					)));
 		} else if (publication instanceof Album) {
@@ -73,8 +73,8 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 							new Propiedad("photos", obtenerCodigosPhotos(((Album) publication).getPhotos())),
 							new Propiedad("user", publication.getUser()),
 							new Propiedad("comentarios", obtenerCodigosComentarios(publication.getComments()))
-							// new Propiedad("hashtags", );
-							)));
+					// new Propiedad("hashtags", );
+					)));
 		}
 
 		// registrar entidad cliente
@@ -127,10 +127,10 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 		path = serverPersistencia.recuperarPropiedadEntidad(ePublication, "path");
 		user = serverPersistencia.recuperarPropiedadEntidad(ePublication, "user");
 		comments = serverPersistencia.recuperarPropiedadEntidad(ePublication, "comentarios");
-		
 
 		// Hay que pasar la string a fecha
-		Photo p = new Photo(title, Utilities.stringToDate(datePublication), description, Integer.parseInt(likes), path, user);
+		Photo p = new Photo(title, Utilities.stringToDate(datePublication), description, Integer.parseInt(likes), path,
+				user);
 		p.setCodigo(codigo);
 
 		PoolDAO.getUnicaInstancia().addObjeto(codigo, p);
@@ -167,7 +167,6 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 		user = serverPersistencia.recuperarPropiedadEntidad(ePublication, "user");
 		comments = serverPersistencia.recuperarPropiedadEntidad(ePublication, "comentarios");
 
-		
 		Album p = new Album(title, Utilities.stringToDate(datePublication), description, Integer.parseInt(likes), user);
 		p.setCodigo(codigo);
 
@@ -201,10 +200,15 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 				pro.setValor(String.valueOf(p.getDescription()));
 			} else if (pro.getNombre().equals("likes")) {
 				pro.setValor(String.valueOf(p.getLikes()));
-			} else if(pro.getNombre().equals("user")) {
+			} else if (pro.getNombre().equals("user")) {
 				pro.setValor(p.getUser());
 			} else if (pro.getNombre().equals("path")) {
 				pro.setValor(String.valueOf(p.getPath()));
+			} else if (pro.getNombre().equals("comentarios")) {
+				
+				AdaptadorCommentTDS adaptadorComment = AdaptadorCommentTDS.getUnicaInstancia();
+				p.getComments().stream().forEach(c -> adaptadorComment.createComment(c));
+				pro.setValor(obtenerCodigosComentarios(p.getComments()));
 			}
 			serverPersistencia.modificarPropiedad(pro);
 		}
@@ -222,7 +226,7 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 				pro.setValor(String.valueOf(a.getDescription()));
 			} else if (pro.getNombre().equals("likes")) {
 				pro.setValor(String.valueOf(a.getLikes()));
-			} else if(pro.getNombre().equals("user")) {
+			} else if (pro.getNombre().equals("user")) {
 				pro.setValor(a.getUser());
 			} else if (pro.getNombre().equals("fotos")) {
 				pro.setValor(obtenerCodigosPhotos(a.getPhotos()));
@@ -241,7 +245,7 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 		List<Entidad> eAlbums = serverPersistencia.recuperarEntidades("album");
 		List<Entidad> ePublications = new LinkedList<Entidad>(ePhotos);
 		ePublications.addAll(eAlbums);
-		
+
 		List<Publication> publications = new LinkedList<Publication>();
 
 		for (Entidad ePublication : ePublications) {
@@ -258,7 +262,7 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 		}
 		return aux.trim();
 	}
-	
+
 	private String obtenerCodigosComentarios(List<Comment> listaComentarios) {
 		String aux = "";
 		for (Comment c : listaComentarios) {
@@ -267,5 +271,4 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 		return aux.trim();
 	}
 
-	
 }

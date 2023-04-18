@@ -2,6 +2,7 @@ package umu.tds.persistence;
 
 import java.util.List;
 
+
 import umu.tds.model.Publication;
 
 public interface IAdaptadorPublicationDAO {

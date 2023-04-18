@@ -96,7 +96,7 @@ public class Publication {
 	}
 
 	public Comment addComment(String comment, String user) {
-		Comment com = new Comment(codigo, comment, user, new Date());
+		Comment com = new Comment(comment, user, new Date());
 		this.comments.add(com);
 		return com;
 	}
