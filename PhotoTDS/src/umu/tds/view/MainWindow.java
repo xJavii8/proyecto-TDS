@@ -278,6 +278,7 @@ public class MainWindow {
 		selfProfile.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				spw = new SelfProfileWindow(selfUsername, MainWindow.this);
 				JPanel panelPerfilPersonal = spw.getPanelPerfilPersonal();
 				panelCentral.add(panelPerfilPersonal, "panelPerfilPersonal");
 				CardLayout cL = (CardLayout) panelCentral.getLayout();
