@@ -15,9 +15,11 @@ import beans.Propiedad;
 import tds.driver.FactoriaServicioPersistencia;
 import tds.driver.ServicioPersistencia;
 import umu.tds.model.Album;
+import umu.tds.model.Comment;
 import umu.tds.model.Photo;
 import umu.tds.model.Publication;
 import umu.tds.model.User;
+import umu.tds.view.Utilities;
 
 public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 	private static ServicioPersistencia serverPersistencia;
@@ -52,12 +54,12 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 			ePublication.setNombre("photo");
 			ePublication.setPropiedades(
 					new ArrayList<Propiedad>(Arrays.asList(new Propiedad("title", publication.getTitle()),
-							new Propiedad("datePublication", dateToString(publication.getDatePublication())),
+							new Propiedad("datePublication", Utilities.dateToString(publication.getDatePublication())),
 							new Propiedad("description", publication.getDescription()),
 							new Propiedad("likes", String.valueOf(publication.getLikes())),
 							new Propiedad("path", ((Photo) publication).getPath()),
-							new Propiedad("user", publication.getUser())
-					// new Propiedad("comentarios", ),
+							new Propiedad("user", publication.getUser()),
+					        new Propiedad("comentarios", obtenerCodigosComentarios(publication.getComments()))
 					// new Propiedad("hashtags", );
 					)));
 		} else if (publication instanceof Album) {
@@ -65,12 +67,12 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 			ePublication.setNombre("album");
 			ePublication.setPropiedades(
 					new ArrayList<Propiedad>(Arrays.asList(new Propiedad("title", publication.getTitle()),
-							new Propiedad("datePublication", dateToString(publication.getDatePublication())),
+							new Propiedad("datePublication", Utilities.dateToString(publication.getDatePublication())),
 							new Propiedad("description", publication.getDescription()),
 							new Propiedad("likes", String.valueOf(publication.getLikes())),
 							new Propiedad("photos", obtenerCodigosPhotos(((Album) publication).getPhotos())),
-							new Propiedad("user", publication.getUser())
-							// new Propiedad("comentarios", ),
+							new Propiedad("user", publication.getUser()),
+							new Propiedad("comentarios", obtenerCodigosComentarios(publication.getComments()))
 							// new Propiedad("hashtags", );
 							)));
 		}
@@ -113,7 +115,7 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 		String user;
 		String path;
 
-		// String comments
+		String comments;
 		// String hashtags
 
 		// recuperar entidad
@@ -124,9 +126,11 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 		likes = serverPersistencia.recuperarPropiedadEntidad(ePublication, "likes");
 		path = serverPersistencia.recuperarPropiedadEntidad(ePublication, "path");
 		user = serverPersistencia.recuperarPropiedadEntidad(ePublication, "user");
+		comments = serverPersistencia.recuperarPropiedadEntidad(ePublication, "comentarios");
+		
 
 		// Hay que pasar la string a fecha
-		Photo p = new Photo(title, stringToDate(datePublication), description, Integer.parseInt(likes), path, user);
+		Photo p = new Photo(title, Utilities.stringToDate(datePublication), description, Integer.parseInt(likes), path, user);
 		p.setCodigo(codigo);
 
 		PoolDAO.getUnicaInstancia().addObjeto(codigo, p);
@@ -147,7 +151,7 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 
 		String photos;
 
-		// String comments
+		String comments;
 		// String hashtags
 
 		// recuperar entidad
@@ -161,8 +165,10 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 		path = serverPersistencia.recuperarPropiedadEntidad(ePublication, "path");
 		photos = serverPersistencia.recuperarPropiedadEntidad(ePublication, "photos");
 		user = serverPersistencia.recuperarPropiedadEntidad(ePublication, "user");
+		comments = serverPersistencia.recuperarPropiedadEntidad(ePublication, "comentarios");
 
-		Album p = new Album(title, stringToDate(datePublication), description, Integer.parseInt(likes), user);
+		
+		Album p = new Album(title, Utilities.stringToDate(datePublication), description, Integer.parseInt(likes), user);
 		p.setCodigo(codigo);
 
 		PoolDAO.getUnicaInstancia().addObjeto(codigo, p);
@@ -190,7 +196,7 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 			if (pro.getNombre().equals("tittle")) {
 				pro.setValor(String.valueOf(p.getTitle()));
 			} else if (pro.getNombre().equals("datePublication")) {
-				pro.setValor(dateToString(p.getDatePublication()));
+				pro.setValor(Utilities.dateToString(p.getDatePublication()));
 			} else if (pro.getNombre().equals("description")) {
 				pro.setValor(String.valueOf(p.getDescription()));
 			} else if (pro.getNombre().equals("likes")) {
@@ -211,7 +217,7 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 			if (pro.getNombre().equals("tittle")) {
 				pro.setValor(String.valueOf(a.getTitle()));
 			} else if (pro.getNombre().equals("datePublication")) {
-				pro.setValor(dateToString(a.getDatePublication()));
+				pro.setValor(Utilities.dateToString(a.getDatePublication()));
 			} else if (pro.getNombre().equals("description")) {
 				pro.setValor(String.valueOf(a.getDescription()));
 			} else if (pro.getNombre().equals("likes")) {
@@ -252,21 +258,14 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 		}
 		return aux.trim();
 	}
-
-	private Date stringToDate(String fechaString) {
-		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
-		Date fecha = null;
-		try {
-			fecha = formato.parse(fechaString);
-		} catch (ParseException e) {
-			System.err.println("Error al convertir la fecha: " + e.getMessage());
+	
+	private String obtenerCodigosComentarios(List<Comment> listaComentarios) {
+		String aux = "";
+		for (Comment c : listaComentarios) {
+			aux += c.getCodigo() + " ";
 		}
-		return fecha;
+		return aux.trim();
 	}
 
-	private String dateToString(Date fechaDate) {
-		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
-		String fechaString = formato.format(fechaDate);
-		return fechaString;
-	}
+	
 }

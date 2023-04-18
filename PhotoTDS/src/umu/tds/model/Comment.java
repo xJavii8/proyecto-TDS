@@ -3,7 +3,7 @@ package umu.tds.model;
 import java.util.Date;
 
 public class Comment {
-	private int code;
+	private int codigo;
 	private String text;
 	private String author;
 	private Date publishedDate;
@@ -11,7 +11,7 @@ public class Comment {
 	//MÉTODO CONSTRUCTOR
 	public Comment(int code, String text, String author, Date publishedDate) {
 		super();
-		this.code = code;
+		this.codigo = code;
 		this.text = text;
 		this.author = author;
 		this.publishedDate = publishedDate;
@@ -26,12 +26,12 @@ public class Comment {
 
 
 	// GETTERS AND SETTERS
-	public int getCode() {
-		return code;
+	public int getCodigo() {
+		return codigo;
 	}
 
-	public void setCode(int code) {
-		this.code = code;
+	public void setCodigo(int code) {
+		this.codigo = code;
 	}
 
 	public String getText() {
