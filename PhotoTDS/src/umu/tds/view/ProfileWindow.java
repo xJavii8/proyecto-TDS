@@ -26,6 +26,7 @@ import javax.swing.JPanel;
 import umu.tds.controller.Controller;
 import umu.tds.model.Photo;
 import umu.tds.model.PhotoListRender;
+import umu.tds.model.ProfilePhotoListRender;
 import umu.tds.model.User;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
@@ -41,6 +42,7 @@ public class ProfileWindow {
 	private String selfUser;
 	private String searchedUser;
 	private User profileUser;
+	private User su;
 	private MainWindow mw;
 
 	/**
@@ -50,6 +52,7 @@ public class ProfileWindow {
 		this.selfUser = selfUser;
 		this.searchedUser = searchedUser;
 		this.profileUser = Controller.getInstancia().getUser(searchedUser);
+		this.su = Controller.getInstancia().getUser(selfUser);
 		this.mw = mw;
 		initialize();
 	}
@@ -68,7 +71,7 @@ public class ProfileWindow {
 
 		panelPerfil = new JPanel();
 		GridBagLayout gbl_panelPerfil = new GridBagLayout();
-		gbl_panelPerfil.columnWidths = new int[] { 15, 15, 15, 0, 92, 114, 0, 15, 0 };
+		gbl_panelPerfil.columnWidths = new int[] { 15, 15, 15, 0, 93, 114, 0, 15, 0 };
 		gbl_panelPerfil.rowHeights = new int[] { 15, 0, 0, 0, 0, 0, 15, 0 };
 		gbl_panelPerfil.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		gbl_panelPerfil.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE };
@@ -190,7 +193,7 @@ public class ProfileWindow {
 		publicationList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 		publicationList.setVisibleRowCount(-1);
 		publicationList.ensureIndexIsVisible(publicationList.getHeight());
-		publicationList.setCellRenderer(new PhotoListRender());
+		publicationList.setCellRenderer(new ProfilePhotoListRender());
 
 		publicationList.addListSelectionListener(new ListSelectionListener() {
 
@@ -247,6 +250,11 @@ public class ProfileWindow {
 					Controller.getInstancia().unfollow(selfUser, searchedUser);
 					followButton.setText("Seguir");
 				}
+
+				DefaultListModel<Photo> newMWPhotos = Controller.getInstancia()
+						.getAllPhotos(Controller.getInstancia().getUser(selfUser).getUsersFollowing());
+				
+				mw.getPhotosList().setModel(newMWPhotos);
 
 				int numFollowingUsers = Controller.getInstancia().getNumUsersFollowing(selfUser);
 				if (numFollowingUsers == 1)

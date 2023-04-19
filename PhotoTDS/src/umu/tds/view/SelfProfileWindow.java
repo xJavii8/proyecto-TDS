@@ -10,6 +10,7 @@ import javax.swing.event.ListSelectionListener;
 import umu.tds.controller.Controller;
 import umu.tds.model.Photo;
 import umu.tds.model.PhotoListRender;
+import umu.tds.model.ProfilePhotoListRender;
 import umu.tds.model.User;
 import umu.tds.model.UserListRender;
 
@@ -260,7 +261,7 @@ public class SelfProfileWindow {
 		publicationList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 		publicationList.setVisibleRowCount(-1);
 		publicationList.ensureIndexIsVisible(publicationList.getHeight());
-		publicationList.setCellRenderer(new PhotoListRender());
+		publicationList.setCellRenderer(new ProfilePhotoListRender());
 
 		publicationList.addListSelectionListener(new ListSelectionListener() {
 			@Override

@@ -198,7 +198,7 @@ public class EditProfileVindow {
 				if (resultado == JFileChooser.APPROVE_OPTION) {
 					newProfilePic = chooser.getSelectedFile().getAbsolutePath();
 					String HTMLNewProfilePic = newProfilePic;
-					if (newProfilePic.contains(".png") || newProfilePic.contains(".jpg")) {
+					if (newProfilePic.toLowerCase().endsWith(".png") || newProfilePic.toLowerCase().endsWith(".jpg")) {
 						if (HTMLNewProfilePic.contains(" ")) {
 							HTMLNewProfilePic = HTMLNewProfilePic.replaceAll(" ", "%20");
 						}
