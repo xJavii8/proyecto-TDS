@@ -208,7 +208,8 @@ public class AddPublicationWindow implements IEncendidoListener {
 					if (resultado == JFileChooser.APPROVE_OPTION) {
 						picPublication = chooser.getSelectedFile().getAbsolutePath();
 						String HTMLProfilePic = picPublication;
-						if (picPublication.contains(".png") || picPublication.contains(".jpg")) {
+						if (picPublication.toLowerCase().endsWith(".png")
+								|| picPublication.toLowerCase().endsWith(".jpg")) {
 							if (HTMLProfilePic.contains(" ")) {
 								HTMLProfilePic = HTMLProfilePic.replaceAll(" ", "%20");
 							}

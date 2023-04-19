@@ -1,11 +1,9 @@
 package umu.tds.model;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.Image;
 
 import javax.swing.BorderFactory;
@@ -14,43 +12,26 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
-import javax.swing.SwingConstants;
 
-import umu.tds.controller.Controller;
 import umu.tds.view.Constantes;
-import umu.tds.view.Utilities;
 
 @SuppressWarnings("serial")
-public class PhotoListRender extends JPanel implements ListCellRenderer<Photo> {
+public class ProfilePhotoListRender extends JPanel implements ListCellRenderer<Photo> {
 
 	private JLabel photoLabel;
-	private JLabel userLabel;
 
-	public PhotoListRender() {
+	public ProfilePhotoListRender() {
 		photoLabel = new JLabel();
-		userLabel = new JLabel();
-		setLayout(new BorderLayout(5, 5));
-		add(userLabel, BorderLayout.NORTH);
-		add(photoLabel, BorderLayout.CENTER);
+		setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
+		add(photoLabel);
 	}
 
 	@Override
 	public Component getListCellRendererComponent(JList<? extends Photo> list, Photo p, int index, boolean isSelected,
 			boolean cellHasFocus) {
-		ImageIcon pic = Utilities.getCircleIcon(Controller.getInstancia().getUser(p.getUser()).getProfilePic());
-		if (pic.getIconHeight() != Constantes.SELF_USER_PIC_SIZE
-				|| pic.getIconWidth() != Constantes.SELF_USER_PIC_SIZE) {
-			pic = new ImageIcon(pic.getImage().getScaledInstance(Constantes.SELF_USER_PIC_SIZE,
-					Constantes.SELF_USER_PIC_SIZE, Image.SCALE_DEFAULT));
-		}
-		userLabel.setIcon(pic);
-		userLabel.setText(p.getUser());
-		userLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		userLabel.setFont(new Font("Bahnschrift", Font.BOLD, 14));
 		ImageIcon publicationIcon = new ImageIcon(new ImageIcon(p.getPath()).getImage().getScaledInstance(
 				Constantes.PROFILE_PUBLICATION_PIC_SIZE, Constantes.PROFILE_PUBLICATION_PIC_SIZE, Image.SCALE_SMOOTH));
 		photoLabel.setIcon(publicationIcon);
-		setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
 
 		if (isSelected) {
 			setBackground(list.getSelectionBackground());
