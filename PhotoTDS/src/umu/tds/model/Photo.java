@@ -7,8 +7,8 @@ public class Photo extends Publication {
 	private String path;
 
 	// Método constructor
-	public Photo(String title, Date datePublication, String description, int likes, String path, String user, List<Comment> comentarios) {
-		super(title, datePublication, description, likes, user, comentarios);
+	public Photo(String title, Date datePublication, String description, int likes, String path, String user, List<Comment> comentarios, List<Hashtag> hashtags) {
+		super(title, datePublication, description, likes, user, comentarios, hashtags);
 		this.path = path;
 	}
 	

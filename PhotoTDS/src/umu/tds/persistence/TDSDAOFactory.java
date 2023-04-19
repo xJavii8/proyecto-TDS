@@ -17,4 +17,9 @@ public class TDSDAOFactory extends DAOFactory {
 	public IAdaptadorCommentDAO getCommentDAO() {
 		return AdaptadorCommentTDS.getUnicaInstancia();
 	}
+	
+	@Override
+	public IAdaptadorHashtagDAO getHashtagDAO() {
+		return AdaptadorHashtagTDS.getUnicaInstancia();
+	}
 }
