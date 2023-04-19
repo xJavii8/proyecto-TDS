@@ -2,6 +2,8 @@ package umu.tds.controller;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
@@ -11,8 +13,10 @@ import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 
 import umu.tds.model.Comment;
+import umu.tds.model.Hashtag;
 import umu.tds.model.Photo;
 import umu.tds.model.Publication;
 import umu.tds.model.PublicationRepository;
@@ -20,6 +24,7 @@ import umu.tds.model.User;
 import umu.tds.model.UserRepository;
 import umu.tds.persistence.DAOException;
 import umu.tds.persistence.DAOFactory;
+import umu.tds.persistence.IAdaptadorHashtagDAO;
 import umu.tds.persistence.IAdaptadorPublicationDAO;
 import umu.tds.persistence.IAdaptadorUserDAO;
 import umu.tds.view.Constantes;
@@ -29,16 +34,16 @@ import umu.tds.fotos.MapperFotosXMLtoJava;
 import umu.tds.fotos.Fotos;
 import umu.tds.fotos.Foto;
 
-
 public class Controller implements PropertyChangeListener {
 	private static Controller unicaInstancia;
 
 	private IAdaptadorUserDAO adaptadorUser;
 	private IAdaptadorPublicationDAO adaptadorPublication;
+	private IAdaptadorHashtagDAO adaptadorHashtag;
 
 	private UserRepository userRepo;
 	private PublicationRepository publRepo;
-	
+
 	private Optional<User> actualUser;
 
 	private Controller() {
@@ -66,6 +71,7 @@ public class Controller implements PropertyChangeListener {
 
 		adaptadorUser = factoria.getUserDAO();
 		adaptadorPublication = factoria.getPublicationDAO();
+		adaptadorHashtag = factoria.getHashtagDAO();
 	}
 
 	private void inicializarRepos() {
@@ -133,7 +139,7 @@ public class Controller implements PropertyChangeListener {
 		adaptadorUser.updateUser(user);
 		return true;
 	}
-	
+
 	public DefaultListModel<Photo> getTop10LikedPhotos(String username) {
 		Optional<User> userO = userRepo.getUser(username);
 		if (userO.isEmpty())
@@ -141,14 +147,12 @@ public class Controller implements PropertyChangeListener {
 
 		User user = userO.get();
 		List<Photo> top10PhotosList = user.getPublications().stream()
-		        .filter(publication -> publication instanceof Photo)
-		        .map(publication -> (Photo) publication)
-		        .sorted(Comparator.comparing(Photo::getLikes).reversed())
-		        .limit(Constantes.TOP_LIKED_PHOTOS_PREMIUM)
-		        .collect(Collectors.toList());
+				.filter(publication -> publication instanceof Photo).map(publication -> (Photo) publication)
+				.sorted(Comparator.comparing(Photo::getLikes).reversed()).limit(Constantes.TOP_LIKED_PHOTOS_PREMIUM)
+				.collect(Collectors.toList());
 		DefaultListModel<Photo> top10PhotosDLM = new DefaultListModel<>();
 		top10PhotosList.forEach(top10PhotosDLM::addElement);
-		return top10PhotosDLM;		
+		return top10PhotosDLM;
 	}
 
 	public boolean createExcel(String username, String path) {
@@ -166,10 +170,10 @@ public class Controller implements PropertyChangeListener {
 	}
 
 	public boolean createPDF(String username, String path) {
-		Optional<User> userO= userRepo.getUser(username);
-		if(userO.isEmpty())
+		Optional<User> userO = userRepo.getUser(username);
+		if (userO.isEmpty())
 			return false;
-		
+
 		User user = userO.get();
 		if (!user.isPremium())
 			return false;
@@ -180,44 +184,43 @@ public class Controller implements PropertyChangeListener {
 	}
 
 	public int getNumFollowers(String username) {
-		Optional<User> userO= userRepo.getUser(username);
-		if(userO.isEmpty())
+		Optional<User> userO = userRepo.getUser(username);
+		if (userO.isEmpty())
 			return 0;
-		
+
 		User user = userO.get();
 		return user.getFollowers().size();
 	}
 
 	public int getNumUsersFollowing(String username) {
-		Optional<User> userO= userRepo.getUser(username);
-		if(userO.isEmpty())
+		Optional<User> userO = userRepo.getUser(username);
+		if (userO.isEmpty())
 			return 0;
-		
+
 		User user = userO.get();
 		return user.getUsersFollowing().size();
 	}
 
 	public int getNumPublications(String username) {
-		Optional<User> userO= userRepo.getUser(username);
-		if(userO.isEmpty())
+		Optional<User> userO = userRepo.getUser(username);
+		if (userO.isEmpty())
 			return 0;
-		
+
 		User user = userO.get();
 		return user.getPublications().size();
 	}
 
 	public User getUser(String username) {
 		Optional<User> userO = userRepo.getUser(username);
-		if(userO.isEmpty())
+		if (userO.isEmpty())
 			return null;
-		
+
 		return userO.get();
 	}
 
 	public boolean userIsFollower(String selfUsername, String usernameSearched) {
 		User userSearched = userRepo.getUser(usernameSearched).get();
-		return userSearched.getFollowers().stream()
-	            .anyMatch(user -> user.getUsername().equals(selfUsername));
+		return userSearched.getFollowers().stream().anyMatch(user -> user.getUsername().equals(selfUsername));
 	}
 
 	public boolean follow(String selfUsername, String usernameSearched) {
@@ -250,49 +253,76 @@ public class Controller implements PropertyChangeListener {
 		Matcher emailMatch = Constantes.EMAIL_PAT.matcher(searchString);
 		Matcher fullnameMatch = Constantes.FULLNAME_PAT.matcher(searchString);
 		if (emailMatch.matches()) {
-	        matchingUsers.addAll(allUsers.stream()
-	                .filter(u -> u.getEmail().equals(searchString))
-	                .collect(Collectors.toList()));
-	    } else if (fullnameMatch.matches()) {
-	        matchingUsers.addAll(allUsers.stream()
-	                .filter(u -> u.getFullName().startsWith(searchString) || u.getFullName().equals(searchString))
-	                .collect(Collectors.toList()));
-	    } else {
-	        matchingUsers.addAll(allUsers.stream()
-	                .filter(u -> u.getUsername().startsWith(searchString) || u.getUsername().equals(searchString))
-	                .collect(Collectors.toList()));
-	    }
+			matchingUsers.addAll(
+					allUsers.stream().filter(u -> u.getEmail().equals(searchString)).collect(Collectors.toList()));
+		} else if (fullnameMatch.matches()) {
+			matchingUsers.addAll(allUsers.stream()
+					.filter(u -> u.getFullName().startsWith(searchString) || u.getFullName().equals(searchString))
+					.collect(Collectors.toList()));
+		} else {
+			matchingUsers.addAll(allUsers.stream()
+					.filter(u -> u.getUsername().startsWith(searchString) || u.getUsername().equals(searchString))
+					.collect(Collectors.toList()));
+		}
 
-	    matchingUsers.removeElement(selfUser);
+		matchingUsers.removeElement(selfUser);
 		return matchingUsers;
 	}
-	
+
+	public DefaultListModel<Photo> searchPublicationsByHashtags(String searchText) {
+		DefaultListModel<Photo> pubs = new DefaultListModel<>();
+		List<String> validHashtags = new ArrayList<>();
+
+		Matcher matcher = Constantes.HASHTAG_PAT.matcher(searchText);
+		while (matcher.find()) {
+			validHashtags.add(matcher.group(2));
+		}
+
+		if (validHashtags.isEmpty()) {
+			return pubs;
+		}
+
+		List<Publication> matchingPublications = new LinkedList<>();
+
+		for (Publication p : getAllPublications()) {
+			List<String> hashNames = p.getHashtags().stream().map(Hashtag::getName).collect(Collectors.toList());
+			if(hashNames.containsAll(validHashtags)) {
+				matchingPublications.add(p);
+			}
+		}
+
+		for (Publication p : matchingPublications)
+			pubs.addElement((Photo) p);
+
+		return pubs;
+	}
+
 	public DefaultListModel<User> getFollowingUsers(String username) {
 		User user = userRepo.getUser(username).get();
 		DefaultListModel<User> users = new DefaultListModel<>();
 		List<User> followingUsers = user.getUsersFollowing();
-		for(User u : followingUsers)
+		for (User u : followingUsers)
 			users.addElement(u);
 		return users;
 	}
-	
+
 	public DefaultListModel<User> getFollowers(String username) {
 		User user = userRepo.getUser(username).get();
 		DefaultListModel<User> users = new DefaultListModel<>();
 		List<User> followers = user.getFollowers();
-		for(User u : followers)
+		for (User u : followers)
 			users.addElement(u);
 		return users;
 	}
-	
-	public DefaultListModel<Comment> getComments (String tituloPub){
+
+	public DefaultListModel<Comment> getComments(String tituloPub) {
 		Publication publ = publRepo.getPublication(tituloPub).get();
 		DefaultListModel<Comment> comments = new DefaultListModel<>();
 		List<Comment> comentarios = publ.getComments();
 		for (Comment c : comentarios) {
 			comments.addElement(c);
 		}
-		
+
 		return comments;
 	}
 
@@ -313,56 +343,73 @@ public class Controller implements PropertyChangeListener {
 		return true;
 	}
 
-	
 	public boolean addComment(Publication publ, String comment, String user) {
 		publ.addComment(comment, this.userRepo.getUser(user).get().getUsername());
 		this.publRepo.updatePublication(publ);
 		return true;
 	}
-	
-	public boolean removeComment (Publication publ, Comment comment) {
-		Optional<Comment> com =  publ.getComments().stream()
-		.filter(f -> f.getAuthor().equals(comment.getAuthor()))
-		.filter(f -> f.getText().equals(comment.getText()))
-		.filter(f -> f.getPublishedDate().equals(comment.getPublishedDate()))
-		.findFirst();
-		
+
+	public boolean removeComment(Publication publ, Comment comment) {
+		Optional<Comment> com = publ.getComments().stream().filter(f -> f.getAuthor().equals(comment.getAuthor()))
+				.filter(f -> f.getText().equals(comment.getText()))
+				.filter(f -> f.getPublishedDate().equals(comment.getPublishedDate())).findFirst();
+
 		if (com.isEmpty()) {
 			return false;
 		}
-		
+
 		return publ.removeComment(comment);
 	}
-	
-	
+
+	public boolean addHashtag(Publication p, String hashName) {
+		p.addHashtag(hashName);
+		publRepo.updatePublication(p);
+		return true;
+	}
+
+	public boolean removeHashtag(Publication p, Hashtag hash) {
+		p.removeHashtag(hash);
+		publRepo.updatePublication(p);
+		return true;
+	}
+
 	public boolean createPhoto(String user, String titulo, String descripcion, String path) {
 		User usuario = this.getUser(user);
 		Photo p = usuario.createPhoto(titulo, descripcion, path);
+		List<Hashtag> hashtags = new ArrayList<>();
+		Matcher matcher = Constantes.HASHTAG_PAT.matcher(descripcion);
+		while (matcher.find()) {
+			Hashtag h = new Hashtag(matcher.group(2));
+			adaptadorHashtag.createHashtag(h);
+			hashtags.add(h);
+		}
+			
+		p.setHashtags(hashtags);
 		this.publRepo.createPublication(p);
 		this.adaptadorUser.updateUser(usuario);
 		return true;
 	}
-	
+
 	public boolean deletePhoto(Publication p) {
-		if(this.getPublication(p.getTitle()) == null)
+		if (this.getPublication(p.getTitle()) == null)
 			return false;
-		
+
 		User usuario = this.getUser(p.getUser());
 		usuario.deletePhoto(p);
 		this.publRepo.removePublication(p);
 		this.adaptadorUser.updateUser(usuario);
 		return true;
 	}
-	
+
 	public void uploadPhotosXML(String xmlPath) {
 		CargadorFotos.getInstancia().setXML(xmlPath);
 	}
-	
+
 	public Optional<Publication> getPublication(String titulo) {
 		return this.publRepo.getPublication(titulo);
 	}
-	
-	public DefaultListModel<Photo> getPhothosProfile (String user){
+
+	public DefaultListModel<Photo> getPhotosProfile(String user) {
 		Optional<User> userOpt = this.userRepo.getUser(user);
 		if (userOpt.isEmpty()) {
 			return null;
@@ -377,11 +424,10 @@ public class Controller implements PropertyChangeListener {
 		}
 		return photosUser;
 	}
-	
-	public List<Publication> getAllPublications(){
+
+	public List<Publication> getAllPublications() {
 		return new LinkedList<>(publRepo.getAllPublications());
 	}
-	
 	public DefaultListModel<Photo> getAllPhotos(String u){
 		DefaultListModel<Photo> p = new DefaultListModel<Photo>();
 		List<Publication> allPub = this.getAllPublications();
@@ -394,9 +440,12 @@ public class Controller implements PropertyChangeListener {
 		
 		return p;
 	}
-	
-	
-	
+
+	public List<Publication> getPublicationByHashtag(Hashtag hashtag) {
+		return publRepo.getAllPublications().stream().filter(publication -> publication.getHashtags().contains(hashtag))
+				.collect(Collectors.toList());
+	}
+
 	public void like(String user, Publication p) {
 		p.addLike();
 		User u = this.getUser(user);
@@ -404,7 +453,7 @@ public class Controller implements PropertyChangeListener {
 		adaptadorPublication.updatePublication(p);
 		adaptadorUser.updateUser(u);
 	}
-	
+
 	public void dislike(String user, Publication p) {
 		p.removeLike();
 		User u = this.getUser(user);
@@ -412,35 +461,35 @@ public class Controller implements PropertyChangeListener {
 		adaptadorPublication.updatePublication(p);
 		adaptadorUser.updateUser(u);
 	}
-	
+
 	public boolean userLikedPub(String user, Publication p) {
 		User u = this.getUser(user);
 		List<Publication> allLikedP = u.getLikedPublications();
-		for(Publication likedP : allLikedP) {
-			if(likedP.equals(p)) {
+		for (Publication likedP : allLikedP) {
+			if (likedP.equals(p)) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
+
 	public DefaultListModel<User> getUsersWhoLikedPublication(Publication publication) {
 		DefaultListModel<User> usersWhoLikedPublication = new DefaultListModel<>();
-	    List<User> allUsers = userRepo.getAllUsers();
-	    for (User user : allUsers) {
-	        if (user.getLikedPublications().contains(publication)) {
-	            usersWhoLikedPublication.addElement(user);
-	        }
-	    }
-	    return usersWhoLikedPublication;
+		List<User> allUsers = userRepo.getAllUsers();
+		for (User user : allUsers) {
+			if (user.getLikedPublications().contains(publication)) {
+				usersWhoLikedPublication.addElement(user);
+			}
+		}
+		return usersWhoLikedPublication;
 	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		Fotos fotos = MapperFotosXMLtoJava.cargarFotos(evt.getNewValue().toString());
-		for(Foto f : fotos.getFoto()) {
+		for (Foto f : fotos.getFoto()) {
 			this.createPhoto(actualUser.get().getUsername(), f.getTitulo(), f.getDescripcion(), f.getPath());
 		}
-		
+
 	}
 }

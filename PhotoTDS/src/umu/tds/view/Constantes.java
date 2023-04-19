@@ -17,8 +17,10 @@ public class Constantes {
 
 	public static final String VALID_EMAIL_REGEX = "^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$";
 	public static final String VALID_FULLNAME_REGEX = "^[A-ZÁÉÍÓÚ][a-záéíóú\\s]*$";
+	public static final String VALID_HASHTAG_REGEX = "(#(\\w+))";
 	public static final Pattern EMAIL_PAT = Pattern.compile(VALID_EMAIL_REGEX);
 	public static final Pattern FULLNAME_PAT = Pattern.compile(VALID_FULLNAME_REGEX);
+	public static final Pattern HASHTAG_PAT = Pattern.compile(VALID_HASHTAG_REGEX);
 
 	public static final Color LIGHT_BARS = new Color(230, 230, 230, 230);
 	public static final Color DARK_BARS = new Color(75, 77, 78);
@@ -38,5 +40,7 @@ public class Constantes {
 	public static final int LIKES_DISCOUNT = 3;
 	
 	public static final int TOP_LIKED_PHOTOS_PREMIUM = 10;
+	
+	public static final int MAX_HASH_LENGTH = 15;
 
 }

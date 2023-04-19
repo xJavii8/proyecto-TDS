@@ -37,6 +37,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.EventObject;
 import java.util.Optional;
+import java.util.regex.Matcher;
 
 import javax.swing.SwingConstants;
 import javax.swing.JScrollPane;
@@ -151,6 +152,25 @@ public class AddPublicationWindow implements IEncendidoListener {
 				if (descripArea.getText().length() > Constantes.MAX_DESCRIP_PUB_LENGTH) {
 					descripArea.setText(descripArea.getText().substring(0, Constantes.MAX_DESCRIP_PUB_LENGTH));
 				}
+
+				int numHashtags = 0;
+				Matcher matcher = Constantes.HASHTAG_PAT.matcher(descripArea.getText());
+				while (matcher.find() && numHashtags < Constantes.MAX_HASH_LENGTH) {
+					if (numHashtags == 4) {
+						JOptionPane.showMessageDialog(frame, "Sólo puedes poner 4 hashtags por foto", null,
+								JOptionPane.ERROR_MESSAGE);
+						descripArea.setText(descripArea.getText().substring(0, matcher.start()));
+					} else {
+						numHashtags++;
+						int length = matcher.group(2).length();
+						if (length > 15) {
+							JOptionPane.showMessageDialog(frame,
+									"El hashtag " + matcher.group(1) + " es inválido. Máximo 15 letras por hashtag",
+									null, JOptionPane.ERROR_MESSAGE);
+							descripArea.setText(descripArea.getText().substring(0, matcher.start() + 16));
+						}
+					}
+				}
 			}
 		});
 		scrollPane.setViewportView(descripArea);
@@ -249,7 +269,7 @@ public class AddPublicationWindow implements IEncendidoListener {
 						Controller.getInstancia().createPhoto(user, titulo, descripArea.getText(), picPublication);
 						JOptionPane.showMessageDialog(frame, "Publicación subida", null,
 								JOptionPane.INFORMATION_MESSAGE);
-						DefaultListModel<Photo> photoList = Controller.getInstancia().getPhothosProfile(user);
+						DefaultListModel<Photo> photoList = Controller.getInstancia().getPhotosProfile(user);
 						publicationList.setModel(photoList);
 						int numSelfPub = Controller.getInstancia().getUser(user).getPublications().size();
 						if (numSelfPub == 1)
