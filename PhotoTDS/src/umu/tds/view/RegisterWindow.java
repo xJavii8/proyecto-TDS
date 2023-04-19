@@ -293,7 +293,7 @@ public class RegisterWindow {
 					if (resultado == JFileChooser.APPROVE_OPTION) {
 						profilePic_Register = chooser.getSelectedFile().getAbsolutePath();
 						String HTMLProfilePic = profilePic_Register;
-						if (profilePic_Register.contains(".png") || profilePic_Register.contains(".jpg")) {
+						if (profilePic_Register.toLowerCase().endsWith(".png") || profilePic_Register.toLowerCase().endsWith(".jpg")) {
 							if (HTMLProfilePic.contains(" ")) {
 								HTMLProfilePic = HTMLProfilePic.replaceAll(" ", "%20");
 							}

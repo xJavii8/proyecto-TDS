@@ -83,9 +83,8 @@ public class MainWindow {
 	private JPanel panelCentral;
 	private JLabel selfProfile;
 	private SelfProfileWindow spw;
-	private JTextField textField;
+	private User user;
 	private JList<Photo> photosList;
-	
 
 	/**
 	 * Create the application.
@@ -101,6 +100,7 @@ public class MainWindow {
 		}
 		this.selfProfilePicPath = profilePicPath;
 		this.selfProfile = new JLabel(username);
+		this.user = Controller.getInstancia().getUser(username);
 		this.spw = new SelfProfileWindow(selfUsername, MainWindow.this);
 		initialize();
 	}
@@ -123,6 +123,10 @@ public class MainWindow {
 
 	public void setSPW(SelfProfileWindow spw) {
 		this.spw = spw;
+	}
+
+	public JList<Photo> getPhotosList() {
+		return photosList;
 	}
 
 	/**
@@ -235,37 +239,26 @@ public class MainWindow {
 		GridBagLayout gbl_panelPrincipal = new GridBagLayout();
 		gbl_panelPrincipal.columnWidths = new int[] { 15, 15, 15, 122, 128, 0, 0, 15, 15, 0 };
 		gbl_panelPrincipal.rowHeights = new int[] { 15, 15, 0, 15, 15, 0, 15, 15, 0 };
-		gbl_panelPrincipal.columnWeights = new double[] { 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_panelPrincipal.columnWeights = new double[] { 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0,
+				Double.MIN_VALUE };
 		gbl_panelPrincipal.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE };
 		panelPrincipal.setLayout(gbl_panelPrincipal);
 
-		textField = new JTextField();
-		GridBagConstraints gbc_textField = new GridBagConstraints();
-		gbc_textField.insets = new Insets(0, 0, 5, 5);
-		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textField.gridx = 3;
-		gbc_textField.gridy = 2;
-		panelPrincipal.add(textField, gbc_textField);
-		textField.setColumns(10);
+		DefaultListModel<Photo> photos = Controller.getInstancia().getAllPhotos(user.getUsersFollowing());
 
-		JButton btnNewButton = new JButton("New button");
-		btnNewButton.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				Publication p = Controller.getInstancia().getPublication(textField.getText()).get();
-				JPanel panelPublication = new PublicationWindow(selfUsername, p, p.getUser(), MainWindow.this)
-						.getPublicationPanel();
-				panelCentral.add(panelPublication, "panelPublication");
-				CardLayout cL = (CardLayout) panelCentral.getLayout();
-				cL.show(panelCentral, "panelPublication");
-			}
-		});
-		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
-		gbc_btnNewButton.insets = new Insets(0, 0, 5, 5);
-		gbc_btnNewButton.gridx = 4;
-		gbc_btnNewButton.gridy = 2;
-		panelPrincipal.add(btnNewButton, gbc_btnNewButton);
-		
+		JLabel newPubs = new JLabel("");
+		if (photos.isEmpty())
+			newPubs.setText("No tienes publicaciones nuevas");
+		else
+			newPubs.setText("Estas son las publicaciones de los usuarios que sigues");
+		newPubs.setFont(new Font("Bahnschrift", Font.BOLD, 16));
+		GridBagConstraints gbc_newPubs = new GridBagConstraints();
+		gbc_newPubs.gridwidth = 4;
+		gbc_newPubs.insets = new Insets(0, 0, 5, 5);
+		gbc_newPubs.gridx = 3;
+		gbc_newPubs.gridy = 3;
+		panelPrincipal.add(newPubs, gbc_newPubs);
+
 		JScrollPane scrollPane = new JScrollPane();
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
 		gbc_scrollPane.gridwidth = 4;
@@ -274,24 +267,20 @@ public class MainWindow {
 		gbc_scrollPane.gridx = 3;
 		gbc_scrollPane.gridy = 5;
 		panelPrincipal.add(scrollPane, gbc_scrollPane);
-		
-		
-	
-	
-		DefaultListModel<Photo> photos = Controller.getInstancia().getAllPhotos(selfUsername);
-		
-		
-		
+
 		photosList = new JList<>(photos);
+		if (photos.isEmpty()) {
+			photosList.setVisible(false);
+			scrollPane.setVisible(false);
+		}
 		photosList.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
 				if (!e.getValueIsAdjusting()) {
 					JPanel panelCentral = getPanelCentral();
 					JPanel panelPublication = new PublicationWindow(selfUsername,
-							(Publication)photosList.getSelectedValue(),
-							photosList.getSelectedValue().getUser(), MainWindow.this)
-							.getPublicationPanel();
-							
+							(Publication) photosList.getSelectedValue(), photosList.getSelectedValue().getUser(),
+							MainWindow.this).getPublicationPanel();
+
 					panelCentral.add(panelPublication, "panelPublication");
 					CardLayout cL = (CardLayout) panelCentral.getLayout();
 					cL.show(panelCentral, "panelPublication");
@@ -304,13 +293,13 @@ public class MainWindow {
 		photosList.ensureIndexIsVisible(photosList.getHeight());
 		photosList.setCellRenderer(new PhotoListRender());
 
-		
-		
-		
-		
 		logo.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				DefaultListModel<Photo> p = Controller.getInstancia().getAllPhotos(user.getUsersFollowing());
+				if(!photosList.getModel().equals(p)) {
+					photosList.setModel(p);
+				}
 				CardLayout cL = (CardLayout) panelCentral.getLayout();
 				cL.show(panelCentral, "panelPrincipal");
 			}
