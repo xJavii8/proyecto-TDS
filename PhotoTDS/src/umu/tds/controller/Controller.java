@@ -286,7 +286,7 @@ public class Controller implements PropertyChangeListener {
 
 		for (Publication p : getAllPublications()) {
 			List<String> hashNames = p.getHashtags().stream().map(Hashtag::getName).collect(Collectors.toList());
-			if(hashNames.containsAll(validHashtags)) {
+			if (hashNames.containsAll(validHashtags)) {
 				matchingPublications.add(p);
 			}
 		}
@@ -383,7 +383,7 @@ public class Controller implements PropertyChangeListener {
 			adaptadorHashtag.createHashtag(h);
 			hashtags.add(h);
 		}
-			
+
 		p.setHashtags(hashtags);
 		this.publRepo.createPublication(p);
 		this.adaptadorUser.updateUser(usuario);
@@ -429,16 +429,16 @@ public class Controller implements PropertyChangeListener {
 		return new LinkedList<>(publRepo.getAllPublications());
 	}
 
-	public DefaultListModel<Photo> getAllPhotos(String u){
+	public DefaultListModel<Photo> getAllPhotos(List<User> users) {
 		DefaultListModel<Photo> p = new DefaultListModel<Photo>();
-		List<Publication> allPub = this.getAllPublications();
-		
-		for (Publication pub : allPub) {
-			if (pub instanceof Photo && !pub.getUser().equals(u)) {
-				p.addElement((Photo) pub);
+		for (User u : users) {
+			for (Publication pub : u.getPublications()) {
+				if (pub instanceof Photo) {
+					p.addElement((Photo) pub);
+				}
 			}
 		}
-		
+
 		return p;
 	}
 
@@ -447,7 +447,6 @@ public class Controller implements PropertyChangeListener {
 				.collect(Collectors.toList());
 	}
 
-	
 	public void like(String user, Publication p) {
 		p.addLike();
 		User u = this.getUser(user);
