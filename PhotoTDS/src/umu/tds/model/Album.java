@@ -10,8 +10,8 @@ public class Album extends Publication {
 	private static final int MAX_NUM_PHOTOS = 16;
 	private List<Photo> photos;
 
-	public Album(String title, Date datePublication, String description, int likes, String user) {
-		super(title, datePublication, description, likes, user);
+	public Album(String title, Date datePublication, String description, int likes, String user, List<Hashtag> hashtags) {
+		super(title, datePublication, description, likes, user, hashtags);
 	}
 
 	public boolean addPhoto(Photo pho) {

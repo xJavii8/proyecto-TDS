@@ -16,6 +16,7 @@ import tds.driver.FactoriaServicioPersistencia;
 import tds.driver.ServicioPersistencia;
 import umu.tds.model.Album;
 import umu.tds.model.Comment;
+import umu.tds.model.Hashtag;
 import umu.tds.model.Photo;
 import umu.tds.model.Publication;
 import umu.tds.model.User;
@@ -25,6 +26,8 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 	private static ServicioPersistencia serverPersistencia;
 	private static AdaptadorPublicationTDS unicaInstancia = null;
 	private static AdaptadorCommentTDS adaptadorComment = null;
+	private static AdaptadorHashtagTDS adaptadorHashtag = null;
+	
 
 	public static AdaptadorPublicationTDS getUnicaInstancia() {
 		if (unicaInstancia == null) {
@@ -36,6 +39,7 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 	private AdaptadorPublicationTDS() {
 		serverPersistencia = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
 		adaptadorComment = AdaptadorCommentTDS.getUnicaInstancia();
+		adaptadorHashtag = AdaptadorHashtagTDS.getUnicaInstancia();
 	}
 
 	public void createPublication(Publication publication) {
@@ -61,8 +65,8 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 							new Propiedad("likes", String.valueOf(publication.getLikes())),
 							new Propiedad("path", ((Photo) publication).getPath()),
 							new Propiedad("user", publication.getUser()),
-							new Propiedad("comentarios", obtenerCodigosComentarios(publication.getComments()))
-					// new Propiedad("hashtags", );
+							new Propiedad("comentarios", obtenerCodigosComentarios(publication.getComments())),
+							new Propiedad("hashtags", obtenerCodigosHashtags(publication.getHashtags()))
 					)));
 		} else if (publication instanceof Album) {
 			((Album) publication).getPhotos().stream().forEach(f -> getUnicaInstancia().createPublication(publication));
@@ -74,8 +78,8 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 							new Propiedad("likes", String.valueOf(publication.getLikes())),
 							new Propiedad("photos", obtenerCodigosPhotos(((Album) publication).getPhotos())),
 							new Propiedad("user", publication.getUser()),
-							new Propiedad("comentarios", obtenerCodigosComentarios(publication.getComments()))
-					// new Propiedad("hashtags", );
+							new Propiedad("comentarios", obtenerCodigosComentarios(publication.getComments())),
+							new Propiedad("hashtags", obtenerCodigosHashtags(publication.getHashtags()))
 					)));
 		}
 
@@ -118,7 +122,7 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 		String path;
 
 		String comments;
-		// String hashtags
+		String hashtags;
 
 		// recuperar entidad
 		ePublication = serverPersistencia.recuperarEntidad(codigo);
@@ -129,10 +133,11 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 		path = serverPersistencia.recuperarPropiedadEntidad(ePublication, "path");
 		user = serverPersistencia.recuperarPropiedadEntidad(ePublication, "user");
 		comments = serverPersistencia.recuperarPropiedadEntidad(ePublication, "comentarios");
+		hashtags = serverPersistencia.recuperarPropiedadEntidad(ePublication, "hashtags");
 
 		// Hay que pasar la string a fecha
 		Photo p = new Photo(title, Utilities.stringToDate(datePublication), description, Integer.parseInt(likes), path,
-				user, obtenerComentariosDesdeCodigos(comments));
+				user, obtenerComentariosDesdeCodigos(comments), obtenerHashtagsDesdeCodigos(hashtags));
 		p.setCodigo(codigo);
 
 		PoolDAO.getUnicaInstancia().addObjeto(codigo, p);
@@ -153,8 +158,7 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 
 		String photos;
 
-		String comments;
-		// String hashtags
+		String hashtags;
 
 		// recuperar entidad
 		ePublication = serverPersistencia.recuperarEntidad(codigo);
@@ -167,13 +171,14 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 		path = serverPersistencia.recuperarPropiedadEntidad(ePublication, "path");
 		photos = serverPersistencia.recuperarPropiedadEntidad(ePublication, "photos");
 		user = serverPersistencia.recuperarPropiedadEntidad(ePublication, "user");
+		hashtags = serverPersistencia.recuperarPropiedadEntidad(ePublication, "hashtags");
 
-		Album p = new Album(title, Utilities.stringToDate(datePublication), description, Integer.parseInt(likes), user);
-		p.setCodigo(codigo);
+		Album a = new Album(title, Utilities.stringToDate(datePublication), description, Integer.parseInt(likes), user, obtenerHashtagsDesdeCodigos(hashtags));
+		a.setCodigo(codigo);
 
-		PoolDAO.getUnicaInstancia().addObjeto(codigo, p);
+		PoolDAO.getUnicaInstancia().addObjeto(codigo, a);
 
-		return p;
+		return a;
 
 	}
 
@@ -208,6 +213,9 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 			} else if (pro.getNombre().equals("comentarios")) {
 				p.getComments().stream().forEach(c -> adaptadorComment.createComment(c));
 				pro.setValor(obtenerCodigosComentarios(p.getComments()));
+			} else if(pro.getNombre().equals("hashtags")) {
+				p.getHashtags().stream().forEach(h -> adaptadorHashtag.createHashtag(h));
+				pro.setValor(obtenerCodigosHashtags(p.getHashtags()));
 			}
 			serverPersistencia.modificarPropiedad(pro);
 		}
@@ -229,6 +237,9 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 				pro.setValor(a.getUser());
 			} else if (pro.getNombre().equals("fotos")) {
 				pro.setValor(obtenerCodigosPhotos(a.getPhotos()));
+			} else if(pro.getNombre().equals("hashtags")) {
+				a.getHashtags().stream().forEach(h -> adaptadorHashtag.createHashtag(h));
+				pro.setValor(obtenerCodigosHashtags(a.getHashtags()));
 			}
 			serverPersistencia.modificarPropiedad(pro);
 		}
@@ -277,6 +288,23 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 			commentList.add(adaptadorComment.readComment(Integer.valueOf((String) strTok.nextElement())));
 		}
 		return commentList;
+	}
+	
+	private String obtenerCodigosHashtags(List<Hashtag> listaHashtags) {
+		String aux = "";
+		for (Hashtag h : listaHashtags) {
+			aux += h.getCode() + " ";
+		}
+		return aux.trim();
+	}
+	
+	private List<Hashtag> obtenerHashtagsDesdeCodigos(String hashtags) {
+		List<Hashtag> hashtagList = new LinkedList<Hashtag>();
+		StringTokenizer strTok = new StringTokenizer(hashtags, " ");
+		while (strTok.hasMoreTokens()) {
+			hashtagList.add(adaptadorHashtag.readHashtag(Integer.valueOf((String) strTok.nextElement())));
+		}
+		return hashtagList;
 	}
 
 }
