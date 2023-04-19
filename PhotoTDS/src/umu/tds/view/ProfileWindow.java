@@ -183,7 +183,7 @@ public class ProfileWindow {
 		gbc_scrollPane.gridy = 5;
 		panelPerfil.add(scrollPane, gbc_scrollPane);
 
-		DefaultListModel<Photo> photoList = Controller.getInstancia().getPhothosProfile(searchedUser);
+		DefaultListModel<Photo> photoList = Controller.getInstancia().getPhotosProfile(searchedUser);
 
 		JList<Photo> publicationList = new JList<>(photoList);
 		scrollPane.setViewportView(publicationList);

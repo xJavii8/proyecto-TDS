@@ -46,6 +46,7 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 
 import umu.tds.controller.Controller;
+import umu.tds.model.Photo;
 import umu.tds.model.Publication;
 import umu.tds.model.User;
 import umu.tds.model.UserListRender;
@@ -104,15 +105,15 @@ public class MainWindow {
 	public JPanel getPanelCentral() {
 		return panelCentral;
 	}
-	
+
 	public JLabel getSelfProfile() {
 		return selfProfile;
 	}
-	
+
 	public SelfProfileWindow getSPW() {
 		return spw;
 	}
-	
+
 	public void setSPW(SelfProfileWindow spw) {
 		this.spw = spw;
 	}
@@ -245,7 +246,8 @@ public class MainWindow {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				Publication p = Controller.getInstancia().getPublication(textField.getText()).get();
-				JPanel panelPublication = new PublicationWindow(selfUsername, p, p.getUser(), MainWindow.this).getPublicationPanel();
+				JPanel panelPublication = new PublicationWindow(selfUsername, p, p.getUser(), MainWindow.this)
+						.getPublicationPanel();
 				panelCentral.add(panelPublication, "panelPublication");
 				CardLayout cL = (CardLayout) panelCentral.getLayout();
 				cL.show(panelCentral, "panelPublication");
@@ -366,8 +368,10 @@ public class MainWindow {
 
 	private void buscar(String texto) {
 		if (texto.isEmpty() == false) {
-			if (texto.startsWith("#")) {
-
+			if (texto.contains("#")) {
+				DefaultListModel<Photo> matchingPublications = Controller.getInstancia()
+						.searchPublicationsByHashtags(texto);
+				Utilities.listaPublicaciones(MainWindow.this, selfUsername, matchingPublications);
 			} else {
 				DefaultListModel<User> matchingUsers = Controller.getInstancia().search(selfUsername, texto);
 				Utilities.listaUsuarios(MainWindow.this, selfUsername, matchingUsers);

@@ -15,25 +15,27 @@ public class Publication {
 	private List<Comment> comments;
 
 	// M�TODO CONSTRUCTOR
-	public Publication(String title, Date datePublication, String description, int likes, String user) {
+	public Publication(String title, Date datePublication, String description, int likes, String user,
+			List<Hashtag> hashtags) {
 		super();
 		this.title = title;
 		this.datePublication = datePublication;
 		this.description = description;
 		this.likes = likes;
 		this.user = user;
-		this.hashtags = new LinkedList<Hashtag>();
+		this.hashtags = hashtags;
 		this.comments = new LinkedList<Comment>();
 	}
-	
-	public Publication(String title, Date datePublication, String description, int likes, String user, List<Comment> comments) {
+
+	public Publication(String title, Date datePublication, String description, int likes, String user,
+			List<Comment> comments, List<Hashtag> hashtags) {
 		super();
 		this.title = title;
 		this.datePublication = datePublication;
 		this.description = description;
 		this.likes = likes;
 		this.user = user;
-		this.hashtags = new LinkedList<Hashtag>();
+		this.hashtags = hashtags;
 		this.comments = comments;
 	}
 
@@ -113,13 +115,25 @@ public class Publication {
 	}
 
 	public boolean removeComment(Comment comment) {
-
 		if (this.comments.remove(comment)) {
 			return true;
 		} else {
 			return false;
 		}
+	}
+	
+	public Hashtag addHashtag(String hName) {
+		Hashtag h = new Hashtag(hName);
+		this.hashtags.add(h);
+		return h;
+	}
 
+	public boolean removeHashtag(Hashtag h) {
+		if (this.hashtags.remove(h)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public List<Comment> getComments() {
