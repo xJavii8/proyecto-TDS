@@ -70,6 +70,11 @@ public class PublicationWindow {
 	public JPanel getPublicationPanel() {
 		return publicationPanel;
 	}
+	
+	public void restartWindow() {
+		initialize();
+	}
+	
 
 	/**
 	 * Initialize the contents of the frame.
@@ -232,7 +237,7 @@ public class PublicationWindow {
 		comment.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				CommentsWindow commentW = new CommentsWindow((Publication)p, userLogged);
+				CommentsWindow commentW = new CommentsWindow((Publication)p, userLogged, PublicationWindow.this);
 				commentW.show();
 			}
 
@@ -350,7 +355,7 @@ public class PublicationWindow {
 		viewComments.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				CommentsWindow commentW = new CommentsWindow((Publication)p, userLogged);
+				CommentsWindow commentW = new CommentsWindow((Publication)p, userLogged, PublicationWindow.this);
 				commentW.show();
 			}
 

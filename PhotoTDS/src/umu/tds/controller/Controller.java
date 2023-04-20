@@ -357,6 +357,8 @@ public class Controller implements PropertyChangeListener {
 		if (com.isEmpty()) {
 			return false;
 		}
+		
+		this.publRepo.updatePublication(publ);
 
 		return publ.removeComment(comment);
 	}
