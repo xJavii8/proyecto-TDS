@@ -25,10 +25,9 @@ import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Date;
-import java.awt.Toolkit;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
 
@@ -113,6 +112,7 @@ public class CommentsWindow {
 		btnEnviar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				Boolean enviar = false;
 				if (btnEnviar.getText().equals("Enviar")) {
 					Controller.getInstancia().addComment(pub, textoComentario.getText(), user.getUsername());
 					DefaultListModel<Comment> comments = Controller.getInstancia().getComments(pub.getTitle());
@@ -125,7 +125,7 @@ public class CommentsWindow {
 						Controller.getInstancia().removeComment(pub, removeComment);
 						removeComment = null;
 						publicationW.updateCommentsNumber();
-						btnEnviar.setText("Enviar");
+						enviar = true;
 					} else {
 						JOptionPane.showMessageDialog(frame,
 								"No tienes permiso para borrar el comentario " + "seleccionado", null,
@@ -138,6 +138,10 @@ public class CommentsWindow {
 						frame.getContentPane().revalidate();
 						frame.getContentPane().repaint();
 					}
+					
+					if (enviar) {
+						btnEnviar.setText("Enviar");
+					}
 
 				}
 			}
@@ -145,6 +149,7 @@ public class CommentsWindow {
 
 		commentsList.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
+				
 				btnEnviar.setText("Borrar");
 				if (!e.getValueIsAdjusting()) {
 					removeComment = commentsList.getSelectedValue();
