@@ -10,6 +10,7 @@ import javax.swing.JScrollPane;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
 
 import umu.tds.controller.Controller;
@@ -27,7 +28,8 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Date;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
 
 public class CommentsWindow {
 
@@ -36,16 +38,19 @@ public class CommentsWindow {
 	private User user;
 	private Publication pub;
 	private JList<Comment> commentsList;
+	private Comment removeComment;
+	private PublicationWindow publicationW;
 
 	/**
 	 * Create the application.
 	 */
-	public CommentsWindow(Publication pub, User user) {
+	public CommentsWindow(Publication pub, User user, PublicationWindow pubW) {
 		this.pub = pub;
 		this.user = user;
+		this.publicationW = pubW;
 		initialize();
 	}
-	
+
 	public void show() {
 		frame.setVisible(true);
 	}
@@ -60,12 +65,12 @@ public class CommentsWindow {
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[]{15, 15, 15, 0, 0, 15, 15, 15, 0};
-		gridBagLayout.rowHeights = new int[]{15, 15, 0, 15, 15, 0, 15, 0};
-		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.columnWidths = new int[] { 15, 15, 15, 0, 0, 15, 15, 15, 0 };
+		gridBagLayout.rowHeights = new int[] { 15, 15, 0, 15, 15, 0, 15, 0 };
+		gridBagLayout.columnWeights = new double[] { 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		frame.getContentPane().setLayout(gridBagLayout);
-		
+
 		JLabel lblComena = new JLabel("Comentarios");
 		lblComena.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		GridBagConstraints gbc_lblComena = new GridBagConstraints();
@@ -74,7 +79,7 @@ public class CommentsWindow {
 		gbc_lblComena.gridx = 3;
 		gbc_lblComena.gridy = 1;
 		frame.getContentPane().add(lblComena, gbc_lblComena);
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
 		gbc_scrollPane.gridwidth = 2;
@@ -83,12 +88,13 @@ public class CommentsWindow {
 		gbc_scrollPane.gridx = 3;
 		gbc_scrollPane.gridy = 2;
 		frame.getContentPane().add(scrollPane, gbc_scrollPane);
-		
+
 		DefaultListModel<Comment> comments = Controller.getInstancia().getComments(pub.getTitle());
 		commentsList = new JList<>(comments);
+
 		scrollPane.setViewportView(commentsList);
 		commentsList.setCellRenderer(new CommentListRender());
-		
+
 		JScrollPane scrollPane_1 = new JScrollPane();
 		GridBagConstraints gbc_scrollPane_1 = new GridBagConstraints();
 		gbc_scrollPane_1.insets = new Insets(0, 0, 5, 5);
@@ -96,20 +102,62 @@ public class CommentsWindow {
 		gbc_scrollPane_1.gridx = 3;
 		gbc_scrollPane_1.gridy = 5;
 		frame.getContentPane().add(scrollPane_1, gbc_scrollPane_1);
-		
+
 		textoComentario = new JTextField();
+
 		scrollPane_1.setViewportView(textoComentario);
 		textoComentario.setColumns(10);
-		
+
 		JButton btnEnviar = new JButton("Enviar");
 		btnEnviar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				Controller.getInstancia().addComment(pub, textoComentario.getText(), user.getUsername());
-				DefaultListModel<Comment> comments = Controller.getInstancia().getComments(pub.getTitle());
-				commentsList.setModel(comments);
+				if (btnEnviar.getText().equals("Enviar")) {
+					Controller.getInstancia().addComment(pub, textoComentario.getText(), user.getUsername());
+					DefaultListModel<Comment> comments = Controller.getInstancia().getComments(pub.getTitle());
+					commentsList.setModel(comments);
+				} else if (btnEnviar.getText().equals("Borrar")) {
+					DefaultListModel<Comment> commentBo = (DefaultListModel<Comment>) commentsList.getModel();
+
+					if (user.getUsername().equals(removeComment.getAuthor())
+							|| user.getUsername().equals(pub.getUser())) {
+						Controller.getInstancia().removeComment(pub, removeComment);
+						removeComment = null;
+						publicationW.restartWindow();
+					} else {
+						JOptionPane.showMessageDialog(frame,
+								"No tienes permiso para borrar el comentario " + "seleccionado", null,
+								JOptionPane.ERROR_MESSAGE);
+					}
+
+					int selectedIndex = commentsList.getSelectedIndex();
+					if (selectedIndex != -1) {
+						commentBo.removeElementAt(selectedIndex);
+						frame.getContentPane().revalidate();
+						frame.getContentPane().repaint();
+					}
+
+				}
 			}
 		});
+
+		commentsList.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				btnEnviar.setText("Borrar");
+				if (!e.getValueIsAdjusting()) {
+					removeComment = commentsList.getSelectedValue();
+				}
+				frame.repaint();
+			}
+		});
+
+		textoComentario.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				btnEnviar.setText("Enviar");
+			}
+		});
+
 		GridBagConstraints gbc_btnEnviar = new GridBagConstraints();
 		gbc_btnEnviar.insets = new Insets(0, 0, 5, 5);
 		gbc_btnEnviar.gridx = 4;
