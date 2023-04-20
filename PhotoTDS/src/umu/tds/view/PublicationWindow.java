@@ -71,8 +71,18 @@ public class PublicationWindow {
 		return publicationPanel;
 	}
 	
-	public void restartWindow() {
-		initialize();
+	public void updateCommentsNumber() {
+		int commentsSize = p.getComments().size();
+		if(commentsSize == 0) {
+			viewComments.setVisible(false);
+		} else {
+			viewComments.setVisible(true);
+		}
+		
+		if(commentsSize == 1)
+			viewComments.setText("Ver " + commentsSize + " comentario");
+		else
+			viewComments.setText("Ver " + commentsSize + " comentarios");
 	}
 	
 
