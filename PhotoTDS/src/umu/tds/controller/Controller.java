@@ -358,9 +358,10 @@ public class Controller implements PropertyChangeListener {
 			return false;
 		}
 		
+		publ.removeComment(comment);
+		
 		this.publRepo.updatePublication(publ);
-
-		return publ.removeComment(comment);
+		return true;
 	}
 
 	public boolean addHashtag(Publication p, String hashName) {

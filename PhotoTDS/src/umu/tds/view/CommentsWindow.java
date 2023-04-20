@@ -123,7 +123,8 @@ public class CommentsWindow {
 							|| user.getUsername().equals(pub.getUser())) {
 						Controller.getInstancia().removeComment(pub, removeComment);
 						removeComment = null;
-						publicationW.restartWindow();
+						publicationW.updateCommentsNumber();
+						btnEnviar.setText("Enviar");
 					} else {
 						JOptionPane.showMessageDialog(frame,
 								"No tienes permiso para borrar el comentario " + "seleccionado", null,
@@ -148,13 +149,6 @@ public class CommentsWindow {
 					removeComment = commentsList.getSelectedValue();
 				}
 				frame.repaint();
-			}
-		});
-
-		textoComentario.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				btnEnviar.setText("Enviar");
 			}
 		});
 
