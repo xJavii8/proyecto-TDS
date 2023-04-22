@@ -112,49 +112,48 @@ public class CommentsWindow {
 		btnEnviar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				Boolean enviar = false;
 				if (btnEnviar.getText().equals("Enviar")) {
 					Controller.getInstancia().addComment(pub, textoComentario.getText(), user.getUsername());
 					DefaultListModel<Comment> comments = Controller.getInstancia().getComments(pub.getTitle());
 					commentsList.setModel(comments);
+					textoComentario.setText(null);
 				} else if (btnEnviar.getText().equals("Borrar")) {
 					DefaultListModel<Comment> commentBo = (DefaultListModel<Comment>) commentsList.getModel();
-
 					if (user.getUsername().equals(removeComment.getAuthor())
 							|| user.getUsername().equals(pub.getUser())) {
 						Controller.getInstancia().removeComment(pub, removeComment);
 						removeComment = null;
 						publicationW.updateCommentsNumber();
-						enviar = true;
+						int selectedIndex = commentsList.getSelectedIndex();
+						if (selectedIndex != -1) {
+							commentBo.removeElementAt(selectedIndex);
+							frame.getContentPane().revalidate();
+							frame.getContentPane().repaint();
+							btnEnviar.setText("Enviar");
+						}
 					} else {
 						JOptionPane.showMessageDialog(frame,
 								"No tienes permiso para borrar el comentario " + "seleccionado", null,
 								JOptionPane.ERROR_MESSAGE);
 					}
-
-					int selectedIndex = commentsList.getSelectedIndex();
-					if (selectedIndex != -1) {
-						commentBo.removeElementAt(selectedIndex);
-						frame.getContentPane().revalidate();
-						frame.getContentPane().repaint();
-					}
-					
-					if (enviar) {
-						btnEnviar.setText("Enviar");
-					}
-
 				}
 			}
 		});
 
 		commentsList.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
-				
 				btnEnviar.setText("Borrar");
 				if (!e.getValueIsAdjusting()) {
 					removeComment = commentsList.getSelectedValue();
 				}
 				frame.repaint();
+			}
+		});
+		
+		textoComentario.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				btnEnviar.setText("Enviar");
 			}
 		});
 

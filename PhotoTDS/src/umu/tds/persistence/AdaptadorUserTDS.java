@@ -13,6 +13,7 @@ import beans.Entidad;
 import beans.Propiedad;
 import tds.driver.FactoriaServicioPersistencia;
 import tds.driver.ServicioPersistencia;
+import umu.tds.model.Album;
 import umu.tds.model.Publication;
 import umu.tds.model.User;
 
@@ -56,7 +57,8 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 				new Propiedad("usersFollowing", obtenerCodigosUsuarios(user.getUsersFollowing())),
 				new Propiedad("followers", obtenerCodigosUsuarios(user.getFollowers())),
 				new Propiedad("publications", obtenerCodigosPublicaciones(user.getPublications())),
-				new Propiedad("likedPublications", obtenerCodigosPublicaciones(user.getLikedPublications())))));
+				new Propiedad("likedPublications", obtenerCodigosPublicaciones(user.getLikedPublications())),
+				new Propiedad("albums", obtenerCodigosAlbums(user.getAlbums())))));
 
 		// registrar entidad cliente
 		eUser = serverPersistencia.registrarEntidad(eUser);
@@ -84,6 +86,7 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 		String followers;
 		String publications;
 		String getLikedPublications;
+		String albums;
 
 		// recuperar entidad
 		eUser = serverPersistencia.recuperarEntidad(userCode);
@@ -101,6 +104,7 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 		followers = serverPersistencia.recuperarPropiedadEntidad(eUser, "followers");
 		publications = serverPersistencia.recuperarPropiedadEntidad(eUser, "publications");
 		getLikedPublications = serverPersistencia.recuperarPropiedadEntidad(eUser, "likedPublications");
+		albums = serverPersistencia.recuperarPropiedadEntidad(eUser, "albums");
 
 		Date birthDay = new Date();
 		try {
@@ -122,6 +126,7 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 		user.setFollowers(obtenerUsersDesdeCodigos(followers));
 		user.setPublications(obtenerPublicationsDesdeCodigos(publications));
 		user.setLikedPublications(obtenerPublicationsDesdeCodigos(getLikedPublications));
+		user.setAlbums(obtenerAlbumsDesdeCodigos(albums));
 
 		return user;
 
@@ -154,6 +159,8 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 				p.setValor(obtenerCodigosPublicaciones(user.getPublications()));
 			} else if(p.getNombre().equals("likedPublications")) {
 				p.setValor(obtenerCodigosPublicaciones(user.getLikedPublications()));
+			} else if(p.getNombre().equals("albums")) {
+				p.setValor(obtenerCodigosAlbums(user.getAlbums()));
 			}
 			serverPersistencia.modificarPropiedad(p);
 		}
@@ -208,5 +215,23 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 			publicationList.add(adaptadorPublication.readPublication(Integer.valueOf((String) strTok.nextElement())));
 		}
 		return publicationList;
+	}
+	
+	private String obtenerCodigosAlbums(List<Album> albums) {
+		String lineas = "";
+		for (Album album : albums) {
+			lineas += album.getCodigo() + " ";
+		}
+		return lineas.trim();
+	}
+
+	private List<Album> obtenerAlbumsDesdeCodigos(String albums) {
+		List<Album> albumList = new LinkedList<>();
+		StringTokenizer strTok = new StringTokenizer(albums, " ");
+		AdaptadorPublicationTDS adaptadorPublication = AdaptadorPublicationTDS.getUnicaInstancia();
+		while (strTok.hasMoreTokens()) {
+			albumList.add((Album) adaptadorPublication.readPublication(Integer.valueOf((String) strTok.nextElement())));
+		}
+		return albumList;
 	}
 }
