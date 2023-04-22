@@ -8,9 +8,11 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import umu.tds.controller.Controller;
+import umu.tds.model.Album;
 import umu.tds.model.Photo;
 import umu.tds.model.PhotoListRender;
 import umu.tds.model.ProfilePhotoListRender;
+import umu.tds.model.Publication;
 import umu.tds.model.User;
 import umu.tds.model.UserListRender;
 
@@ -47,7 +49,9 @@ public class SelfProfileWindow {
 	private JLabel siguiendo;
 	private MainWindow mw;
 	private JScrollPane scrollPane;
-	private JList<Photo> publicationList;
+	private JList<Publication> publicationList;
+	private JButton switchAlbum;
+	private JButton newAlbum;
 
 	/**
 	 * Create the application.
@@ -71,9 +75,10 @@ public class SelfProfileWindow {
 		return siguiendo;
 	}
 
-	public JList<Photo> getPublicationList() {
+	public JList<Publication> getPublicationList() {
 		return publicationList;
 	}
+	
 
 	/**
 	 * Initialize the contents of the frame.
@@ -244,6 +249,38 @@ public class SelfProfileWindow {
 		gbc_fullname.gridx = 3;
 		gbc_fullname.gridy = 4;
 		panelPerfilPersonal.add(fullname, gbc_fullname);
+		
+		switchAlbum = new JButton("Álbumes");
+		GridBagConstraints gbc_switchAlbum = new GridBagConstraints();
+		gbc_switchAlbum.insets = new Insets(0, 0, 5, 5);
+		gbc_switchAlbum.gridx = 4;
+		gbc_switchAlbum.gridy = 4;
+		panelPerfilPersonal.add(switchAlbum, gbc_switchAlbum);
+		
+		newAlbum = new JButton("Nuevo álbum");
+		newAlbum.setVisible(false);
+		newAlbum.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				AddAlbumWindow aaw = new AddAlbumWindow(user.getUsername(), SelfProfileWindow.this);
+				aaw.show();
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				newAlbum.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				newAlbum.setCursor(Cursor.getDefaultCursor());
+			}
+		});
+		GridBagConstraints gbc_newAlbum = new GridBagConstraints();
+		gbc_newAlbum.insets = new Insets(0, 0, 5, 5);
+		gbc_newAlbum.gridx = 5;
+		gbc_newAlbum.gridy = 4;
+		panelPerfilPersonal.add(newAlbum, gbc_newAlbum);
 
 		scrollPane = new JScrollPane();
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
@@ -254,7 +291,7 @@ public class SelfProfileWindow {
 		gbc_scrollPane.gridy = 5;
 		panelPerfilPersonal.add(scrollPane, gbc_scrollPane);
 
-		DefaultListModel<Photo> photoList = Controller.getInstancia().getPhotosProfile(user.getUsername());
+		DefaultListModel<Publication> photoList = Controller.getInstancia().getPhotosProfile(user.getUsername());
 
 		publicationList = new JList<>(photoList);
 		scrollPane.setViewportView(publicationList);
@@ -267,13 +304,18 @@ public class SelfProfileWindow {
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
 				if (!e.getValueIsAdjusting()) {
-					JPanel panelCentral = mw.getPanelCentral();
-					JPanel panelPublication = new PublicationWindow(user.getUsername(),
-							publicationList.getSelectedValue(), publicationList.getSelectedValue().getUser(), mw)
-							.getPublicationPanel();
-					panelCentral.add(panelPublication, "panelPublication");
-					CardLayout cL = (CardLayout) panelCentral.getLayout();
-					cL.show(panelCentral, "panelPublication");
+					if(publicationList.getSelectedValue() instanceof Photo) {
+						JPanel panelCentral = mw.getPanelCentral();
+						JPanel panelPublication = new PublicationWindow(user.getUsername(),
+								publicationList.getSelectedValue(), publicationList.getSelectedValue().getUser(), mw)
+								.getPublicationPanel();
+						panelCentral.add(panelPublication, "panelPublication");
+						CardLayout cL = (CardLayout) panelCentral.getLayout();
+						cL.show(panelCentral, "panelPublication");
+					} else if(publicationList.getSelectedValue() instanceof Album) {
+						AlbumWindow aw = new AlbumWindow((Album) publicationList.getSelectedValue(), user.getUsername(), mw);
+						aw.show();
+					}
 				}
 			}
 		});
@@ -289,8 +331,35 @@ public class SelfProfileWindow {
 				publicationList.setCursor(Cursor.getDefaultCursor());
 			}
 		});
-	}
+		
+		switchAlbum.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(switchAlbum.getText().equals("Álbumes")) {
+					DefaultListModel<Publication> albums = Controller.getInstancia().getAlbumsProfile(user.getUsername());
+					publicationList.setModel(albums);
+					newAlbum.setVisible(true);
+					switchAlbum.setText("Fotos");
+				} else if(switchAlbum.getText().equals("Fotos")) {
+					DefaultListModel<Publication> fotos = Controller.getInstancia().getPhotosProfile(user.getUsername());
+					publicationList.setModel(fotos);
+					newAlbum.setVisible(false);
+					switchAlbum.setText("Álbumes");
+				}
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				switchAlbum.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
 
+			@Override
+			public void mouseExited(MouseEvent e) {
+				switchAlbum.setCursor(Cursor.getDefaultCursor());
+			}
+		});
+	}
+	
 	public void updateProfile(String username, String fullname, String profilePicPath) {
 		this.nickname.setText(username);
 		this.fullname.setText(fullname);

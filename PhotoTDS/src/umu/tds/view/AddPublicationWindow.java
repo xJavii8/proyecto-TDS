@@ -57,7 +57,7 @@ public class AddPublicationWindow implements IEncendidoListener {
 
 	private String user;
 	private JLabel publications;
-	private JList<Photo> publicationList;
+	private JList<Publication> publicationList;
 
 	/**
 	 * Create the application.
@@ -270,7 +270,7 @@ public class AddPublicationWindow implements IEncendidoListener {
 						Controller.getInstancia().createPhoto(user, titulo, descripArea.getText(), picPublication);
 						JOptionPane.showMessageDialog(frame, "Publicación subida", null,
 								JOptionPane.INFORMATION_MESSAGE);
-						DefaultListModel<Photo> photoList = Controller.getInstancia().getPhotosProfile(user);
+						DefaultListModel<Publication> photoList = Controller.getInstancia().getPhotosProfile(user);
 						publicationList.setModel(photoList);
 						int numSelfPub = Controller.getInstancia().getUser(user).getPublications().size();
 						if (numSelfPub == 1)
@@ -334,6 +334,8 @@ public class AddPublicationWindow implements IEncendidoListener {
 				publications.setText(numSelfPub + " publicación");
 			else
 				publications.setText(numSelfPub + " publicaciones");
+			DefaultListModel<Publication> photoList = Controller.getInstancia().getPhotosProfile(user);
+			publicationList.setModel(photoList);
 			frame.dispose();
 		}
 	}

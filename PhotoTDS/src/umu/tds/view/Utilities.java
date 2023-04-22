@@ -20,13 +20,17 @@ import java.net.URLDecoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
@@ -34,8 +38,11 @@ import javax.swing.UIManager;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import umu.tds.controller.Controller;
 import umu.tds.model.Photo;
 import umu.tds.model.PhotoListRender;
+import umu.tds.model.ProfilePhotoListRender;
+import umu.tds.model.Publication;
 import umu.tds.model.User;
 import umu.tds.model.UserListRender;
 
@@ -78,7 +85,7 @@ public class Utilities {
 
 		return new ImageIcon(getCircularImage(rawPic));
 	}
-	
+
 	public static int fortalezaContraseña(JPasswordField contraseña) {
 		int fortaleza = 0;
 		char[] password = contraseña.getPassword();
@@ -131,7 +138,7 @@ public class Utilities {
 
 		return fortaleza;
 	}
-	
+
 	public static void listaUsuarios(MainWindow mw, String user, DefaultListModel<User> users) {
 		JList<User> userList = new JList<>(users);
 		userList.setCellRenderer(new UserListRender());
@@ -144,8 +151,8 @@ public class Utilities {
 			public void valueChanged(ListSelectionEvent e) {
 				if (!e.getValueIsAdjusting()) {
 					JPanel panelCentral = mw.getPanelCentral();
-					JPanel panelPerfil = new ProfileWindow(user,
-							userList.getSelectedValue().getUsername(), mw).getPanelPerfil();
+					JPanel panelPerfil = new ProfileWindow(user, userList.getSelectedValue().getUsername(), mw)
+							.getPanelPerfil();
 					panelCentral.add(panelPerfil, "panelPerfil");
 					CardLayout cL = (CardLayout) panelCentral.getLayout();
 					cL.show(panelCentral, "panelPerfil");
@@ -186,7 +193,7 @@ public class Utilities {
 		matchingUsersPanel.getContentPane().add(scrollUserPanel);
 		matchingUsersPanel.setVisible(true);
 	}
-	
+
 	public static void listaPublicaciones(MainWindow mw, String selfUser, DefaultListModel<Photo> photos) {
 		JList<Photo> publicationList = new JList<>(photos);
 		publicationList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
@@ -244,8 +251,9 @@ public class Utilities {
 		publicationListPanel.getContentPane().add(scrollPubPanel);
 		publicationListPanel.setVisible(true);
 	}
-	
-	public static void top10LikedPublications(MainWindow mw, String selfUser, DefaultListModel<Photo> photos, PremiumMenuWindow pmw) {
+
+	public static void top10LikedPublications(MainWindow mw, String selfUser, DefaultListModel<Photo> photos,
+			PremiumMenuWindow pmw) {
 		JList<Photo> publicationList = new JList<>(photos);
 		publicationList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 		publicationList.setVisibleRowCount(-1);
@@ -303,7 +311,119 @@ public class Utilities {
 		publicationListPanel.getContentPane().add(scrollPubPanel);
 		publicationListPanel.setVisible(true);
 	}
-	
+
+	public static void selectPhotosForAlbum(DefaultListModel<Photo> photos, AddAlbumWindow aaw) {
+		JList<Photo> publicationList = new JList<>(photos);
+		List<Publication> photosList = new LinkedList<>();
+		publicationList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+		publicationList.setVisibleRowCount(-1);
+		publicationList.ensureIndexIsVisible(publicationList.getHeight());
+		publicationList.setCellRenderer(new ProfilePhotoListRender());
+		JScrollPane scrollPubPanel = new JScrollPane(publicationList);
+		JFrame publicationListFrame = new JFrame();
+
+		publicationList.addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				if (!e.getValueIsAdjusting()) {
+					if (photosList.size() == Constantes.ALBUM_MAX_NUM_PHOTOS) {
+						JOptionPane.showMessageDialog(publicationListFrame,
+								"No puedes poner más de 16 fotos en un álbum", null, JOptionPane.ERROR_MESSAGE);
+					} else {
+						int selectedIndex = publicationList.getSelectedIndex();
+						if (selectedIndex != -1) {
+							photosList.add(publicationList.getSelectedValue());
+							photos.removeElementAt(selectedIndex);
+							publicationListFrame.getContentPane().revalidate();
+							publicationListFrame.getContentPane().repaint();
+						}
+					}
+				}
+			}
+		});
+
+		publicationList.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				publicationList.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				publicationList.setCursor(Cursor.getDefaultCursor());
+			}
+		});
+
+		JPanel panelNorte = new JPanel();
+		publicationListFrame.getContentPane().add(panelNorte, BorderLayout.NORTH);
+		JLabel selectPhotos = new JLabel("Seleccionar fotos para el álbum");
+		selectPhotos.setFont(new Font("Bahnschrift", Font.BOLD, 16));
+		panelNorte.add(selectPhotos);
+
+		if (UIManager.getLookAndFeel().getName() == "FlatLaf Light") {
+			publicationList.setBackground(Constantes.LIGHT_BARS);
+		} else if (UIManager.getLookAndFeel().getName() == "FlatLaf Dark") {
+			publicationList.setBackground(Constantes.DARK_BARS);
+		}
+
+		JPanel panelSur = new JPanel();
+		publicationListFrame.getContentPane().add(panelSur, BorderLayout.SOUTH);
+		JButton aceptarButton = new JButton("Aceptar");
+		aceptarButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				aaw.setPublicacionesAlbum(photosList);
+				publicationListFrame.dispose();
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				aceptarButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				aceptarButton.setCursor(Cursor.getDefaultCursor());
+			}
+		});
+		panelSur.add(aceptarButton);
+
+		publicationListFrame
+				.setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindow.class.getResource("/images/ig64.png")));
+		publicationListFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		publicationListFrame.setSize(560, 560);
+		publicationListFrame.setLocationRelativeTo(null);
+		publicationListFrame.getContentPane().add(scrollPubPanel);
+		publicationListFrame.setVisible(true);
+	}
+
+	public static ImageIcon getIconAlbum(List<File> fotos) {
+		BufferedImage imagenGrande = new BufferedImage(Constantes.PROFILE_PUBLICATION_PIC_SIZE,
+				Constantes.PROFILE_PUBLICATION_PIC_SIZE, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2d = imagenGrande.createGraphics();
+
+		// Agregamos cada imagen pequeña a la imagen grande
+		int x = 0;
+		int y = 0;
+		for (File foto : fotos) {
+			try {
+				BufferedImage imagenPequena = ImageIO.read(foto);
+				g2d.drawImage(imagenPequena, x, y, 32, 32, null);
+				x += 32;
+				if (x > 98) {
+					x = 0;
+					y += 98;
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		g2d.dispose();
+
+		// Creamos el ImageIcon a partir de la imagen grande y lo devolvemos
+		return new ImageIcon(imagenGrande);
+	}
+
 	public static Date stringToDate(String fechaString) {
 		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 		Date fecha = null;

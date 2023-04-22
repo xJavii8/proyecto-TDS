@@ -1,6 +1,7 @@
 package umu.tds.model;
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class User {
 	private List<User> followers;
 	private List<Publication> publications;
 	private List<Publication> likedPublications;
+	private List<Album> albums;
 
 	// MÉTODO CONSTRUCTOR
 	public User(String username, String email, String password, String fullName, Date birthDay, String profilePic,
@@ -39,6 +41,7 @@ public class User {
 		this.followers = new LinkedList<User>();
 		this.publications = new LinkedList<Publication>();
 		this.likedPublications = new LinkedList<Publication>();
+		this.albums = new LinkedList<Album>();
 	}
 
 	public User(String username, String email, String password, String fullName, Date birthDay, String profilePic,
@@ -91,10 +94,25 @@ public class User {
 		this.publications.add(p);
 		return p;
 	}
-	
+
 	public boolean deletePhoto(Publication p) {
-		int pIndex = publications.indexOf(p);
-		this.publications.remove(pIndex);
+		for (Album a : albums) {
+	        List<Photo> fotos = a.getPhotos();
+	        Iterator<Photo> iterator = fotos.iterator();
+	        while (iterator.hasNext()) {
+	            Photo ph = iterator.next();
+	            if (p.equals(ph)) {
+	                iterator.remove();
+	            }
+	            
+	            if(likedPublications.contains(ph)) {
+	            	removeLike(ph);
+	            }
+	        }
+	        a.setPhotos(fotos);
+	    }
+		
+		this.publications.remove(p);
 		return true;
 	}
 
@@ -105,6 +123,18 @@ public class User {
 
 	public boolean removeLike(Publication p) {
 		this.likedPublications.remove(p);
+		return true;
+	}
+
+	public Album createAlbum(String titulo, String descripcion, List<Publication> pubs, List<Hashtag> hashtags) {
+		Album a = new Album(titulo, new Date(), descripcion, this.getUsername(), hashtags, pubs);
+		this.albums.add(a);
+		return a;
+	}
+
+	public boolean deleteAlbum(Album a) {
+		removeLike(a);
+		albums.remove(a);
 		return true;
 	}
 
@@ -211,6 +241,14 @@ public class User {
 
 	public void setPublications(List<Publication> publications) {
 		this.publications = publications;
+	}
+
+	public List<Album> getAlbums() {
+		return albums;
+	}
+
+	public void setAlbums(List<Album> albums) {
+		this.albums = albums;
 	}
 
 }
