@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 
+import umu.tds.model.Album;
 import umu.tds.model.Comment;
 import umu.tds.model.Hashtag;
 import umu.tds.model.Photo;
@@ -325,6 +326,17 @@ public class Controller implements PropertyChangeListener {
 
 		return comments;
 	}
+	
+	public boolean albumExist(String username, String tituloAlbum) {
+		User user = userRepo.getUser(username).get();
+		for(Album a : user.getAlbums()) {
+			if(a.getTitle().equals(tituloAlbum))
+				return true;
+		}
+		
+		return false;
+		
+	}
 
 	public boolean updateUser(User user, String fullname, String username, String description, String profilePicPath) {
 		String oldUsername = user.getUsername();
@@ -412,20 +424,64 @@ public class Controller implements PropertyChangeListener {
 		return this.publRepo.getPublication(titulo);
 	}
 
-	public DefaultListModel<Photo> getPhotosProfile(String user) {
+	public DefaultListModel<Publication> getPhotosProfile(String user) {
 		Optional<User> userOpt = this.userRepo.getUser(user);
 		if (userOpt.isEmpty()) {
 			return null;
 		}
 		User u = userOpt.get();
 		List<Publication> publicacionesUs = publRepo.getAllPublicationsUser(u.getUsername());
-		DefaultListModel<Photo> photosUser = new DefaultListModel<>();
+		DefaultListModel<Publication> photosUser = new DefaultListModel<>();
 		for (Publication p : publicacionesUs) {
 			if (p instanceof Photo) {
 				photosUser.addElement((Photo) p);
 			}
 		}
 		return photosUser;
+	}
+	
+	public DefaultListModel<Publication> getAlbumsProfile(String user) {
+		Optional<User> userOpt = this.userRepo.getUser(user);
+		if (userOpt.isEmpty()) {
+			return null;
+		}
+		User u = userOpt.get();
+		List<Publication> publicacionesUs = publRepo.getAllPublicationsUser(u.getUsername());
+		DefaultListModel<Publication> albumsUser = new DefaultListModel<>();
+		for (Publication p : publicacionesUs) {
+			if (p instanceof Album) {
+				albumsUser.addElement((Album) p);
+			}
+		}
+		return albumsUser;
+	}
+	
+	public boolean createAlbum(String user, String titulo, String descripcion, List<Publication> publicacionesAlbum) {
+		User usuario = this.getUser(user);
+		List<Hashtag> hashtags = new ArrayList<>();
+		Matcher matcher = Constantes.HASHTAG_PAT.matcher(descripcion);
+		while (matcher.find()) {
+			Hashtag h = new Hashtag(matcher.group(2));
+			adaptadorHashtag.createHashtag(h);
+			hashtags.add(h);
+		}
+		Album a = usuario.createAlbum(titulo, descripcion, publicacionesAlbum, hashtags);
+		this.publRepo.createPublication(a);
+		this.adaptadorUser.updateUser(usuario);
+		return true;
+	}
+	
+	public boolean deleteAlbum(Album album) {
+		User user = this.getUser(album.getUser());
+		for(Photo p : album.getPhotos()) {
+			user.deletePhoto(p);
+			this.publRepo.removePublication(p);
+			this.adaptadorUser.updateUser(user);
+		}
+		user.deleteAlbum(album);
+		this.publRepo.removePublication(album);
+		this.adaptadorUser.updateUser(user);
+		return true;
 	}
 
 	public List<Publication> getAllPublications() {
@@ -454,6 +510,13 @@ public class Controller implements PropertyChangeListener {
 		p.addLike();
 		User u = this.getUser(user);
 		u.addLike(p);
+		if(p instanceof Album) {
+			Album a = (Album) p;
+			for(Photo ph : a.getPhotos()) {
+				ph.addLike();
+				u.addLike(ph);
+			}
+		}
 		adaptadorPublication.updatePublication(p);
 		adaptadorUser.updateUser(u);
 	}
@@ -462,6 +525,13 @@ public class Controller implements PropertyChangeListener {
 		p.removeLike();
 		User u = this.getUser(user);
 		u.removeLike(p);
+		if(p instanceof Album) {
+			Album a = (Album) p;
+			for(Photo ph : a.getPhotos()) {
+				ph.removeLike();
+				u.removeLike(ph);
+			}
+		}
 		adaptadorPublication.updatePublication(p);
 		adaptadorUser.updateUser(u);
 	}

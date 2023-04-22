@@ -42,5 +42,8 @@ public class Constantes {
 	public static final int TOP_LIKED_PHOTOS_PREMIUM = 10;
 	
 	public static final int MAX_HASH_LENGTH = 15;
+	
+	public static final int DEFAULT_LIKES_PUBLICATION = 0;
+	public static final int ALBUM_MAX_NUM_PHOTOS = 16;
 
 }
