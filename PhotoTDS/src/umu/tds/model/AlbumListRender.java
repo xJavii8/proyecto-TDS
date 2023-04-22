@@ -21,31 +21,29 @@ import umu.tds.view.Constantes;
 import umu.tds.view.Utilities;
 
 @SuppressWarnings("serial")
-public class PhotoListRender extends JPanel implements ListCellRenderer<Photo> {
+public class AlbumListRender extends JPanel implements ListCellRenderer<Album> {
 
-	private JLabel photoLabel;
-	private JLabel userLabel;
-	private ImageIcon pic;
+	private JLabel albumLabel;
+	private JLabel nameLabel;
 
-	public PhotoListRender() {
-		photoLabel = new JLabel();
-		userLabel = new JLabel();
+	public AlbumListRender() {
+		albumLabel = new JLabel();
+		nameLabel = new JLabel();
 		setLayout(new BorderLayout(5, 5));
-		add(userLabel, BorderLayout.NORTH);
-		add(photoLabel, BorderLayout.CENTER);
+		add(nameLabel, BorderLayout.NORTH);
+		add(albumLabel, BorderLayout.CENTER);
 	}
 
 	@Override
-	public Component getListCellRendererComponent(JList<? extends Photo> list, Photo p, int index, boolean isSelected,
+	public Component getListCellRendererComponent(JList<? extends Album> list, Album a, int index, boolean isSelected,
 			boolean cellHasFocus) {
-		userLabel.setIcon(pic);
-		userLabel.setText(p.getUser());
-		userLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		userLabel.setFont(new Font("Bahnschrift", Font.BOLD, 14));
-		ImageIcon publicationIcon = new ImageIcon(new ImageIcon(p.getPath()).getImage().getScaledInstance(
+		nameLabel.setText(a.getTitle());
+		nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		nameLabel.setFont(new Font("Bahnschrift", Font.BOLD, 14));
+		/*ImageIcon publicationIcon = new ImageIcon(new ImageIcon(a.get).getImage().getScaledInstance(
 				Constantes.PROFILE_PUBLICATION_PIC_SIZE, Constantes.PROFILE_PUBLICATION_PIC_SIZE, Image.SCALE_SMOOTH));
-		photoLabel.setIcon(publicationIcon);
-		setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+		albumLabel.setIcon(publicationIcon;*/
+		// setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
 
 		if (isSelected) {
 			setBackground(list.getSelectionBackground());

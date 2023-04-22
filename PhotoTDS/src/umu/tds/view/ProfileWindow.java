@@ -24,9 +24,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import umu.tds.controller.Controller;
+import umu.tds.model.Album;
 import umu.tds.model.Photo;
 import umu.tds.model.PhotoListRender;
 import umu.tds.model.ProfilePhotoListRender;
+import umu.tds.model.Publication;
 import umu.tds.model.User;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
@@ -42,7 +44,7 @@ public class ProfileWindow {
 	private String selfUser;
 	private String searchedUser;
 	private User profileUser;
-	private User su;
+	private JButton switchAlbum;
 	private MainWindow mw;
 
 	/**
@@ -52,7 +54,6 @@ public class ProfileWindow {
 		this.selfUser = selfUser;
 		this.searchedUser = searchedUser;
 		this.profileUser = Controller.getInstancia().getUser(searchedUser);
-		this.su = Controller.getInstancia().getUser(selfUser);
 		this.mw = mw;
 		initialize();
 	}
@@ -176,6 +177,13 @@ public class ProfileWindow {
 		gbc_fullname.gridx = 3;
 		gbc_fullname.gridy = 4;
 		panelPerfil.add(fullname, gbc_fullname);
+		
+		switchAlbum = new JButton("Álbumes");
+		GridBagConstraints gbc_switchAlbum = new GridBagConstraints();
+		gbc_switchAlbum.insets = new Insets(0, 0, 5, 5);
+		gbc_switchAlbum.gridx = 4;
+		gbc_switchAlbum.gridy = 4;
+		panelPerfil.add(switchAlbum, gbc_switchAlbum);
 
 		JScrollPane scrollPane = new JScrollPane();
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
@@ -186,9 +194,9 @@ public class ProfileWindow {
 		gbc_scrollPane.gridy = 5;
 		panelPerfil.add(scrollPane, gbc_scrollPane);
 
-		DefaultListModel<Photo> photoList = Controller.getInstancia().getPhotosProfile(searchedUser);
+		DefaultListModel<Publication> photoList = Controller.getInstancia().getPhotosProfile(searchedUser);
 
-		JList<Photo> publicationList = new JList<>(photoList);
+		JList<Publication> publicationList = new JList<>(photoList);
 		scrollPane.setViewportView(publicationList);
 		publicationList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 		publicationList.setVisibleRowCount(-1);
@@ -200,12 +208,18 @@ public class ProfileWindow {
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
 				if (!e.getValueIsAdjusting()) {
-					JPanel panelCentral = mw.getPanelCentral();
-					JPanel panelPublication = new PublicationWindow(selfUser, publicationList.getSelectedValue(),
-							publicationList.getSelectedValue().getUser(), mw).getPublicationPanel();
-					panelCentral.add(panelPublication, "panelPublication");
-					CardLayout cL = (CardLayout) panelCentral.getLayout();
-					cL.show(panelCentral, "panelPublication");
+					if(publicationList.getSelectedValue() instanceof Photo) {
+						JPanel panelCentral = mw.getPanelCentral();
+						JPanel panelPublication = new PublicationWindow(selfUser, publicationList.getSelectedValue(),
+								publicationList.getSelectedValue().getUser(), mw).getPublicationPanel();
+						panelCentral.add(panelPublication, "panelPublication");
+						CardLayout cL = (CardLayout) panelCentral.getLayout();
+						cL.show(panelCentral, "panelPublication");
+					} else if(publicationList.getSelectedValue() instanceof Album) {
+						AlbumWindow aw = new AlbumWindow((Album) publicationList.getSelectedValue(),  selfUser, mw);
+						aw.show();
+					}
+					
 				}
 			}
 		});
@@ -277,6 +291,31 @@ public class ProfileWindow {
 			@Override
 			public void mouseExited(MouseEvent e) {
 				followButton.setCursor(Cursor.getDefaultCursor());
+			}
+		});
+		
+		switchAlbum.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(switchAlbum.getText().equals("Álbumes")) {
+					DefaultListModel<Publication> albums = Controller.getInstancia().getAlbumsProfile(searchedUser);
+					publicationList.setModel(albums);
+					switchAlbum.setText("Fotos");
+				} else if(switchAlbum.getText().equals("Fotos")) {
+					DefaultListModel<Publication> fotos = Controller.getInstancia().getPhotosProfile(searchedUser);
+					publicationList.setModel(fotos);
+					switchAlbum.setText("Álbumes");
+				}
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				switchAlbum.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				switchAlbum.setCursor(Cursor.getDefaultCursor());
 			}
 		});
 	}

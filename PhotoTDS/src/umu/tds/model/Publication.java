@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import umu.tds.view.Constantes;
+
 public class Publication {
 	private int codigo;
 	private String user;
@@ -37,6 +39,17 @@ public class Publication {
 		this.user = user;
 		this.hashtags = hashtags;
 		this.comments = comments;
+	}
+
+	public Publication(String title, Date datePublication, String description, String user, List<Hashtag> hashtags) {
+		super();
+		this.title = title;
+		this.datePublication = datePublication;
+		this.description = description;
+		this.likes = Constantes.DEFAULT_LIKES_PUBLICATION;
+		this.user = user;
+		this.hashtags = hashtags;
+		this.comments = new LinkedList<>();
 	}
 
 	public Publication(String title, Date datePublication, String description, String user) {
@@ -121,7 +134,7 @@ public class Publication {
 			return false;
 		}
 	}
-	
+
 	public Hashtag addHashtag(String hName) {
 		Hashtag h = new Hashtag(hName);
 		this.hashtags.add(h);
