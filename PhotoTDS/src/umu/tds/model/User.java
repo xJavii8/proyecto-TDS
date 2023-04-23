@@ -97,33 +97,41 @@ public class User {
 
 	public boolean deletePhoto(Publication p) {
 		for (Album a : albums) {
-	        List<Photo> fotos = a.getPhotos();
-	        Iterator<Photo> iterator = fotos.iterator();
-	        while (iterator.hasNext()) {
-	            Photo ph = iterator.next();
-	            if (p.equals(ph)) {
-	                iterator.remove();
-	            }
-	            
-	            if(likedPublications.contains(ph)) {
-	            	removeLike(ph);
-	            }
-	        }
-	        a.setPhotos(fotos);
-	    }
-		
+			List<Photo> fotos = a.getPhotos();
+			Iterator<Photo> iterator = fotos.iterator();
+			while (iterator.hasNext()) {
+				Photo ph = iterator.next();
+				if (p.equals(ph)) {
+					iterator.remove();
+				}
+
+				if (likedPublications.contains(ph)) {
+					removeLike(ph);
+				}
+			}
+			a.setPhotos(fotos);
+		}
+
+		albums.stream().filter(album -> album.getPhotos().size() == 0).forEach(album -> deleteAlbum(album));
+
 		this.publications.remove(p);
 		return true;
 	}
 
 	public boolean addLike(Publication p) {
-		this.likedPublications.add(p);
-		return true;
+		if (!likedPublications.contains(p)) {
+			this.likedPublications.add(p);
+			return true;
+		}
+		return false;
 	}
 
 	public boolean removeLike(Publication p) {
-		this.likedPublications.remove(p);
-		return true;
+		if (likedPublications.contains(p)) {
+			this.likedPublications.remove(p);
+			return true;
+		}
+		return false;
 	}
 
 	public Album createAlbum(String titulo, String descripcion, List<Publication> pubs, List<Hashtag> hashtags) {
