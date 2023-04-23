@@ -9,6 +9,7 @@ import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -18,6 +19,7 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -98,11 +100,17 @@ public class AlbumWindow {
 			}
 		});
 
-		JPanel panelNorte = new JPanel();
+		JPanel panelNorte = new JPanel(new BorderLayout(10, 10));
+		panelNorte.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 		frame.getContentPane().add(panelNorte, BorderLayout.NORTH);
 		JLabel selectPhotos = new JLabel("Álbum " + album.getTitle() + " - Likes: " + album.getLikes());
 		selectPhotos.setFont(new Font("Bahnschrift", Font.BOLD, 16));
-		panelNorte.add(selectPhotos);
+		panelNorte.add(selectPhotos, BorderLayout.CENTER);
+		selectPhotos.setHorizontalAlignment(SwingConstants.CENTER);
+		JLabel descrip = new JLabel(album.getDescription());
+		descrip.setFont(new Font("Bahnschrift", Font.PLAIN, 14));
+		panelNorte.add(descrip, BorderLayout.SOUTH);
+		descrip.setHorizontalAlignment(SwingConstants.CENTER);
 
 		JPanel panelSur = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 15));
 		frame.getContentPane().add(panelSur, BorderLayout.SOUTH);
