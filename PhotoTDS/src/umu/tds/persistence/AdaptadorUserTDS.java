@@ -157,9 +157,9 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 				p.setValor(obtenerCodigosUsuarios(user.getFollowers()));
 			} else if (p.getNombre().equals("publications")) {
 				p.setValor(obtenerCodigosPublicaciones(user.getPublications()));
-			} else if(p.getNombre().equals("likedPublications")) {
+			} else if (p.getNombre().equals("likedPublications")) {
 				p.setValor(obtenerCodigosPublicaciones(user.getLikedPublications()));
-			} else if(p.getNombre().equals("albums")) {
+			} else if (p.getNombre().equals("albums")) {
 				p.setValor(obtenerCodigosAlbums(user.getAlbums()));
 			}
 			serverPersistencia.modificarPropiedad(p);
@@ -216,7 +216,7 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 		}
 		return publicationList;
 	}
-	
+
 	private String obtenerCodigosAlbums(List<Album> albums) {
 		String lineas = "";
 		for (Album album : albums) {
