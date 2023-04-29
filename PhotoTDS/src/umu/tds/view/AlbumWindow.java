@@ -8,6 +8,7 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
@@ -152,19 +153,40 @@ public class AlbumWindow {
 			borrar.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
-					if (Controller.getInstancia().deleteAlbum(album)) {
-						JOptionPane.showMessageDialog(frame, "El álbum " + album.getTitle() + " ha sido borrado.", null,
-								JOptionPane.INFORMATION_MESSAGE);
-						SelfProfileWindow newSPW = new SelfProfileWindow(user, mw);
-						mw.setSPW(newSPW);
-						panelCentral.add(newSPW.getPanelPerfilPersonal(), "panelPerfilPersonal");
-						CardLayout cL = (CardLayout) panelCentral.getLayout();
-						cL.show(panelCentral, "panelPerfilPersonal");
-						frame.dispose();
+					int option = JOptionPane.showConfirmDialog(frame,
+							"¿Seguro que quieres borrar el álbum " + album.getTitle()
+									+ "? Las fotos también se borrarán.",
+							null, JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+					if (option == JOptionPane.YES_OPTION) {
+						if (Controller.getInstancia().deleteAlbum(album)) {
+							JOptionPane.showMessageDialog(frame, "El álbum " + album.getTitle() + " ha sido borrado.",
+									null, JOptionPane.INFORMATION_MESSAGE);
+							List<String> deletedAlbums = Controller.getInstancia().deleteEmptyAlbums(user);
+							if (!deletedAlbums.isEmpty()) {
+								String message = "Se han borrado los siguientes álbumes, ya que estaban vacíos: ";
+								for (int i = 0; i < deletedAlbums.size(); i++) {
+									String albumTitle = deletedAlbums.get(i);
+									message += albumTitle;
+									if (i < deletedAlbums.size() - 1) {
+										message += ", ";
+									}
+								}
+								JOptionPane.showMessageDialog(frame, message, null, JOptionPane.INFORMATION_MESSAGE);
+							}
+							SelfProfileWindow newSPW = new SelfProfileWindow(user, mw);
+							mw.setSPW(newSPW);
+							panelCentral.add(newSPW.getPanelPerfilPersonal(), "panelPerfilPersonal");
+							CardLayout cL = (CardLayout) panelCentral.getLayout();
+							cL.show(panelCentral, "panelPerfilPersonal");
+							frame.dispose();
+						} else {
+							JOptionPane.showMessageDialog(frame,
+									"Ha ocurrido un error al borrar el álbum " + album.getTitle() + ".", null,
+									JOptionPane.ERROR_MESSAGE);
+						}
 					} else {
-						JOptionPane.showMessageDialog(frame,
-								"Ha ocurrido un error al borrar el álbum " + album.getTitle() + ".", null,
-								JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(frame, "No se ha borrado el álbum " + album.getTitle() + ".",
+								null, JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
 
