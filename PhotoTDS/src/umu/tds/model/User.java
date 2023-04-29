@@ -101,20 +101,16 @@ public class User {
 			Iterator<Photo> iterator = fotos.iterator();
 			while (iterator.hasNext()) {
 				Photo ph = iterator.next();
-				if (p.equals(ph)) {
+				if (p.getCodigo() == ph.getCodigo()) {
 					iterator.remove();
-				}
-
-				if (likedPublications.contains(ph)) {
-					removeLike(ph);
+					if (likedPublications.contains(ph)) {
+						removeLike(ph);
+					}
 				}
 			}
 			a.setPhotos(fotos);
 		}
-
-		albums.stream().filter(album -> album.getPhotos().size() == 0).forEach(album -> deleteAlbum(album));
-
-		this.publications.remove(p);
+		this.publications.removeIf(ph -> ph.getCodigo() == p.getCodigo());
 		return true;
 	}
 

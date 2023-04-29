@@ -326,16 +326,16 @@ public class Controller implements PropertyChangeListener {
 
 		return comments;
 	}
-	
+
 	public boolean albumExist(String username, String tituloAlbum) {
 		User user = userRepo.getUser(username).get();
-		for(Album a : user.getAlbums()) {
-			if(a.getTitle().equals(tituloAlbum))
+		for (Album a : user.getAlbums()) {
+			if (a.getTitle().equals(tituloAlbum))
 				return true;
 		}
-		
+
 		return false;
-		
+
 	}
 
 	public boolean updateUser(User user, String fullname, String username, String description, String profilePicPath) {
@@ -369,9 +369,9 @@ public class Controller implements PropertyChangeListener {
 		if (com.isEmpty()) {
 			return false;
 		}
-		
+
 		publ.removeComment(comment);
-		
+
 		this.publRepo.updatePublication(publ);
 		return true;
 	}
@@ -439,7 +439,7 @@ public class Controller implements PropertyChangeListener {
 		}
 		return photosUser;
 	}
-	
+
 	public DefaultListModel<Publication> getAlbumsProfile(String user) {
 		Optional<User> userOpt = this.userRepo.getUser(user);
 		if (userOpt.isEmpty()) {
@@ -455,7 +455,7 @@ public class Controller implements PropertyChangeListener {
 		}
 		return albumsUser;
 	}
-	
+
 	public boolean createAlbum(String user, String titulo, String descripcion, List<Publication> publicacionesAlbum) {
 		User usuario = this.getUser(user);
 		List<Hashtag> hashtags = new ArrayList<>();
@@ -470,14 +470,26 @@ public class Controller implements PropertyChangeListener {
 		this.adaptadorUser.updateUser(usuario);
 		return true;
 	}
-	
+
+	public List<String> deleteEmptyAlbums(String user) {
+		List<Album> albums = this.getUser(user).getAlbums();
+		List<String> deletedAlbums = new LinkedList<>();
+		for (Album album : albums) {
+			if (album.getPhotos().isEmpty()) {
+				deletedAlbums.add(album.getTitle());
+				deleteAlbum(album);
+			}
+		}
+		return deletedAlbums;
+	}
+
 	public boolean deleteAlbum(Album album) {
 		User user = this.getUser(album.getUser());
-		for(Photo p : album.getPhotos()) {
+		for (Photo p : album.getPhotos()) {
 			user.deletePhoto(p);
 			this.publRepo.removePublication(p);
-			this.adaptadorUser.updateUser(user);
 		}
+
 		user.deleteAlbum(album);
 		this.publRepo.removePublication(album);
 		this.adaptadorUser.updateUser(user);
@@ -510,9 +522,9 @@ public class Controller implements PropertyChangeListener {
 		p.addLike();
 		User u = this.getUser(user);
 		u.addLike(p);
-		if(p instanceof Album) {
+		if (p instanceof Album) {
 			Album a = (Album) p;
-			for(Photo ph : a.getPhotos()) {
+			for (Photo ph : a.getPhotos()) {
 				ph.addLike();
 				u.addLike(ph);
 			}
@@ -525,9 +537,9 @@ public class Controller implements PropertyChangeListener {
 		p.removeLike();
 		User u = this.getUser(user);
 		u.removeLike(p);
-		if(p instanceof Album) {
+		if (p instanceof Album) {
 			Album a = (Album) p;
-			for(Photo ph : a.getPhotos()) {
+			for (Photo ph : a.getPhotos()) {
 				ph.removeLike();
 				u.removeLike(ph);
 			}
