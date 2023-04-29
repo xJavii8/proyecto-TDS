@@ -482,10 +482,12 @@ public class Controller implements PropertyChangeListener {
 		}
 		return deletedAlbums;
 	}
-
+	
 	public boolean deleteAlbum(Album album) {
 		User user = this.getUser(album.getUser());
 		for (Photo p : album.getPhotos()) {
+			List<Album> updatedAlbums = user.deletePhotoInAlbums(p);
+			updatedAlbums.forEach(updatedA -> this.publRepo.updatePublication(updatedA));
 			user.deletePhoto(p);
 			this.publRepo.removePublication(p);
 		}
