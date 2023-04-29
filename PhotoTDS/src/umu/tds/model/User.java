@@ -95,21 +95,21 @@ public class User {
 		return p;
 	}
 
-	public boolean deletePhoto(Publication p) {
-		for (Album a : albums) {
-			List<Photo> fotos = a.getPhotos();
-			Iterator<Photo> iterator = fotos.iterator();
-			while (iterator.hasNext()) {
-				Photo ph = iterator.next();
-				if (p.getCodigo() == ph.getCodigo()) {
-					iterator.remove();
-					if (likedPublications.contains(ph)) {
-						removeLike(ph);
-					}
-				}
+	public List<Album> deletePhotoInAlbums(Photo p) {
+		List<Album> updatedAlbums = new LinkedList<>();
+		for(Album a : albums) {
+			List<Photo> photos = a.getPhotos();
+			if(photos.removeIf(ph -> ph.getCodigo() == p.getCodigo())) {
+				removeLike(p);
+				updatedAlbums.add(a);
+				a.setPhotos(photos);
 			}
-			a.setPhotos(fotos);
+			
 		}
+		return updatedAlbums;
+	}
+	
+	public boolean deletePhoto(Publication p) {
 		this.publications.removeIf(ph -> ph.getCodigo() == p.getCodigo());
 		return true;
 	}
