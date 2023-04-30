@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -267,27 +268,16 @@ public class MainWindow {
 		gbc_newPubs.gridy = 3;
 		panelPrincipal.add(newPubs, gbc_newPubs);
 
-		JDateChooser dateChooser_Register = new JDateChooser();
-		dateChooser_Register.addPropertyChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
-
-				if (dateChooser_Register.getDate() != null) {
-					photosList.setModel(
-							Controller.getInstancia().getAllPhotosFromDate(user, dateChooser_Register.getDate()));
-					newPubs.setText("Todas las publicaciones desde el "
-							+ Utilities.dateToString(dateChooser_Register.getDate()));
-				}
-
-			}
-		});
-		GridBagConstraints gbc_dateChooser_Register = new GridBagConstraints();
-		gbc_dateChooser_Register.fill = GridBagConstraints.HORIZONTAL;
-		gbc_dateChooser_Register.anchor = GridBagConstraints.SOUTH;
-		gbc_dateChooser_Register.gridwidth = 2;
-		gbc_dateChooser_Register.insets = new Insets(0, 0, 5, 5);
-		gbc_dateChooser_Register.gridx = 5;
-		gbc_dateChooser_Register.gridy = 5;
-		panelPrincipal.add(dateChooser_Register, gbc_dateChooser_Register);
+		JDateChooser datePub = new JDateChooser();
+		
+		GridBagConstraints gbc_datePub = new GridBagConstraints();
+		gbc_datePub.fill = GridBagConstraints.HORIZONTAL;
+		gbc_datePub.anchor = GridBagConstraints.SOUTH;
+		gbc_datePub.gridwidth = 2;
+		gbc_datePub.insets = new Insets(0, 0, 5, 5);
+		gbc_datePub.gridx = 5;
+		gbc_datePub.gridy = 5;
+		panelPrincipal.add(datePub, gbc_datePub);
 
 		JScrollPane scrollPane = new JScrollPane();
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
@@ -322,6 +312,35 @@ public class MainWindow {
 		photosList.setVisibleRowCount(-1);
 		photosList.ensureIndexIsVisible(photosList.getHeight());
 		photosList.setCellRenderer(new PhotoListRender());
+		
+		datePub.addPropertyChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				if("date".equals(evt.getPropertyName())) {
+					Date date = (Date) evt.getNewValue();
+					Calendar calendar = Calendar.getInstance();
+					calendar.setTime(date);
+					calendar.set(Calendar.HOUR_OF_DAY, 0);
+					calendar.set(Calendar.MINUTE, 0);
+					calendar.set(Calendar.SECOND, 0);
+					calendar.set(Calendar.MILLISECOND, 0);
+					Date newDate = calendar.getTime();
+					
+					DefaultListModel<Photo> photosSince = Controller.getInstancia().getAllPhotosFromDate(user,
+							newDate);
+					if(!photosSince.isEmpty()) {
+						newPubs.setText("Nuevas publicaciones de tus seguidos");
+						photosList.setModel(photosSince);
+						photosList.setVisible(true);
+						scrollPane.setVisible(true);
+					} else {
+						newPubs.setText("No tienes publicaciones nuevas");
+						photosList.setVisible(false);
+						scrollPane.setVisible(false);
+					}
+				}
+
+			}
+		});
 
 		logo.addMouseListener(new MouseAdapter() {
 			@Override
