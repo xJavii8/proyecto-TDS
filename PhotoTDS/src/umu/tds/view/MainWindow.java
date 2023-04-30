@@ -90,7 +90,8 @@ public class MainWindow {
 	 * Create the application.
 	 */
 	public MainWindow(String username, String profilePicPath) {
-		this.selfUsername = username;
+		this.user = Controller.getInstancia().getUser(username);
+		this.selfUsername = user.getUsername();
 		if (profilePicPath.contains("%")) {
 			try {
 				profilePicPath = URLDecoder.decode(profilePicPath, "UTF-8");
@@ -100,7 +101,6 @@ public class MainWindow {
 		}
 		this.selfProfilePicPath = profilePicPath;
 		this.selfProfile = new JLabel(username);
-		this.user = Controller.getInstancia().getUser(username);
 		this.spw = new SelfProfileWindow(selfUsername, MainWindow.this);
 		initialize();
 	}
@@ -407,7 +407,7 @@ public class MainWindow {
 	private void buscar(String texto) {
 		if (texto.isEmpty() == false) {
 			if (texto.contains("#")) {
-				DefaultListModel<Photo> matchingPublications = Controller.getInstancia()
+				DefaultListModel<Publication> matchingPublications = Controller.getInstancia()
 						.searchPublicationsByHashtags(texto);
 				Utilities.listaPublicaciones(MainWindow.this, selfUsername, matchingPublications);
 			} else {
