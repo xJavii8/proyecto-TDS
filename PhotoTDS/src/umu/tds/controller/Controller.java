@@ -125,7 +125,6 @@ public class Controller implements PropertyChangeListener {
 		user = userRepo.getUser(username);
 		user.get().setLastLogin(Utilities.stringToDateHours(fecha));
 		this.adaptadorUser.updateUser(user.get());
-		System.out.println("El last login es:" + user.get().getLastLogin());
 	}
 
 	public String getProfilePicPath(String username) {
@@ -422,7 +421,6 @@ public class Controller implements PropertyChangeListener {
 		p.setHashtags(hashtags);
 		this.publRepo.createPublication(p);
 		this.adaptadorUser.updateUser(usuario);
-		System.out.println("Apunto de meterme dentro de addNot");
 		this.addNotificacionFollowers(usuario, p);
 		return true;
 	}
@@ -559,18 +557,9 @@ public class Controller implements PropertyChangeListener {
 		}
 		
 		for (Notification n : user.getNotifications()) {
-			System.out.println("Fecha notificacion: " + n.getDate());
-			System.out.println("Fecha fechaComparar: " + fecha);
 			if (n.getPublication() instanceof Photo && n.getDate().after(fecha)) {
-				System.out.println("Dentro");
 				p.addElement((Photo) n.getPublication());
 			}
-		}
-		
-		if (p.isEmpty()) {
-			System.out.println("Vacio");
-		}else {
-			System.out.println("Lleno");
 		}
 		
 		return p;

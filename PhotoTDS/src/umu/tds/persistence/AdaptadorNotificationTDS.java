@@ -54,7 +54,6 @@ public class AdaptadorNotificationTDS implements IAdaptadorNotificationDAO {
 		// creamos entidad notification
 		eNotification = new Entidad();
 		eNotification.setNombre("notification");
-		System.out.println("El valor codigo publicacion notificacion es: " + n.getPublication().getCodigo());
 		eNotification.setPropiedades(new ArrayList<Propiedad>(
 				Arrays.asList(new Propiedad("date", new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(n.getDate())),
 							  new Propiedad("publication", String.valueOf(n.getPublication().getCodigo())))));
@@ -78,12 +77,10 @@ public class AdaptadorNotificationTDS implements IAdaptadorNotificationDAO {
 		
 		eNotification = serverPersistencia.recuperarEntidad(notificationCode);
 		date = serverPersistencia.recuperarPropiedadEntidad(eNotification, "date");
-		System.out.println("El date guardado es: "+ date);
 		
 		publication = adaptadorPublication.readPublication(
 				Integer.parseInt(serverPersistencia.recuperarPropiedadEntidad(eNotification, "publication")));
 		
-		System.out.println(Utilities.stringToDateHours(date));
 		Notification n = new Notification(Utilities.stringToDateHours(date), publication);
 		n.setCode(notificationCode);
 		
