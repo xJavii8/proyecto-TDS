@@ -31,6 +31,7 @@ import umu.tds.persistence.IAdaptadorHashtagDAO;
 import umu.tds.persistence.IAdaptadorNotificationDAO;
 import umu.tds.persistence.IAdaptadorPublicationDAO;
 import umu.tds.persistence.IAdaptadorUserDAO;
+import umu.tds.view.AddPublicationWindow;
 import umu.tds.view.Constantes;
 import umu.tds.view.Utilities;
 import umu.tds.fotos.CargadorFotos;
@@ -627,7 +628,7 @@ public class Controller implements PropertyChangeListener {
 	public void propertyChange(PropertyChangeEvent evt) {
 		Fotos fotos = MapperFotosXMLtoJava.cargarFotos(evt.getNewValue().toString());
 		for (Foto f : fotos.getFoto()) {
-			this.createPhoto(actualUser.get().getUsername(), f.getTitulo(), f.getDescripcion(), f.getPath());
+			this.createPhoto(actualUser.get().getUsername(), f.getTitulo(), f.getDescripcion(), AddPublicationWindow.guardarImagenRelativa(f.getPath()));
 		}
 
 	}
