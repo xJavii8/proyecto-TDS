@@ -23,10 +23,12 @@ public class User {
 	private List<Publication> publications;
 	private List<Publication> likedPublications;
 	private List<Album> albums;
+	private List<Notification> notifications;
+	private Date lastLogin;
 
 	// MÉTODO CONSTRUCTOR
 	public User(String username, String email, String password, String fullName, Date birthDay, String profilePic,
-			String description, boolean isPremium) {
+			String description, boolean isPremium, Date lastLogin) {
 		super();
 		this.username = username;
 		this.email = email;
@@ -36,17 +38,19 @@ public class User {
 		this.profilePic = profilePic;
 		this.description = description;
 		this.isPremium = isPremium;
+		this.lastLogin = lastLogin;
 
 		this.usersFollowing = new LinkedList<User>();
 		this.followers = new LinkedList<User>();
 		this.publications = new LinkedList<Publication>();
 		this.likedPublications = new LinkedList<Publication>();
 		this.albums = new LinkedList<Album>();
+		this.notifications = new LinkedList<Notification>();
 	}
 
 	public User(String username, String email, String password, String fullName, Date birthDay, String profilePic,
-			String description) {
-		this(username, email, password, fullName, birthDay, profilePic, description, false);
+			String description, Date lastLogin) {
+		this(username, email, password, fullName, birthDay, profilePic, description, false, lastLogin);
 	}
 
 	public boolean addUserFollowing(User u) {
@@ -140,6 +144,15 @@ public class User {
 		removeLike(a);
 		albums.remove(a);
 		return true;
+	}
+	
+	public boolean addNotification(Notification n) {
+		if (!notifications.contains(n)) {
+			notifications.add(n);
+			return true;
+		}
+		return false;
+		
 	}
 
 	// GETS AND SETS
@@ -250,9 +263,27 @@ public class User {
 	public List<Album> getAlbums() {
 		return albums;
 	}
+	
+	
 
 	public void setAlbums(List<Album> albums) {
 		this.albums = albums;
 	}
-
+	
+	public List<Notification> getNotifications(){
+		return notifications;
+	}
+	
+	public void setNotifications(List<Notification> notifications){
+		this.notifications = notifications;
+	}
+	
+	public Date getLastLogin() {
+		return lastLogin;
+	}
+	
+	public void setLastLogin(Date lastLogin) {
+		this.lastLogin = lastLogin;
+	}
+	
 }
