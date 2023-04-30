@@ -30,7 +30,7 @@ public class Constantes {
 	public static final int SELF_USER_PIC_SIZE = 32;
 	public static final int PROFILE_PIC_SIZE = 128;
 	public static final int PUBLICATION_PIC_SIZE = 240;
-	public static final int PROFILE_PUBLICATION_PIC_SIZE = 96;
+	public static final int PROFILE_PUBLICATION_PIC_SIZE = 95;
 
 	public static final int MIN_AGE_PREMIUM_DISCOUNT = 18;
 	public static final int MAX_AGE_PREMIUM_DISCOUNT = 25;
