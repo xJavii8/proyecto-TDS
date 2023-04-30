@@ -35,6 +35,10 @@ import javax.swing.JFileChooser;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.EventObject;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -267,7 +271,7 @@ public class AddPublicationWindow implements IEncendidoListener {
 						JOptionPane.showMessageDialog(frame, "Ya existe una publicación con ese nombre", null,
 								JOptionPane.ERROR_MESSAGE);
 					} else if (publ.isEmpty()) {
-						Controller.getInstancia().createPhoto(user, titulo, descripArea.getText(), picPublication);
+						Controller.getInstancia().createPhoto(user, titulo, descripArea.getText(), guardarImagenRelativa(picPublication));
 						JOptionPane.showMessageDialog(frame, "Publicación subida", null,
 								JOptionPane.INFORMATION_MESSAGE);
 						DefaultListModel<Publication> photoList = Controller.getInstancia().getPhotosProfile(user);
@@ -319,6 +323,20 @@ public class AddPublicationWindow implements IEncendidoListener {
 		panelCentral.add(luz, gbc_luz);
 	}
 
+	public static String guardarImagenRelativa(String origen) {
+		Path rutaOrigen = Paths.get(origen);
+	    String nombreArchivo = rutaOrigen.getFileName().toString();
+	    Path rutaDestino = Paths.get("src/umu/tds/photos/" + nombreArchivo);
+
+	    try {
+	        Files.copy(rutaOrigen, rutaDestino);
+	    } catch (Exception e) {
+	        System.err.println("Error al copiar el archivo: " + e.getMessage());
+	    }
+	    
+	    return rutaDestino.toString();
+	}
+	
 	@Override
 	public void enteradoCambioEncendido(EventObject arg0) {
 		JFileChooser chooser = new JFileChooser();
