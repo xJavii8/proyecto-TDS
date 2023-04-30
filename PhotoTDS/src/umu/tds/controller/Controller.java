@@ -1,7 +1,10 @@
 package umu.tds.controller;
 
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,7 +16,9 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
+import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import umu.tds.model.Album;
@@ -500,7 +505,23 @@ public class Controller implements PropertyChangeListener {
 			adaptadorHashtag.createHashtag(h);
 			hashtags.add(h);
 		}
-		Album a = usuario.createAlbum(titulo, descripcion, publicacionesAlbum, hashtags);
+		List<File> fotos = new LinkedList<>();
+		for (Publication p : publicacionesAlbum) {
+			if(p instanceof Photo) {
+				Photo ph = (Photo) p;
+				fotos.add(new File(ph.getPath()));
+			}
+		}
+		
+		ImageIcon imgIcon = Utilities.getIconAlbum(fotos);
+		BufferedImage icon = (BufferedImage) imgIcon.getImage();
+		File output = new File("src/umu/tds/photos/albumIcon" + titulo + ".png");
+		try {
+		    ImageIO.write(icon, "png", output); 
+		} catch (IOException e) {
+		    System.err.println("Error al guardar la imagen: " + e.getMessage());
+		}
+		Album a = usuario.createAlbum(titulo, descripcion, publicacionesAlbum, hashtags, output.getPath());
 		this.addNotificacionFollowers(usuario, a);
 		this.publRepo.createPublication(a);
 		this.adaptadorUser.updateUser(usuario);

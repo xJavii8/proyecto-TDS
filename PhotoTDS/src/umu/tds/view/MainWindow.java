@@ -293,7 +293,7 @@ public class MainWindow {
 		}
 		photosList.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
-				if (!e.getValueIsAdjusting()) {
+				if (!e.getValueIsAdjusting() && photosList.getSelectedValue() != null) {
 					JPanel panelCentral = getPanelCentral();
 					JPanel panelPublication = new PublicationWindow(selfUsername,
 							(Publication) photosList.getSelectedValue(), photosList.getSelectedValue().getUser(),
@@ -346,6 +346,15 @@ public class MainWindow {
 				DefaultListModel<Photo> p = Controller.getInstancia().getAllPhotosFromDate(user, user.getLastLogin());
 				if (!photosList.getModel().equals(p)) {
 					photosList.setModel(p);
+					if(p.isEmpty()) {
+						newPubs.setText("No tienes publicaciones nuevas");
+						photosList.setVisible(false);
+						scrollPane.setVisible(false);
+					} else {
+						newPubs.setText("Nuevas publicaciones de tus seguidos");
+						photosList.setVisible(true);
+						scrollPane.setVisible(true);
+					}
 				}
 				CardLayout cL = (CardLayout) panelCentral.getLayout();
 				cL.show(panelCentral, "panelPrincipal");
