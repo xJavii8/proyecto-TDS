@@ -258,7 +258,6 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 	}
 	
 	private List<Notification> obtenerNotificationsDesdeCodigos(String notifications) {
-		System.out.println("String de notificaciones: " + notifications);
 		List<Notification> notList = new LinkedList<Notification>();
 		StringTokenizer strTok = new StringTokenizer(notifications, " ");
 		AdaptadorNotificationTDS adaptadorNotification = AdaptadorNotificationTDS.getUnicaInstancia();
