@@ -27,4 +27,5 @@ public abstract class DAOFactory {
 	public abstract IAdaptadorPublicationDAO getPublicationDAO();
 	public abstract IAdaptadorCommentDAO getCommentDAO();
 	public abstract IAdaptadorHashtagDAO getHashtagDAO();
+	public abstract IAdaptadorNotificationDAO getNotificationDAO();
 }
