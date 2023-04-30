@@ -1,32 +1,29 @@
 package umu.tds.model;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 
-import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Image;
+import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 
-import umu.tds.controller.Controller;
 import umu.tds.view.Constantes;
 import umu.tds.view.Utilities;
 
 @SuppressWarnings("serial")
-public class AlbumListRender extends JPanel implements ListCellRenderer<Album> {
+public class AlbumPublicationListRender extends JPanel implements ListCellRenderer<Publication> {
 
 	private JLabel albumLabel;
 	private JLabel nameLabel;
 
-	public AlbumListRender() {
+	public AlbumPublicationListRender() {
 		albumLabel = new JLabel();
 		nameLabel = new JLabel();
 		setLayout(new BorderLayout(5, 5));
@@ -35,15 +32,22 @@ public class AlbumListRender extends JPanel implements ListCellRenderer<Album> {
 	}
 
 	@Override
-	public Component getListCellRendererComponent(JList<? extends Album> list, Album a, int index, boolean isSelected,
-			boolean cellHasFocus) {
-		nameLabel.setText(a.getTitle());
+	public Component getListCellRendererComponent(JList<? extends Publication> list, Publication p, int index,
+			boolean isSelected, boolean cellHasFocus) {
+		String title = p.getTitle();
+		if (title.length() > Constantes.MAX_TITLE_ALBUM_LIST) {
+			title = title.substring(0, Constantes.MAX_TITLE_ALBUM_LIST - 3) + "...";
+		}
+		nameLabel.setText(title);
 		nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		nameLabel.setFont(new Font("Bahnschrift", Font.BOLD, 14));
-		/*ImageIcon publicationIcon = new ImageIcon(new ImageIcon(a.get).getImage().getScaledInstance(
-				Constantes.PROFILE_PUBLICATION_PIC_SIZE, Constantes.PROFILE_PUBLICATION_PIC_SIZE, Image.SCALE_SMOOTH));
-		albumLabel.setIcon(publicationIcon;*/
-		// setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+
+		Album a = (Album) p;
+		List<File> fotos = new LinkedList<>();
+		for (Photo ph : a.getPhotos()) {
+			fotos.add(new File(ph.getPath()));
+		}
+		albumLabel.setIcon(Utilities.getIconAlbum(fotos));
 
 		if (isSelected) {
 			setBackground(list.getSelectionBackground());

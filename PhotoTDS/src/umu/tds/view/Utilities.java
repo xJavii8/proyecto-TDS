@@ -43,6 +43,7 @@ import umu.tds.model.Photo;
 import umu.tds.model.PhotoListRender;
 import umu.tds.model.ProfilePhotoListRender;
 import umu.tds.model.Publication;
+import umu.tds.model.PublicationListRender;
 import umu.tds.model.User;
 import umu.tds.model.UserListRender;
 
@@ -194,12 +195,12 @@ public class Utilities {
 		matchingUsersPanel.setVisible(true);
 	}
 
-	public static void listaPublicaciones(MainWindow mw, String selfUser, DefaultListModel<Photo> photos) {
-		JList<Photo> publicationList = new JList<>(photos);
+	public static void listaPublicaciones(MainWindow mw, String selfUser, DefaultListModel<Publication> publications) {
+		JList<Publication> publicationList = new JList<>(publications);
 		publicationList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 		publicationList.setVisibleRowCount(-1);
 		publicationList.ensureIndexIsVisible(publicationList.getHeight());
-		publicationList.setCellRenderer(new PhotoListRender());
+		publicationList.setCellRenderer(new PublicationListRender());
 		JScrollPane scrollPubPanel = new JScrollPane(publicationList);
 		JFrame publicationListPanel = new JFrame();
 
@@ -233,7 +234,7 @@ public class Utilities {
 
 		JPanel panelNorte = new JPanel();
 		publicationListPanel.getContentPane().add(panelNorte, BorderLayout.NORTH);
-		JLabel foundUsers = new JLabel("Publicaciones encontradas");
+		JLabel foundUsers = new JLabel("Publicaciones encontradas: " + publications.size());
 		foundUsers.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		panelNorte.add(foundUsers);
 
@@ -258,7 +259,7 @@ public class Utilities {
 		publicationList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 		publicationList.setVisibleRowCount(-1);
 		publicationList.ensureIndexIsVisible(publicationList.getHeight());
-		publicationList.setCellRenderer(new PhotoListRender());
+		publicationList.setCellRenderer(new ProfilePhotoListRender());
 		JScrollPane scrollPubPanel = new JScrollPane(publicationList);
 		JFrame publicationListPanel = new JFrame();
 
@@ -405,14 +406,14 @@ public class Utilities {
 		// Agregamos cada imagen pequeña a la imagen grande
 		int x = 0;
 		int y = 0;
-		for (File foto : fotos) {
+		for(int i = 0; i < Math.min(fotos.size(), Constantes.ALBUM_MINI_PHOTOS); i++) {
 			try {
-				BufferedImage imagenPequena = ImageIO.read(foto);
+				BufferedImage imagenPequena = ImageIO.read(fotos.get(i));
 				g2d.drawImage(imagenPequena, x, y, 32, 32, null);
 				x += 32;
 				if (x > 98) {
 					x = 0;
-					y += 98;
+					y += 32;
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
