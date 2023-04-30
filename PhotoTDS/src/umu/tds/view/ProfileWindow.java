@@ -25,6 +25,7 @@ import javax.swing.JPanel;
 
 import umu.tds.controller.Controller;
 import umu.tds.model.Album;
+import umu.tds.model.AlbumPublicationListRender;
 import umu.tds.model.Photo;
 import umu.tds.model.PhotoListRender;
 import umu.tds.model.ProfilePhotoListRender;
@@ -298,10 +299,14 @@ public class ProfileWindow {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if(switchAlbum.getText().equals("Álbumes")) {
+					publicationList.setModel(new DefaultListModel<Publication>());
+					publicationList.setCellRenderer(new AlbumPublicationListRender());
 					DefaultListModel<Publication> albums = Controller.getInstancia().getAlbumsProfile(searchedUser);
 					publicationList.setModel(albums);
 					switchAlbum.setText("Fotos");
 				} else if(switchAlbum.getText().equals("Fotos")) {
+					publicationList.setModel(new DefaultListModel<Publication>());
+					publicationList.setCellRenderer(new ProfilePhotoListRender());
 					DefaultListModel<Publication> fotos = Controller.getInstancia().getPhotosProfile(searchedUser);
 					publicationList.setModel(fotos);
 					switchAlbum.setText("Álbumes");

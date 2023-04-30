@@ -9,6 +9,7 @@ import javax.swing.event.ListSelectionListener;
 
 import umu.tds.controller.Controller;
 import umu.tds.model.Album;
+import umu.tds.model.AlbumPublicationListRender;
 import umu.tds.model.Photo;
 import umu.tds.model.PhotoListRender;
 import umu.tds.model.ProfilePhotoListRender;
@@ -336,11 +337,15 @@ public class SelfProfileWindow {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if(switchAlbum.getText().equals("Álbumes")) {
+					publicationList.setModel(new DefaultListModel<Publication>());
+					publicationList.setCellRenderer(new AlbumPublicationListRender());
 					DefaultListModel<Publication> albums = Controller.getInstancia().getAlbumsProfile(user.getUsername());
 					publicationList.setModel(albums);
 					newAlbum.setVisible(true);
 					switchAlbum.setText("Fotos");
 				} else if(switchAlbum.getText().equals("Fotos")) {
+					publicationList.setModel(new DefaultListModel<Publication>());
+					publicationList.setCellRenderer(new ProfilePhotoListRender());
 					DefaultListModel<Publication> fotos = Controller.getInstancia().getPhotosProfile(user.getUsername());
 					publicationList.setModel(fotos);
 					newAlbum.setVisible(false);

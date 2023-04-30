@@ -212,7 +212,13 @@ public class Controller implements PropertyChangeListener {
 	}
 
 	public User getUser(String username) {
-		Optional<User> userO = userRepo.getUser(username);
+		Optional<User> userO;
+		Matcher emailMatch = Constantes.EMAIL_PAT.matcher(username);
+
+		if (emailMatch.matches())
+			userO = userRepo.getUserFromEmail(username);
+		else
+			userO = userRepo.getUser(username);
 		if (userO.isEmpty())
 			return null;
 
@@ -270,8 +276,8 @@ public class Controller implements PropertyChangeListener {
 		return matchingUsers;
 	}
 
-	public DefaultListModel<Photo> searchPublicationsByHashtags(String searchText) {
-		DefaultListModel<Photo> pubs = new DefaultListModel<>();
+	public DefaultListModel<Publication> searchPublicationsByHashtags(String searchText) {
+		DefaultListModel<Publication> pubs = new DefaultListModel<>();
 		List<String> validHashtags = new ArrayList<>();
 
 		Matcher matcher = Constantes.HASHTAG_PAT.matcher(searchText);
@@ -292,9 +298,7 @@ public class Controller implements PropertyChangeListener {
 			}
 		}
 
-		for (Publication p : matchingPublications)
-			pubs.addElement((Photo) p);
-
+		matchingPublications.stream().forEach(p -> pubs.addElement(p));
 		return pubs;
 	}
 
@@ -482,7 +486,7 @@ public class Controller implements PropertyChangeListener {
 		}
 		return deletedAlbums;
 	}
-	
+
 	public boolean deleteAlbum(Album album) {
 		User user = this.getUser(album.getUser());
 		for (Photo p : album.getPhotos()) {
@@ -527,8 +531,11 @@ public class Controller implements PropertyChangeListener {
 		if (p instanceof Album) {
 			Album a = (Album) p;
 			for (Photo ph : a.getPhotos()) {
-				ph.addLike();
-				u.addLike(ph);
+				if (!u.getLikedPublications().stream().anyMatch(lp -> lp.getCodigo() == ph.getCodigo())) {
+					ph.addLike();
+					u.addLike(ph);
+					adaptadorPublication.updatePublication(ph);
+				}
 			}
 		}
 		adaptadorPublication.updatePublication(p);
@@ -542,8 +549,11 @@ public class Controller implements PropertyChangeListener {
 		if (p instanceof Album) {
 			Album a = (Album) p;
 			for (Photo ph : a.getPhotos()) {
-				ph.removeLike();
-				u.removeLike(ph);
+				if (u.getLikedPublications().stream().anyMatch(lp -> lp.getCodigo() == ph.getCodigo())) {
+					ph.removeLike();
+					u.removeLike(ph);
+					adaptadorPublication.updatePublication(ph);
+				}
 			}
 		}
 		adaptadorPublication.updatePublication(p);
@@ -553,12 +563,7 @@ public class Controller implements PropertyChangeListener {
 	public boolean userLikedPub(String user, Publication p) {
 		User u = this.getUser(user);
 		List<Publication> allLikedP = u.getLikedPublications();
-		for (Publication likedP : allLikedP) {
-			if (likedP.equals(p)) {
-				return true;
-			}
-		}
-		return false;
+		return allLikedP.stream().anyMatch(likedP -> likedP.getCodigo() == p.getCodigo());
 	}
 
 	public DefaultListModel<User> getUsersWhoLikedPublication(Publication publication) {

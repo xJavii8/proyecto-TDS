@@ -30,7 +30,7 @@ public class Constantes {
 	public static final int SELF_USER_PIC_SIZE = 32;
 	public static final int PROFILE_PIC_SIZE = 128;
 	public static final int PUBLICATION_PIC_SIZE = 240;
-	public static final int PROFILE_PUBLICATION_PIC_SIZE = 98;
+	public static final int PROFILE_PUBLICATION_PIC_SIZE = 96;
 
 	public static final int MIN_AGE_PREMIUM_DISCOUNT = 18;
 	public static final int MAX_AGE_PREMIUM_DISCOUNT = 25;
@@ -45,5 +45,7 @@ public class Constantes {
 	
 	public static final int DEFAULT_LIKES_PUBLICATION = 0;
 	public static final int ALBUM_MAX_NUM_PHOTOS = 16;
+	public static final int ALBUM_MINI_PHOTOS = 9;
+	public static final int MAX_TITLE_ALBUM_LIST = 13;
 
 }
