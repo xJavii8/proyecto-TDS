@@ -22,4 +22,11 @@ public class TDSDAOFactory extends DAOFactory {
 	public IAdaptadorHashtagDAO getHashtagDAO() {
 		return AdaptadorHashtagTDS.getUnicaInstancia();
 	}
+
+	@Override
+	public IAdaptadorNotificationDAO getNotificationDAO() {
+		return AdaptadorNotificationTDS.getUnicaInstancia();
+	}
+	
+	
 }

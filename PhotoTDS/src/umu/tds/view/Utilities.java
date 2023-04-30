@@ -434,6 +434,17 @@ public class Utilities {
 		}
 		return fecha;
 	}
+	
+	public static Date stringToDateHours(String fechaString) {
+		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		Date fecha = null;
+		try {
+			fecha = formato.parse(fechaString);
+		} catch (ParseException e) {
+			System.err.println("Error al convertir la fecha: " + e.getMessage());
+		}
+		return fecha;
+	}
 
 	public static String dateToString(Date fechaDate) {
 		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");

@@ -9,13 +9,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+
 import beans.Entidad;
 import beans.Propiedad;
 import tds.driver.FactoriaServicioPersistencia;
 import tds.driver.ServicioPersistencia;
 import umu.tds.model.Album;
+import umu.tds.model.Notification;
 import umu.tds.model.Publication;
 import umu.tds.model.User;
+import umu.tds.view.Utilities;
 
 public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 	private static ServicioPersistencia serverPersistencia;
@@ -58,7 +61,9 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 				new Propiedad("followers", obtenerCodigosUsuarios(user.getFollowers())),
 				new Propiedad("publications", obtenerCodigosPublicaciones(user.getPublications())),
 				new Propiedad("likedPublications", obtenerCodigosPublicaciones(user.getLikedPublications())),
-				new Propiedad("albums", obtenerCodigosAlbums(user.getAlbums())))));
+				new Propiedad("albums", obtenerCodigosAlbums(user.getAlbums())), 
+				new Propiedad("notifications", obtenerCodigosNotifications(user.getNotifications())),
+				new Propiedad("lastLogin", new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(user.getLastLogin())))));
 
 		// registrar entidad cliente
 		eUser = serverPersistencia.registrarEntidad(eUser);
@@ -87,6 +92,8 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 		String publications;
 		String getLikedPublications;
 		String albums;
+		String notifications;
+		String lastLogin;
 
 		// recuperar entidad
 		eUser = serverPersistencia.recuperarEntidad(userCode);
@@ -105,7 +112,9 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 		publications = serverPersistencia.recuperarPropiedadEntidad(eUser, "publications");
 		getLikedPublications = serverPersistencia.recuperarPropiedadEntidad(eUser, "likedPublications");
 		albums = serverPersistencia.recuperarPropiedadEntidad(eUser, "albums");
-
+		notifications = serverPersistencia.recuperarPropiedadEntidad(eUser, "notifications");
+		lastLogin = serverPersistencia.recuperarPropiedadEntidad(eUser, "lastLogin");
+		
 		Date birthDay = new Date();
 		try {
 			birthDay = new SimpleDateFormat("dd/MM/yyyy").parse(birthDayStr);
@@ -115,7 +124,7 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 		}
 
 		User user = new User(username, email, password, fullName, birthDay, profilePic, description,
-				Boolean.parseBoolean(isPremium));
+				Boolean.parseBoolean(isPremium), Utilities.stringToDateHours(lastLogin));
 		user.setCodigo(userCode);
 
 		// IMPORTANTE: a�adir el usuario al pool antes de llamar a otros
@@ -127,6 +136,7 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 		user.setPublications(obtenerPublicationsDesdeCodigos(publications));
 		user.setLikedPublications(obtenerPublicationsDesdeCodigos(getLikedPublications));
 		user.setAlbums(obtenerAlbumsDesdeCodigos(albums));
+		user.setNotifications(obtenerNotificationsDesdeCodigos(notifications));
 
 		return user;
 
@@ -161,6 +171,10 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 				p.setValor(obtenerCodigosPublicaciones(user.getLikedPublications()));
 			} else if (p.getNombre().equals("albums")) {
 				p.setValor(obtenerCodigosAlbums(user.getAlbums()));
+			} else if (p.getNombre().equals("notifications")) {
+				p.setValor(obtenerCodigosNotifications(user.getNotifications()));
+			} else if (p.getNombre().equals("lastLogin")) {
+				p.setValor(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(user.getLastLogin()));
 			}
 			serverPersistencia.modificarPropiedad(p);
 		}
@@ -234,4 +248,24 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 		}
 		return albumList;
 	}
+	
+	private String obtenerCodigosNotifications(List<Notification> notifications) {
+		String lineas = "";
+		for (Notification not : notifications) {
+			lineas += not.getCodigo() + " ";
+		}
+		return lineas.trim();
+	}
+	
+	private List<Notification> obtenerNotificationsDesdeCodigos(String notifications) {
+		System.out.println("String de notificaciones: " + notifications);
+		List<Notification> notList = new LinkedList<Notification>();
+		StringTokenizer strTok = new StringTokenizer(notifications, " ");
+		AdaptadorNotificationTDS adaptadorNotification = AdaptadorNotificationTDS.getUnicaInstancia();
+		while (strTok.hasMoreTokens()) {
+			notList.add(adaptadorNotification.readNotification(Integer.valueOf((String) strTok.nextElement())));
+		}
+		return notList;
+	}
+	
 }

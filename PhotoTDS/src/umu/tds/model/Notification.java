@@ -3,33 +3,32 @@ package umu.tds.model;
 import java.util.Date;
 
 public class Notification {
-	private int code;
-	private String text;
+	private int codigo;
 	private Date date;
+	private Publication pub;
 
 	// MÉTODO CONSTRUCTOR
-	public Notification(int code, String text, Date date) {
+	public Notification(Date date, Publication pub) {
 		super();
-		this.code = code;
-		this.text = text;
+		this.pub = pub;
 		this.date = date;
 	}
 	
 	// GETTERS AND SETTERS
-	public int getCode() {
-		return code;
+	public int getCodigo() {
+		return codigo;
 	}
 
 	public void setCode(int code) {
-		this.code = code;
-	}
-
-	public String getText() {
-		return text;
+		this.codigo = code;
 	}
 
 	public Date getDate() {
 		return date;
+	}
+	
+	public Publication getPublication() {
+		return pub;
 	}
 
 }
