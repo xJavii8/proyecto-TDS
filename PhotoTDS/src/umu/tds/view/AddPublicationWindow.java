@@ -328,10 +328,12 @@ public class AddPublicationWindow implements IEncendidoListener {
 	    String nombreArchivo = rutaOrigen.getFileName().toString();
 	    Path rutaDestino = Paths.get("src/umu/tds/photos/" + nombreArchivo);
 
-	    try {
-	        Files.copy(rutaOrigen, rutaDestino);
-	    } catch (Exception e) {
-	        System.err.println("Error al copiar el archivo: " + e.getMessage());
+	    if (!Files.exists(rutaDestino)) {
+		    try {
+		        Files.copy(rutaOrigen, rutaDestino);
+		    } catch (Exception e) {
+		        System.err.println("Error al copiar el archivo: " + e.getMessage());
+		    }
 	    }
 	    
 	    return rutaDestino.toString();

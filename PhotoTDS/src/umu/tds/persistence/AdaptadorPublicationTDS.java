@@ -75,7 +75,8 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 							new Propiedad("likes", String.valueOf(publication.getLikes())),
 							new Propiedad("photos", obtenerCodigosPhotos(((Album) publication).getPhotos())),
 							new Propiedad("user", publication.getUser()),
-							new Propiedad("hashtags", obtenerCodigosHashtags(publication.getHashtags())))));
+							new Propiedad("hashtags", obtenerCodigosHashtags(publication.getHashtags())),
+							new Propiedad("iconAlbum", ((Album) publication).getIconAlbumPath()))));
 		}
 
 		// registrar entidad cliente
@@ -153,6 +154,7 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 		String photos;
 
 		String hashtags;
+		String iconAlbum;
 
 		// recuperar entidad
 		ePublication = serverPersistencia.recuperarEntidad(codigo);
@@ -165,9 +167,10 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 		photos = serverPersistencia.recuperarPropiedadEntidad(ePublication, "photos");
 		user = serverPersistencia.recuperarPropiedadEntidad(ePublication, "user");
 		hashtags = serverPersistencia.recuperarPropiedadEntidad(ePublication, "hashtags");
+		iconAlbum = serverPersistencia.recuperarPropiedadEntidad(ePublication, "iconAlbum");
 
 		Album a = new Album(title, Utilities.stringToDate(datePublication), description, Integer.parseInt(likes), user,
-				obtenerHashtagsDesdeCodigos(hashtags), obtenerPhotosDesdeCodigos(photos));
+				obtenerHashtagsDesdeCodigos(hashtags), obtenerPhotosDesdeCodigos(photos), iconAlbum);
 		a.setCodigo(codigo);
 
 		PoolDAO.getUnicaInstancia().addObjeto(codigo, a);
@@ -234,6 +237,8 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 			} else if (pro.getNombre().equals("hashtags")) {
 				a.getHashtags().stream().forEach(h -> adaptadorHashtag.createHashtag(h));
 				pro.setValor(obtenerCodigosHashtags(a.getHashtags()));
+			} else if(pro.getNombre().equals("iconAlbum")) {
+				pro.setValor(a.getIconAlbumPath());
 			}
 			serverPersistencia.modificarPropiedad(pro);
 		}

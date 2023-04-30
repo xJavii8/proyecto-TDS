@@ -411,7 +411,7 @@ public class Utilities {
 				BufferedImage imagenPequena = ImageIO.read(fotos.get(i));
 				g2d.drawImage(imagenPequena, x, y, 32, 32, null);
 				x += 32;
-				if (x > 98) {
+				if (x >= 96) {
 					x = 0;
 					y += 32;
 				}
