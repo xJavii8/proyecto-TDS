@@ -68,7 +68,8 @@ public class Publication {
 	}
 
 	public boolean removeLike() {
-		this.likes -= 1;
+		if(this.likes != 0 || this.likes < 0) 
+			this.likes -= 1;
 		return true;
 	}
 
