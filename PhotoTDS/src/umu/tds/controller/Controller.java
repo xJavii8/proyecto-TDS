@@ -2,6 +2,7 @@ package umu.tds.controller;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -18,6 +19,7 @@ import javax.swing.JOptionPane;
 import umu.tds.model.Album;
 import umu.tds.model.Comment;
 import umu.tds.model.Hashtag;
+import umu.tds.model.Notification;
 import umu.tds.model.Photo;
 import umu.tds.model.Publication;
 import umu.tds.model.PublicationRepository;
@@ -26,10 +28,11 @@ import umu.tds.model.UserRepository;
 import umu.tds.persistence.DAOException;
 import umu.tds.persistence.DAOFactory;
 import umu.tds.persistence.IAdaptadorHashtagDAO;
+import umu.tds.persistence.IAdaptadorNotificationDAO;
 import umu.tds.persistence.IAdaptadorPublicationDAO;
 import umu.tds.persistence.IAdaptadorUserDAO;
 import umu.tds.view.Constantes;
-
+import umu.tds.view.Utilities;
 import umu.tds.fotos.CargadorFotos;
 import umu.tds.fotos.MapperFotosXMLtoJava;
 import umu.tds.fotos.Fotos;
@@ -41,6 +44,7 @@ public class Controller implements PropertyChangeListener {
 	private IAdaptadorUserDAO adaptadorUser;
 	private IAdaptadorPublicationDAO adaptadorPublication;
 	private IAdaptadorHashtagDAO adaptadorHashtag;
+	private IAdaptadorNotificationDAO adaptadorNotification;
 
 	private UserRepository userRepo;
 	private PublicationRepository publRepo;
@@ -73,6 +77,7 @@ public class Controller implements PropertyChangeListener {
 		adaptadorUser = factoria.getUserDAO();
 		adaptadorPublication = factoria.getPublicationDAO();
 		adaptadorHashtag = factoria.getHashtagDAO();
+		adaptadorNotification = factoria.getNotificationDAO();
 	}
 
 	private void inicializarRepos() {
@@ -88,7 +93,7 @@ public class Controller implements PropertyChangeListener {
 		if (userExist == true || emailExist == true)
 			return false;
 
-		User user = new User(username, email, password, fullname, birthday, profilePic, description);
+		User user = new User(username, email, password, fullname, birthday, profilePic, description, new Date());
 		userRepo.addUser(user);
 
 		return true;
@@ -110,6 +115,17 @@ public class Controller implements PropertyChangeListener {
 			return true;
 		} else
 			return false;
+	}
+
+	public void actualizarLastLogin(String username) {
+		Optional<User> user;
+		String fecha;
+		
+		fecha = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date());
+		user = userRepo.getUser(username);
+		user.get().setLastLogin(Utilities.stringToDateHours(fecha));
+		this.adaptadorUser.updateUser(user.get());
+		System.out.println("El last login es:" + user.get().getLastLogin());
 	}
 
 	public String getProfilePicPath(String username) {
@@ -406,6 +422,22 @@ public class Controller implements PropertyChangeListener {
 		p.setHashtags(hashtags);
 		this.publRepo.createPublication(p);
 		this.adaptadorUser.updateUser(usuario);
+		System.out.println("Apunto de meterme dentro de addNot");
+		this.addNotificacionFollowers(usuario, p);
+		return true;
+	}
+
+	private boolean addNotificacionFollowers(User u, Publication p) {
+		Notification n = new Notification(new Date(), p);
+		this.adaptadorNotification.createNotification(n);
+		List<User> Seguidores = u.getFollowers();
+		for (User seguidor : Seguidores) {
+			Optional<User> s = userRepo.getUser(seguidor.getUsername());
+			if (!s.get().addNotification(n)) {
+				return false;
+			}
+			this.adaptadorUser.updateUser(s.get());
+		}
 		return true;
 	}
 
@@ -470,6 +502,7 @@ public class Controller implements PropertyChangeListener {
 			hashtags.add(h);
 		}
 		Album a = usuario.createAlbum(titulo, descripcion, publicacionesAlbum, hashtags);
+		this.addNotificacionFollowers(usuario, a);
 		this.publRepo.createPublication(a);
 		this.adaptadorUser.updateUser(usuario);
 		return true;
@@ -521,6 +554,30 @@ public class Controller implements PropertyChangeListener {
 			}
 		}
 
+		return p;
+	}
+
+	public DefaultListModel<Photo> getAllPhotosFromDate(User user, Date fecha) {
+		DefaultListModel<Photo> p = new DefaultListModel<Photo>();
+		if (fecha == null) {
+			return p;
+		}
+		
+		for (Notification n : user.getNotifications()) {
+			System.out.println("Fecha notificacion: " + n.getDate());
+			System.out.println("Fecha fechaComparar: " + fecha);
+			if (n.getPublication() instanceof Photo && n.getDate().after(fecha)) {
+				System.out.println("Dentro");
+				p.addElement((Photo) n.getPublication());
+			}
+		}
+		
+		if (p.isEmpty()) {
+			System.out.println("Vacio");
+		}else {
+			System.out.println("Lleno");
+		}
+		
 		return p;
 	}
 

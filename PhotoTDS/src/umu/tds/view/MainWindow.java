@@ -72,6 +72,9 @@ import javax.swing.JToolBar;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JTextField;
+import com.toedter.calendar.JDateChooser;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
 
 public class MainWindow {
 
@@ -101,6 +104,7 @@ public class MainWindow {
 		}
 		this.selfProfilePicPath = profilePicPath;
 		this.selfProfile = new JLabel(username);
+		this.photosList = new JList<>();
 		this.spw = new SelfProfileWindow(selfUsername, MainWindow.this);
 		initialize();
 	}
@@ -238,19 +242,21 @@ public class MainWindow {
 		panelCentral.add(panelPrincipal, "panelPrincipal");
 		GridBagLayout gbl_panelPrincipal = new GridBagLayout();
 		gbl_panelPrincipal.columnWidths = new int[] { 15, 15, 15, 122, 128, 0, 0, 15, 15, 0 };
-		gbl_panelPrincipal.rowHeights = new int[] { 15, 15, 0, 15, 15, 0, 15, 15, 0 };
+		gbl_panelPrincipal.rowHeights = new int[] { 15, 15, 0, 15, 15, 15, 0, 15, 15, 0 };
 		gbl_panelPrincipal.columnWeights = new double[] { 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0,
 				Double.MIN_VALUE };
-		gbl_panelPrincipal.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_panelPrincipal.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE };
 		panelPrincipal.setLayout(gbl_panelPrincipal);
 
-		DefaultListModel<Photo> photos = Controller.getInstancia().getAllPhotos(user.getUsersFollowing());
+		DefaultListModel<Photo> photosLastLogin = Controller.getInstancia().getAllPhotosFromDate(user,
+				user.getLastLogin());
+		Controller.getInstancia().actualizarLastLogin(selfUsername);
 
 		JLabel newPubs = new JLabel("");
-		if (photos.isEmpty())
+		if (photosLastLogin.isEmpty())
 			newPubs.setText("No tienes publicaciones nuevas");
 		else
-			newPubs.setText("Estas son las publicaciones de los usuarios que sigues");
+			newPubs.setText("Nuevas publicaciones de tus seguidos");
 		newPubs.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		GridBagConstraints gbc_newPubs = new GridBagConstraints();
 		gbc_newPubs.gridwidth = 4;
@@ -259,17 +265,39 @@ public class MainWindow {
 		gbc_newPubs.gridy = 3;
 		panelPrincipal.add(newPubs, gbc_newPubs);
 
+		JDateChooser dateChooser_Register = new JDateChooser();
+		dateChooser_Register.addPropertyChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+
+				if (dateChooser_Register.getDate() != null) {
+					photosList.setModel(
+							Controller.getInstancia().getAllPhotosFromDate(user, dateChooser_Register.getDate()));
+					newPubs.setText("Todas las publicaciones desde el "
+							+ Utilities.dateToString(dateChooser_Register.getDate()));
+				}
+
+			}
+		});
+		GridBagConstraints gbc_dateChooser_Register = new GridBagConstraints();
+		gbc_dateChooser_Register.fill = GridBagConstraints.HORIZONTAL;
+		gbc_dateChooser_Register.anchor = GridBagConstraints.SOUTH;
+		gbc_dateChooser_Register.gridwidth = 2;
+		gbc_dateChooser_Register.insets = new Insets(0, 0, 5, 5);
+		gbc_dateChooser_Register.gridx = 5;
+		gbc_dateChooser_Register.gridy = 5;
+		panelPrincipal.add(dateChooser_Register, gbc_dateChooser_Register);
+
 		JScrollPane scrollPane = new JScrollPane();
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
 		gbc_scrollPane.gridwidth = 4;
 		gbc_scrollPane.insets = new Insets(0, 0, 5, 5);
 		gbc_scrollPane.fill = GridBagConstraints.BOTH;
 		gbc_scrollPane.gridx = 3;
-		gbc_scrollPane.gridy = 5;
+		gbc_scrollPane.gridy = 6;
 		panelPrincipal.add(scrollPane, gbc_scrollPane);
 
-		photosList = new JList<>(photos);
-		if (photos.isEmpty()) {
+		photosList = new JList<>(photosLastLogin);
+		if (photosLastLogin.isEmpty()) {
 			photosList.setVisible(false);
 			scrollPane.setVisible(false);
 		}
@@ -296,8 +324,8 @@ public class MainWindow {
 		logo.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				DefaultListModel<Photo> p = Controller.getInstancia().getAllPhotos(user.getUsersFollowing());
-				if(!photosList.getModel().equals(p)) {
+				DefaultListModel<Photo> p = Controller.getInstancia().getAllPhotosFromDate(user, user.getLastLogin());
+				if (!photosList.getModel().equals(p)) {
 					photosList.setModel(p);
 				}
 				CardLayout cL = (CardLayout) panelCentral.getLayout();
