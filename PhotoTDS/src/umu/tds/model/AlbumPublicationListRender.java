@@ -8,6 +8,7 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -43,11 +44,7 @@ public class AlbumPublicationListRender extends JPanel implements ListCellRender
 		nameLabel.setFont(new Font("Bahnschrift", Font.BOLD, 14));
 
 		Album a = (Album) p;
-		List<File> fotos = new LinkedList<>();
-		for (Photo ph : a.getPhotos()) {
-			fotos.add(new File(ph.getPath()));
-		}
-		albumLabel.setIcon(Utilities.getIconAlbum(fotos));
+		albumLabel.setIcon(new ImageIcon(a.getIconAlbumPath()));
 
 		if (isSelected) {
 			setBackground(list.getSelectionBackground());

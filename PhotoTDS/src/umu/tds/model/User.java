@@ -134,8 +134,8 @@ public class User {
 		return false;
 	}
 
-	public Album createAlbum(String titulo, String descripcion, List<Publication> pubs, List<Hashtag> hashtags) {
-		Album a = new Album(titulo, new Date(), descripcion, this.getUsername(), hashtags, pubs);
+	public Album createAlbum(String titulo, String descripcion, List<Publication> pubs, List<Hashtag> hashtags, String iconAlbum) {
+		Album a = new Album(titulo, new Date(), descripcion, this.getUsername(), hashtags, pubs, iconAlbum);
 		this.albums.add(a);
 		return a;
 	}

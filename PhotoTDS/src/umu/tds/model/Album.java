@@ -10,9 +10,10 @@ import umu.tds.view.Constantes;
 public class Album extends Publication {
 
 	private List<Photo> photos;
+	private String iconAlbumPath;
 
 	public Album(String title, Date datePublication, String description, String user, List<Hashtag> hashtags,
-			List<Publication> pubs) {
+			List<Publication> pubs, String iconAlbumPath) {
 		super(title, datePublication, description, user, hashtags);
 		List<Photo> photos = new LinkedList<>();
 		for(Publication p : pubs) {
@@ -20,13 +21,15 @@ public class Album extends Publication {
 				photos.add((Photo) p);
 			}
 		}
-		this.setPhotos(photos);
+		this.photos = photos;
+		this.iconAlbumPath = iconAlbumPath;
 	}
 	
 	public Album(String title, Date datePublication, String description, int likes, String user, List<Hashtag> hashtags,
-			List<Photo> p) {
+			List<Photo> p, String iconAlbumPath) {
 		super(title, datePublication, description, user, hashtags);
-		this.setPhotos(p);
+		this.photos = p;
+		this.iconAlbumPath = iconAlbumPath;
 	}
 
 	public List<Photo> getPhotos() {
@@ -40,6 +43,14 @@ public class Album extends Publication {
 	public boolean removePhoto(Photo p) {
 		this.photos.remove(p);
 		return true;
+	}
+
+	public String getIconAlbumPath() {
+		return iconAlbumPath;
+	}
+
+	public void setIconAlbumPath(String iconAlbumPath) {
+		this.iconAlbumPath = iconAlbumPath;
 	}
 
 }
