@@ -253,7 +253,8 @@ public class RegisterWindow {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				if (description_Register.getText().length() > Constantes.MAX_DESCRIP_REGISTER_LENGTH) {
-					description_Register.setText(description_Register.getText().substring(0, Constantes.MAX_DESCRIP_REGISTER_LENGTH));
+					description_Register.setText(
+							description_Register.getText().substring(0, Constantes.MAX_DESCRIP_REGISTER_LENGTH));
 				}
 			}
 		});
@@ -293,7 +294,8 @@ public class RegisterWindow {
 					if (resultado == JFileChooser.APPROVE_OPTION) {
 						profilePic_Register = chooser.getSelectedFile().getAbsolutePath();
 						String HTMLProfilePic = profilePic_Register;
-						if (profilePic_Register.toLowerCase().endsWith(".png") || profilePic_Register.toLowerCase().endsWith(".jpg")) {
+						if (profilePic_Register.toLowerCase().endsWith(".png")
+								|| profilePic_Register.toLowerCase().endsWith(".jpg")) {
 							if (HTMLProfilePic.contains(" ")) {
 								HTMLProfilePic = HTMLProfilePic.replaceAll(" ", "%20");
 							}
@@ -347,9 +349,9 @@ public class RegisterWindow {
 				} else if (fullnameField_Register.getText().isEmpty()) {
 					JOptionPane.showMessageDialog(frame, "El campo \"Nombre completo\" no puede estar vacío.", null,
 							JOptionPane.ERROR_MESSAGE);
-				} else if(!Character.isUpperCase(fullnameField_Register.getText().charAt(0))) {
-					JOptionPane.showMessageDialog(frame, "El campo \"Nombre completo\" ha de empezar con mayúscula.", null,
-							JOptionPane.ERROR_MESSAGE);
+				} else if (!Character.isUpperCase(fullnameField_Register.getText().charAt(0))) {
+					JOptionPane.showMessageDialog(frame, "El campo \"Nombre completo\" ha de empezar con mayúscula.",
+							null, JOptionPane.ERROR_MESSAGE);
 				} else if (userField_Register.getText().isEmpty()) {
 					JOptionPane.showMessageDialog(frame, "El campo \"Usuario\" no puede estar vacío.", null,
 							JOptionPane.ERROR_MESSAGE);
@@ -376,7 +378,8 @@ public class RegisterWindow {
 					if (Controller.getInstancia().createUser(emailField_Register.getText(),
 							fullnameField_Register.getText(), userField_Register.getText(),
 							String.valueOf(passwordField_Register.getPassword()), dateChooser_Register.getDate(),
-							Utilities.guardarImagenRelativa(profilePic_Register), description_Register.getText()) == true) {
+							Utilities.guardarImagenRelativa(profilePic_Register),
+							description_Register.getText()) == true) {
 						JOptionPane.showMessageDialog(frame, "Registrado con éxito", null,
 								JOptionPane.INFORMATION_MESSAGE);
 						CardLayout cL = (CardLayout) panelCentral.getLayout();

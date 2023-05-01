@@ -5,7 +5,6 @@ import java.awt.CardLayout;
 import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -14,8 +13,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -41,9 +38,7 @@ import javax.swing.UIManager;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import umu.tds.controller.Controller;
 import umu.tds.model.Photo;
-import umu.tds.model.PhotoListRender;
 import umu.tds.model.ProfilePhotoListRender;
 import umu.tds.model.Publication;
 import umu.tds.model.PublicationListRender;
@@ -255,7 +250,7 @@ public class Utilities {
 		publicationListPanel.getContentPane().add(scrollPubPanel);
 		publicationListPanel.setVisible(true);
 	}
-	
+
 	public static String guardarImagenRelativa(String origen) {
 		if (origen.contains("%")) {
 			try {
@@ -264,20 +259,20 @@ public class Utilities {
 				e.printStackTrace();
 			}
 		}
-		
-		Path rutaOrigen = Paths.get(origen);
-	    String nombreArchivo = rutaOrigen.getFileName().toString();
-	    Path rutaDestino = Paths.get("src/umu/tds/photos/" + nombreArchivo);
 
-	    if (!Files.exists(rutaDestino)) {
-		    try {
-		        Files.copy(rutaOrigen, rutaDestino);
-		    } catch (Exception e) {
-		        System.err.println("Error al copiar el archivo: " + e.getMessage());
-		    }
-	    }
-	    
-	    return rutaDestino.toString();
+		Path rutaOrigen = Paths.get(origen);
+		String nombreArchivo = rutaOrigen.getFileName().toString();
+		Path rutaDestino = Paths.get("src/umu/tds/photos/" + nombreArchivo);
+
+		if (!Files.exists(rutaDestino)) {
+			try {
+				Files.copy(rutaOrigen, rutaDestino);
+			} catch (Exception e) {
+				System.err.println("Error al copiar el archivo: " + e.getMessage());
+			}
+		}
+
+		return rutaDestino.toString();
 	}
 
 	public static void top10LikedPublications(MainWindow mw, String selfUser, DefaultListModel<Photo> photos,
@@ -433,7 +428,7 @@ public class Utilities {
 		// Agregamos cada imagen pequeña a la imagen grande
 		int x = 0;
 		int y = 0;
-		for(int i = 0; i < Math.min(fotos.size(), Constantes.ALBUM_MINI_PHOTOS); i++) {
+		for (int i = 0; i < Math.min(fotos.size(), Constantes.ALBUM_MINI_PHOTOS); i++) {
 			try {
 				BufferedImage imagenPequena = ImageIO.read(fotos.get(i));
 				g2d.drawImage(imagenPequena, x, y, 32, 32, null);
@@ -462,7 +457,7 @@ public class Utilities {
 		}
 		return fecha;
 	}
-	
+
 	public static Date stringToDateHours(String fechaString) {
 		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		Date fecha = null;

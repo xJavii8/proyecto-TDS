@@ -3,8 +3,6 @@ package umu.tds.model;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
 
@@ -16,18 +14,16 @@ import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 
-import umu.tds.controller.Controller;
 import umu.tds.view.Constantes;
-import umu.tds.view.Utilities;
 
 @SuppressWarnings("serial")
-public class PhotoListRender extends JPanel implements ListCellRenderer<Photo> {
+public class NotificationListRender extends JPanel implements ListCellRenderer<Photo> {
 
 	private JLabel photoLabel;
 	private JLabel userLabel;
 	private ImageIcon pic;
 
-	public PhotoListRender() {
+	public NotificationListRender() {
 		photoLabel = new JLabel();
 		userLabel = new JLabel();
 		setLayout(new BorderLayout(5, 5));

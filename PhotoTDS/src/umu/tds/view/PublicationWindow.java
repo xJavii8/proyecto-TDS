@@ -1,36 +1,29 @@
 package umu.tds.view;
 
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import umu.tds.controller.Controller;
-import umu.tds.model.Comment;
 import umu.tds.model.Photo;
-import umu.tds.model.PhotoListRender;
 import umu.tds.model.Publication;
 import umu.tds.model.User;
-
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.Cursor;
-import java.awt.GridBagLayout;
-import java.awt.Image;
-
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import java.awt.Font;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import javax.swing.JButton;
-import javax.swing.JScrollBar;
-import javax.swing.JScrollPane;
-import javax.swing.JList;
-import java.awt.Color;
 
 public class PublicationWindow {
 
@@ -70,21 +63,20 @@ public class PublicationWindow {
 	public JPanel getPublicationPanel() {
 		return publicationPanel;
 	}
-	
+
 	public void updateCommentsNumber() {
 		int commentsSize = p.getComments().size();
-		if(commentsSize == 0) {
+		if (commentsSize == 0) {
 			viewComments.setVisible(false);
 		} else {
 			viewComments.setVisible(true);
 		}
-		
-		if(commentsSize == 1)
+
+		if (commentsSize == 1)
 			viewComments.setText("Ver " + commentsSize + " comentario");
 		else
 			viewComments.setText("Ver " + commentsSize + " comentarios");
 	}
-	
 
 	/**
 	 * Initialize the contents of the frame.
@@ -99,7 +91,8 @@ public class PublicationWindow {
 		GridBagLayout gbl_panel = new GridBagLayout();
 		gbl_panel.columnWidths = new int[] { 15, 25, 50, 0, 15, 0, 0, 75, 0, 0, 200, 0 };
 		gbl_panel.rowHeights = new int[] { 15, 0, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 0, 0, 0, 0, 0, 0 };
-		gbl_panel.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_panel.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+				Double.MIN_VALUE };
 		gbl_panel.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 				0.0, 0.0, 0.0, Double.MIN_VALUE };
 		publicationPanel.setLayout(gbl_panel);
@@ -247,7 +240,7 @@ public class PublicationWindow {
 		comment.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				CommentsWindow commentW = new CommentsWindow((Publication)p, userLogged, PublicationWindow.this);
+				CommentsWindow commentW = new CommentsWindow((Publication) p, userLogged, PublicationWindow.this);
 				commentW.show();
 			}
 
@@ -355,17 +348,17 @@ public class PublicationWindow {
 		gbc_descriptionPhoto.gridx = 4;
 		gbc_descriptionPhoto.gridy = 15;
 		publicationPanel.add(descriptionPhoto, gbc_descriptionPhoto);
-		
+
 		viewComments = new JLabel("");
 		int commentsSize = p.getComments().size();
-		if(commentsSize == 1)
+		if (commentsSize == 1)
 			viewComments.setText("Ver " + commentsSize + " comentario");
 		else
 			viewComments.setText("Ver " + commentsSize + " comentarios");
 		viewComments.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				CommentsWindow commentW = new CommentsWindow((Publication)p, userLogged, PublicationWindow.this);
+				CommentsWindow commentW = new CommentsWindow((Publication) p, userLogged, PublicationWindow.this);
 				commentW.show();
 			}
 
@@ -380,7 +373,7 @@ public class PublicationWindow {
 			}
 		});
 		viewComments.setForeground(Color.GRAY);
-		if(commentsSize == 0)
+		if (commentsSize == 0)
 			viewComments.setVisible(false);
 		viewComments.setFont(new Font("Bahnschrift", Font.PLAIN, 16));
 		GridBagConstraints gbc_viewComments = new GridBagConstraints();

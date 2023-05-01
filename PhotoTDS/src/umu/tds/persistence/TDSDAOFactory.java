@@ -1,8 +1,9 @@
 package umu.tds.persistence;
 
 public class TDSDAOFactory extends DAOFactory {
-	public TDSDAOFactory() {}
-	
+	public TDSDAOFactory() {
+	}
+
 	@Override
 	public IAdaptadorUserDAO getUserDAO() {
 		return AdaptadorUserTDS.getUnicaInstancia();
@@ -12,12 +13,12 @@ public class TDSDAOFactory extends DAOFactory {
 	public IAdaptadorPublicationDAO getPublicationDAO() {
 		return AdaptadorPublicationTDS.getUnicaInstancia();
 	}
-	
+
 	@Override
 	public IAdaptadorCommentDAO getCommentDAO() {
 		return AdaptadorCommentTDS.getUnicaInstancia();
 	}
-	
+
 	@Override
 	public IAdaptadorHashtagDAO getHashtagDAO() {
 		return AdaptadorHashtagTDS.getUnicaInstancia();
@@ -27,6 +28,5 @@ public class TDSDAOFactory extends DAOFactory {
 	public IAdaptadorNotificationDAO getNotificationDAO() {
 		return AdaptadorNotificationTDS.getUnicaInstancia();
 	}
-	
-	
+
 }

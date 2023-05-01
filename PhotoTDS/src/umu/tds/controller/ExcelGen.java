@@ -24,7 +24,7 @@ public class ExcelGen {
 			rowhead.createCell(1).setCellValue("Email");
 			rowhead.createCell(2).setCellValue("Descripción");
 
-			if(!followers.isEmpty()) {
+			if (!followers.isEmpty()) {
 				int numUser = 1;
 				for (User u : followers) {
 					// creating the 1st row

@@ -1,11 +1,7 @@
 package umu.tds.persistence;
 
-import java.text.ParseException;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -19,7 +15,6 @@ import umu.tds.model.Comment;
 import umu.tds.model.Hashtag;
 import umu.tds.model.Photo;
 import umu.tds.model.Publication;
-import umu.tds.model.User;
 import umu.tds.view.Utilities;
 
 public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
@@ -237,7 +232,7 @@ public class AdaptadorPublicationTDS implements IAdaptadorPublicationDAO {
 			} else if (pro.getNombre().equals("hashtags")) {
 				a.getHashtags().stream().forEach(h -> adaptadorHashtag.createHashtag(h));
 				pro.setValor(obtenerCodigosHashtags(a.getHashtags()));
-			} else if(pro.getNombre().equals("iconAlbum")) {
+			} else if (pro.getNombre().equals("iconAlbum")) {
 				pro.setValor(a.getIconAlbumPath());
 			}
 			serverPersistencia.modificarPropiedad(pro);

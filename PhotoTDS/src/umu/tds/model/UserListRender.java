@@ -4,13 +4,7 @@ import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -18,7 +12,6 @@ import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 
 import umu.tds.view.Constantes;
-import umu.tds.view.MainWindow;
 import umu.tds.view.Utilities;
 
 @SuppressWarnings("serial")
