@@ -117,6 +117,7 @@ public class CommentsWindow {
 					DefaultListModel<Comment> comments = Controller.getInstancia().getComments(pub.getTitle());
 					commentsList.setModel(comments);
 					textoComentario.setText(null);
+					publicationW.updateCommentsNumber();
 				} else if (btnEnviar.getText().equals("Borrar")) {
 					DefaultListModel<Comment> commentBo = (DefaultListModel<Comment>) commentsList.getModel();
 					if (user.getUsername().equals(removeComment.getAuthor())
