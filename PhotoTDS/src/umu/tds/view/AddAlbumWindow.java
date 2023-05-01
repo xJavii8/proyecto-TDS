@@ -145,7 +145,7 @@ public class AddAlbumWindow {
 				Matcher matcher = Constantes.HASHTAG_PAT.matcher(descripArea.getText());
 				while (matcher.find() && numHashtags < Constantes.MAX_HASH_LENGTH) {
 					if (numHashtags == 4) {
-						JOptionPane.showMessageDialog(frame, "Sólo puedes poner 4 hashtags por foto", null,
+						JOptionPane.showMessageDialog(frame, "Sólo puedes poner 4 hashtags por álbum", null,
 								JOptionPane.ERROR_MESSAGE);
 						descripArea.setText(descripArea.getText().substring(0, matcher.start()));
 					} else {

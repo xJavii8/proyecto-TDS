@@ -38,11 +38,7 @@ public class PublicationListRender extends JPanel implements ListCellRenderer<Pu
 			pubLabel.setIcon(publicationIcon);
 		} else if (p instanceof Album) {
 			Album a = (Album) p;
-			List<File> fotos = new LinkedList<>();
-			for (Photo ph : a.getPhotos()) {
-				fotos.add(new File(ph.getPath()));
-			}
-			pubLabel.setIcon(Utilities.getIconAlbum(fotos));
+			pubLabel.setIcon(new ImageIcon(a.getIconAlbumPath()));
 		}
 
 		if (isSelected) {
