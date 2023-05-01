@@ -16,21 +16,19 @@ import umu.tds.view.Utilities;
 
 @SuppressWarnings("serial")
 public class CommentListRender extends JPanel implements ListCellRenderer<Comment> {
-	
+
 	private JLabel commentLabel;
-	
-	
+
 	public CommentListRender() {
 		commentLabel = new JLabel();
 		setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
 		add(commentLabel);
 	}
-	
+
 	@Override
 	public Component getListCellRendererComponent(JList<? extends Comment> list, Comment value, int index,
 			boolean isSelected, boolean cellHasFocus) {
-		
-		
+
 		User usuario = Controller.getInstancia().getUser(value.getAuthor());
 		ImageIcon pic = Utilities.getCircleIcon(usuario.getProfilePic());
 		if (pic.getIconHeight() != Constantes.SELF_USER_PIC_SIZE
@@ -40,7 +38,7 @@ public class CommentListRender extends JPanel implements ListCellRenderer<Commen
 		}
 		commentLabel.setIcon(pic);
 		commentLabel.setText(value.getAuthor() + " - " + value.getText());
-		
+
 		if (isSelected) {
 			setBackground(list.getSelectionBackground());
 			setForeground(list.getSelectionForeground());

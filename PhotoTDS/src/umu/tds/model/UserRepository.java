@@ -1,7 +1,6 @@
 package umu.tds.model;
 
 import java.util.ArrayList;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,7 +71,7 @@ public class UserRepository {
 		userAdapter.createUser(user);
 		users.put(user.getUsername(), user);
 	}
-	
+
 	public void editUser(String oldUsername, User newUser) {
 		users.remove(oldUsername);
 		users.put(newUser.getUsername(), newUser);

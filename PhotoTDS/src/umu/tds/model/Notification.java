@@ -13,7 +13,7 @@ public class Notification {
 		this.pub = pub;
 		this.date = date;
 	}
-	
+
 	// GETTERS AND SETTERS
 	public int getCodigo() {
 		return codigo;
@@ -26,7 +26,7 @@ public class Notification {
 	public Date getDate() {
 		return date;
 	}
-	
+
 	public Publication getPublication() {
 		return pub;
 	}

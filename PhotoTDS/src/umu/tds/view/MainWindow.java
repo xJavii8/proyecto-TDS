@@ -1,46 +1,35 @@
 package umu.tds.view;
 
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Cursor;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.Insets;
 import java.awt.Toolkit;
-import java.io.File;
-import java.io.IOException;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
-import java.util.LinkedList;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.ResourceBundle.Control;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-
-import java.awt.AlphaComposite;
-import java.awt.BasicStroke;
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.Color;
-import java.awt.Cursor;
-
-import javax.swing.JLabel;
-import javax.swing.JList;
-
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-
-import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
-import javax.swing.SwingConstants;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.MatteBorder;
@@ -49,33 +38,13 @@ import javax.swing.event.ListSelectionListener;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
+import com.toedter.calendar.JDateChooser;
 
 import umu.tds.controller.Controller;
+import umu.tds.model.NotificationListRender;
 import umu.tds.model.Photo;
-import umu.tds.model.PhotoListRender;
 import umu.tds.model.Publication;
 import umu.tds.model.User;
-import umu.tds.model.UserListRender;
-
-import java.awt.GridBagLayout;
-import java.awt.Image;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import java.awt.RenderingHints;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.geom.Area;
-import java.awt.geom.Ellipse2D;
-import java.awt.image.BufferedImage;
-
-import javax.swing.JButton;
-import javax.swing.JToolBar;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JTextField;
-import com.toedter.calendar.JDateChooser;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeEvent;
 
 public class MainWindow {
 
@@ -96,10 +65,9 @@ public class MainWindow {
 	 */
 	public MainWindow(String username, String profilePicPath) {
 		this.user = Controller.getInstancia().getUser(username);
-		photosLastLogin = Controller.getInstancia().getAllPhotosFromDate(user,
-				user.getLastLogin());
+		photosLastLogin = Controller.getInstancia().getAllPhotosFromDate(user, user.getLastLogin());
 		this.selfUsername = user.getUsername();
-		
+
 		if (profilePicPath.contains("%")) {
 			try {
 				profilePicPath = URLDecoder.decode(profilePicPath, "UTF-8");
@@ -267,7 +235,7 @@ public class MainWindow {
 		panelPrincipal.add(newPubs, gbc_newPubs);
 
 		JDateChooser datePub = new JDateChooser();
-		
+
 		GridBagConstraints gbc_datePub = new GridBagConstraints();
 		gbc_datePub.fill = GridBagConstraints.HORIZONTAL;
 		gbc_datePub.anchor = GridBagConstraints.SOUTH;
@@ -309,11 +277,11 @@ public class MainWindow {
 		photosList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 		photosList.setVisibleRowCount(-1);
 		photosList.ensureIndexIsVisible(photosList.getHeight());
-		photosList.setCellRenderer(new PhotoListRender());
-		
+		photosList.setCellRenderer(new NotificationListRender());
+
 		datePub.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
-				if("date".equals(evt.getPropertyName())) {
+				if ("date".equals(evt.getPropertyName())) {
 					Date date = (Date) evt.getNewValue();
 					Calendar calendar = Calendar.getInstance();
 					calendar.setTime(date);
@@ -322,10 +290,9 @@ public class MainWindow {
 					calendar.set(Calendar.SECOND, 0);
 					calendar.set(Calendar.MILLISECOND, 0);
 					Date newDate = calendar.getTime();
-					
-					DefaultListModel<Photo> photosSince = Controller.getInstancia().getAllPhotosFromDate(user,
-							newDate);
-					if(!photosSince.isEmpty()) {
+
+					DefaultListModel<Photo> photosSince = Controller.getInstancia().getAllPhotosFromDate(user, newDate);
+					if (!photosSince.isEmpty()) {
 						SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 						String fechaFormateada = format.format(newDate);
 						newPubs.setText("Publicaciones desde la fecha " + fechaFormateada);

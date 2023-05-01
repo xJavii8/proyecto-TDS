@@ -1,38 +1,34 @@
 package umu.tds.view;
 
-import javax.swing.JFrame;
-import java.awt.GridBagLayout;
-
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
-
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-
 import java.awt.Font;
-import javax.swing.JTextField;
-import umu.tds.controller.Controller;
-import umu.tds.model.Photo;
-import umu.tds.model.Publication;
-
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import java.awt.Toolkit;
+import javax.swing.JTextField;
 
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import umu.tds.controller.Controller;
+import umu.tds.model.Photo;
+import umu.tds.model.Publication;
 
 public class AddAlbumWindow {
 

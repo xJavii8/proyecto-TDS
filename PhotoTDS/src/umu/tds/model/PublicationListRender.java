@@ -1,9 +1,7 @@
 package umu.tds.model;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.Image;
 import java.io.File;
 import java.util.LinkedList;
@@ -14,7 +12,6 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
-import javax.swing.SwingConstants;
 
 import umu.tds.view.Constantes;
 import umu.tds.view.Utilities;
@@ -31,14 +28,15 @@ public class PublicationListRender extends JPanel implements ListCellRenderer<Pu
 	}
 
 	@Override
-	public Component getListCellRendererComponent(JList<? extends Publication> list, Publication p, int index, boolean isSelected,
-			boolean cellHasFocus) {
-		if(p instanceof Photo) {
+	public Component getListCellRendererComponent(JList<? extends Publication> list, Publication p, int index,
+			boolean isSelected, boolean cellHasFocus) {
+		if (p instanceof Photo) {
 			Photo ph = (Photo) p;
-			ImageIcon publicationIcon = new ImageIcon(new ImageIcon(ph.getPath()).getImage().getScaledInstance(
-					Constantes.PROFILE_PUBLICATION_PIC_SIZE, Constantes.PROFILE_PUBLICATION_PIC_SIZE, Image.SCALE_SMOOTH));
+			ImageIcon publicationIcon = new ImageIcon(
+					new ImageIcon(ph.getPath()).getImage().getScaledInstance(Constantes.PROFILE_PUBLICATION_PIC_SIZE,
+							Constantes.PROFILE_PUBLICATION_PIC_SIZE, Image.SCALE_SMOOTH));
 			pubLabel.setIcon(publicationIcon);
-		} else if(p instanceof Album) {
+		} else if (p instanceof Album) {
 			Album a = (Album) p;
 			List<File> fotos = new LinkedList<>();
 			for (Photo ph : a.getPhotos()) {

@@ -2,11 +2,7 @@ package umu.tds.model;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-
 import java.awt.Font;
-import java.io.File;
-import java.util.LinkedList;
-import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -16,7 +12,6 @@ import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 
 import umu.tds.view.Constantes;
-import umu.tds.view.Utilities;
 
 @SuppressWarnings("serial")
 public class AlbumPublicationListRender extends JPanel implements ListCellRenderer<Publication> {

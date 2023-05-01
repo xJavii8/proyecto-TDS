@@ -1,6 +1,5 @@
 package umu.tds.persistence;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,7 +7,6 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
-
 
 import beans.Entidad;
 import beans.Propiedad;
@@ -61,7 +59,7 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 				new Propiedad("followers", obtenerCodigosUsuarios(user.getFollowers())),
 				new Propiedad("publications", obtenerCodigosPublicaciones(user.getPublications())),
 				new Propiedad("likedPublications", obtenerCodigosPublicaciones(user.getLikedPublications())),
-				new Propiedad("albums", obtenerCodigosAlbums(user.getAlbums())), 
+				new Propiedad("albums", obtenerCodigosAlbums(user.getAlbums())),
 				new Propiedad("notifications", obtenerCodigosNotifications(user.getNotifications())),
 				new Propiedad("lastLogin", new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(user.getLastLogin())))));
 
@@ -114,7 +112,7 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 		albums = serverPersistencia.recuperarPropiedadEntidad(eUser, "albums");
 		notifications = serverPersistencia.recuperarPropiedadEntidad(eUser, "notifications");
 		lastLogin = serverPersistencia.recuperarPropiedadEntidad(eUser, "lastLogin");
-		
+
 		Date birthDay = new Date();
 		try {
 			birthDay = new SimpleDateFormat("dd/MM/yyyy").parse(birthDayStr);
@@ -248,7 +246,7 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 		}
 		return albumList;
 	}
-	
+
 	private String obtenerCodigosNotifications(List<Notification> notifications) {
 		String lineas = "";
 		for (Notification not : notifications) {
@@ -256,7 +254,7 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 		}
 		return lineas.trim();
 	}
-	
+
 	private List<Notification> obtenerNotificationsDesdeCodigos(String notifications) {
 		List<Notification> notList = new LinkedList<Notification>();
 		StringTokenizer strTok = new StringTokenizer(notifications, " ");
@@ -266,5 +264,5 @@ public class AdaptadorUserTDS implements IAdaptadorUserDAO {
 		}
 		return notList;
 	}
-	
+
 }

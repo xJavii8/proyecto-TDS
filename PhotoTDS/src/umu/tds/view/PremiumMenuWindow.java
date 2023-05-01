@@ -1,39 +1,28 @@
 package umu.tds.view;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-
 import java.awt.BorderLayout;
-import java.awt.GridBagLayout;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-
-import java.awt.GridBagConstraints;
-import java.awt.Toolkit;
-import java.awt.Font;
-import java.awt.Insets;
 import java.awt.CardLayout;
 import java.awt.Cursor;
-
-import javax.swing.SwingConstants;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
-import umu.tds.controller.Controller;
-import umu.tds.model.Photo;
-import umu.tds.model.PhotoListRender;
-import umu.tds.model.Publication;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.List;
+import umu.tds.controller.Controller;
+import umu.tds.model.Photo;
 
 public class PremiumMenuWindow {
 
@@ -55,7 +44,7 @@ public class PremiumMenuWindow {
 	public void show() {
 		frame.setVisible(true);
 	}
-	
+
 	public void dispose() {
 		frame.dispose();
 	}
@@ -198,7 +187,7 @@ public class PremiumMenuWindow {
 		gbc_pdf.gridx = 1;
 		gbc_pdf.gridy = 2;
 		panelPremium.add(pdf, gbc_pdf);
-		
+
 		JButton top10 = new JButton("Ver 10 fotos con más \"me gusta\"");
 		top10.addMouseListener(new MouseAdapter() {
 			@Override
@@ -272,7 +261,7 @@ public class PremiumMenuWindow {
 		gbc_status.gridx = 2;
 		gbc_status.gridy = 2;
 		panelNorte.add(status, gbc_status);
-		
+
 		getPremium.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
