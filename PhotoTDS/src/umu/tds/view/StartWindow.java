@@ -212,7 +212,7 @@ public class StartWindow {
 				} else {
 					if (Controller.getInstancia().login(userField_Login.getText(),
 							String.valueOf(passwordField_Login.getPassword()))) {
-						String profilePicPath = Controller.getInstancia().getProfilePicPath(userField_Login.getText());
+						String profilePicPath = Controller.getInstancia().getUser(userField_Login.getText()).getProfilePic();
 						MainWindow mainView = new MainWindow(userField_Login.getText(), profilePicPath);
 						frame.setVisible(false);
 						mainView.show();

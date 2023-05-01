@@ -130,24 +130,6 @@ public class Controller implements PropertyChangeListener {
 		this.adaptadorUser.updateUser(user.get());
 	}
 
-	public String getProfilePicPath(String username) {
-		Matcher emailMatch = Constantes.EMAIL_PAT.matcher(username);
-		Optional<User> user;
-		if (emailMatch.matches())
-			user = userRepo.getUserFromEmail(username);
-		else
-			user = userRepo.getUser(username);
-
-		if (user.isEmpty())
-			return "";
-		else
-			return user.get().getProfilePic();
-	}
-
-	public boolean isPremium(String username) {
-		return userRepo.getUser(username).get().isPremium();
-	}
-
 	public boolean setPremium(String username) {
 		Optional<User> userO = userRepo.getUser(username);
 		if (userO.isEmpty())
@@ -200,33 +182,6 @@ public class Controller implements PropertyChangeListener {
 		PDFGen.genPDF(user, user.getFollowers(), path);
 
 		return true;
-	}
-
-	public int getNumFollowers(String username) {
-		Optional<User> userO = userRepo.getUser(username);
-		if (userO.isEmpty())
-			return 0;
-
-		User user = userO.get();
-		return user.getFollowers().size();
-	}
-
-	public int getNumUsersFollowing(String username) {
-		Optional<User> userO = userRepo.getUser(username);
-		if (userO.isEmpty())
-			return 0;
-
-		User user = userO.get();
-		return user.getUsersFollowing().size();
-	}
-
-	public int getNumPublications(String username) {
-		Optional<User> userO = userRepo.getUser(username);
-		if (userO.isEmpty())
-			return 0;
-
-		User user = userO.get();
-		return user.getPublications().size();
 	}
 
 	public User getUser(String username) {

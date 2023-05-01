@@ -36,7 +36,7 @@ public class PremiumMenuWindow {
 	 */
 	public PremiumMenuWindow(String nickname, MainWindow mw) {
 		this.nickname = nickname;
-		this.isPremium = Controller.getInstancia().isPremium(nickname);
+		this.isPremium = Controller.getInstancia().getUser(nickname).isPremium();
 		this.mw = mw;
 		initialize();
 	}
