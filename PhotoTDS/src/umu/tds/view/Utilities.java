@@ -38,6 +38,7 @@ import javax.swing.UIManager;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import umu.tds.model.Album;
 import umu.tds.model.Photo;
 import umu.tds.model.ProfilePhotoListRender;
 import umu.tds.model.Publication;
@@ -208,11 +209,16 @@ public class Utilities {
 			public void valueChanged(ListSelectionEvent e) {
 				if (!e.getValueIsAdjusting()) {
 					JPanel panelCentral = mw.getPanelCentral();
-					JPanel panelPublication = new PublicationWindow(selfUser, publicationList.getSelectedValue(),
-							publicationList.getSelectedValue().getUser(), mw).getPublicationPanel();
-					panelCentral.add(panelPublication, "panelPublication");
-					CardLayout cL = (CardLayout) panelCentral.getLayout();
-					cL.show(panelCentral, "panelPublication");
+					if(publicationList.getSelectedValue() instanceof Photo) {
+						JPanel panelPublication = new PublicationWindow(selfUser, publicationList.getSelectedValue(),
+								publicationList.getSelectedValue().getUser(), mw).getPublicationPanel();
+						panelCentral.add(panelPublication, "panelPublication");
+						CardLayout cL = (CardLayout) panelCentral.getLayout();
+						cL.show(panelCentral, "panelPublication");
+					} else if(publicationList.getSelectedValue() instanceof Album) {
+						AlbumWindow aw = new AlbumWindow((Album) publicationList.getSelectedValue(), selfUser, mw);
+						aw.show();
+					}
 					publicationListPanel.dispose();
 				}
 			}
