@@ -89,13 +89,17 @@ public class MainWindow {
 	private SelfProfileWindow spw;
 	private User user;
 	private JList<Photo> photosList;
+	private DefaultListModel<Photo> photosLastLogin;
 
 	/**
 	 * Create the application.
 	 */
 	public MainWindow(String username, String profilePicPath) {
 		this.user = Controller.getInstancia().getUser(username);
+		photosLastLogin = Controller.getInstancia().getAllPhotosFromDate(user,
+				user.getLastLogin());
 		this.selfUsername = user.getUsername();
+		
 		if (profilePicPath.contains("%")) {
 			try {
 				profilePicPath = URLDecoder.decode(profilePicPath, "UTF-8");
@@ -249,15 +253,11 @@ public class MainWindow {
 		gbl_panelPrincipal.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE };
 		panelPrincipal.setLayout(gbl_panelPrincipal);
 
-		DefaultListModel<Photo> photosLastLogin = Controller.getInstancia().getAllPhotosFromDate(user,
-				user.getLastLogin());
-		Controller.getInstancia().actualizarLastLogin(selfUsername);
-
 		JLabel newPubs = new JLabel("");
 		if (photosLastLogin.isEmpty())
 			newPubs.setText("No tienes publicaciones nuevas");
 		else
-			newPubs.setText("Nuevas publicaciones de tus seguidos");
+			newPubs.setText("Tienes nuevas publicaciones");
 		newPubs.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		GridBagConstraints gbc_newPubs = new GridBagConstraints();
 		gbc_newPubs.gridwidth = 4;
@@ -326,12 +326,14 @@ public class MainWindow {
 					DefaultListModel<Photo> photosSince = Controller.getInstancia().getAllPhotosFromDate(user,
 							newDate);
 					if(!photosSince.isEmpty()) {
-						newPubs.setText("Nuevas publicaciones de tus seguidos");
+						SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+						String fechaFormateada = format.format(newDate);
+						newPubs.setText("Publicaciones desde la fecha " + fechaFormateada);
 						photosList.setModel(photosSince);
 						photosList.setVisible(true);
 						scrollPane.setVisible(true);
 					} else {
-						newPubs.setText("No tienes publicaciones nuevas");
+						newPubs.setText("No hay publicaciones");
 						photosList.setVisible(false);
 						scrollPane.setVisible(false);
 					}
@@ -343,19 +345,6 @@ public class MainWindow {
 		logo.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				DefaultListModel<Photo> p = Controller.getInstancia().getAllPhotosFromDate(user, user.getLastLogin());
-				if (!photosList.getModel().equals(p)) {
-					photosList.setModel(p);
-					if(p.isEmpty()) {
-						newPubs.setText("No tienes publicaciones nuevas");
-						photosList.setVisible(false);
-						scrollPane.setVisible(false);
-					} else {
-						newPubs.setText("Nuevas publicaciones de tus seguidos");
-						photosList.setVisible(true);
-						scrollPane.setVisible(true);
-					}
-				}
 				CardLayout cL = (CardLayout) panelCentral.getLayout();
 				cL.show(panelCentral, "panelPrincipal");
 			}
