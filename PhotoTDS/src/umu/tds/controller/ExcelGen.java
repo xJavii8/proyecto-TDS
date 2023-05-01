@@ -20,7 +20,7 @@ public class ExcelGen {
 			HSSFRow rowhead = sheet.createRow((short) 0);
 			// creating cell by using the createCell() method and setting the values to the
 			// cell by using the setCellValue() method
-			rowhead.createCell(0).setCellValue("Nombre de usuario");
+			rowhead.createCell(0).setCellValue("Nombre");
 			rowhead.createCell(1).setCellValue("Email");
 			rowhead.createCell(2).setCellValue("Descripción");
 
@@ -30,7 +30,7 @@ public class ExcelGen {
 					// creating the 1st row
 					HSSFRow row = sheet.createRow((short) numUser);
 					// inserting data in the first row
-					row.createCell(0).setCellValue(u.getUsername());
+					row.createCell(0).setCellValue(u.getFullName());
 					row.createCell(1).setCellValue(u.getEmail());
 					row.createCell(2).setCellValue(u.getDescription());
 					numUser++;

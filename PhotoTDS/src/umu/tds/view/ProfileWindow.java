@@ -228,19 +228,19 @@ public class ProfileWindow {
 			}
 		});
 
-		int numPub = Controller.getInstancia().getNumPublications(searchedUser);
+		int numPub = profileUser.getPublications().size();
 		if (numPub == 1)
 			publications.setText(numPub + " publicación");
 		else
 			publications.setText(numPub + " publicaciones");
 
-		int numFollowing = Controller.getInstancia().getNumUsersFollowing(searchedUser);
+		int numFollowing = profileUser.getUsersFollowing().size();
 		if (numFollowing == 1)
 			following.setText(numFollowing + " seguido");
 		else
 			following.setText(numFollowing + " seguidos");
 
-		int numFollowers = Controller.getInstancia().getNumFollowers(searchedUser);
+		int numFollowers = profileUser.getFollowers().size();
 		if (numFollowers == 1)
 			followers.setText(numFollowers + " seguidor");
 		else
@@ -262,13 +262,13 @@ public class ProfileWindow {
 
 				mw.getPhotosList().setModel(newMWPhotos);
 
-				int numFollowingUsers = Controller.getInstancia().getNumUsersFollowing(selfUser);
+				int numFollowingUsers = Controller.getInstancia().getUser(selfUser).getUsersFollowing().size();
 				if (numFollowingUsers == 1)
 					mw.getSPW().getFollowingLabel().setText(numFollowingUsers + " seguido");
 				else
 					mw.getSPW().getFollowingLabel().setText(numFollowingUsers + " seguidos");
 
-				int numFollowers = Controller.getInstancia().getNumFollowers(searchedUser);
+				int numFollowers = profileUser.getFollowers().size();
 				if (numFollowers == 1)
 					followers.setText(numFollowers + " seguidor");
 				else
