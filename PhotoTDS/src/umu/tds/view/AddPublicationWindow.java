@@ -271,7 +271,7 @@ public class AddPublicationWindow implements IEncendidoListener {
 						JOptionPane.showMessageDialog(frame, "Ya existe una publicación con ese nombre", null,
 								JOptionPane.ERROR_MESSAGE);
 					} else if (publ.isEmpty()) {
-						Controller.getInstancia().createPhoto(user, titulo, descripArea.getText(), guardarImagenRelativa(picPublication));
+						Controller.getInstancia().createPhoto(user, titulo, descripArea.getText(), Utilities.guardarImagenRelativa(picPublication));
 						JOptionPane.showMessageDialog(frame, "Publicación subida", null,
 								JOptionPane.INFORMATION_MESSAGE);
 						DefaultListModel<Publication> photoList = Controller.getInstancia().getPhotosProfile(user);
@@ -321,22 +321,6 @@ public class AddPublicationWindow implements IEncendidoListener {
 		gbc_luz.gridx = 3;
 		gbc_luz.gridy = 5;
 		panelCentral.add(luz, gbc_luz);
-	}
-
-	public static String guardarImagenRelativa(String origen) {
-		Path rutaOrigen = Paths.get(origen);
-	    String nombreArchivo = rutaOrigen.getFileName().toString();
-	    Path rutaDestino = Paths.get("src/umu/tds/photos/" + nombreArchivo);
-
-	    if (!Files.exists(rutaDestino)) {
-		    try {
-		        Files.copy(rutaOrigen, rutaDestino);
-		    } catch (Exception e) {
-		        System.err.println("Error al copiar el archivo: " + e.getMessage());
-		    }
-	    }
-	    
-	    return rutaDestino.toString();
 	}
 	
 	@Override

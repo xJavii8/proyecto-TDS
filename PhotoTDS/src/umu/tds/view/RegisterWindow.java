@@ -376,7 +376,7 @@ public class RegisterWindow {
 					if (Controller.getInstancia().createUser(emailField_Register.getText(),
 							fullnameField_Register.getText(), userField_Register.getText(),
 							String.valueOf(passwordField_Register.getPassword()), dateChooser_Register.getDate(),
-							AddPublicationWindow.guardarImagenRelativa(profilePic_Register), description_Register.getText()) == true) {
+							Utilities.guardarImagenRelativa(profilePic_Register), description_Register.getText()) == true) {
 						JOptionPane.showMessageDialog(frame, "Registrado con éxito", null,
 								JOptionPane.INFORMATION_MESSAGE);
 						CardLayout cL = (CardLayout) panelCentral.getLayout();
