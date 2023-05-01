@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
@@ -19,8 +18,11 @@ import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
 
+import umu.tds.fotos.CargadorFotos;
+import umu.tds.fotos.Foto;
+import umu.tds.fotos.Fotos;
+import umu.tds.fotos.MapperFotosXMLtoJava;
 import umu.tds.model.Album;
 import umu.tds.model.Comment;
 import umu.tds.model.Hashtag;
@@ -36,13 +38,8 @@ import umu.tds.persistence.IAdaptadorHashtagDAO;
 import umu.tds.persistence.IAdaptadorNotificationDAO;
 import umu.tds.persistence.IAdaptadorPublicationDAO;
 import umu.tds.persistence.IAdaptadorUserDAO;
-import umu.tds.view.AddPublicationWindow;
 import umu.tds.view.Constantes;
 import umu.tds.view.Utilities;
-import umu.tds.fotos.CargadorFotos;
-import umu.tds.fotos.MapperFotosXMLtoJava;
-import umu.tds.fotos.Fotos;
-import umu.tds.fotos.Foto;
 
 public class Controller implements PropertyChangeListener {
 	private static Controller unicaInstancia;
@@ -126,7 +123,7 @@ public class Controller implements PropertyChangeListener {
 	public void actualizarLastLogin(String username) {
 		Optional<User> user;
 		String fecha;
-		
+
 		fecha = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date());
 		user = userRepo.getUser(username);
 		user.get().setLastLogin(Utilities.stringToDateHours(fecha));
@@ -507,19 +504,19 @@ public class Controller implements PropertyChangeListener {
 		}
 		List<File> fotos = new LinkedList<>();
 		for (Publication p : publicacionesAlbum) {
-			if(p instanceof Photo) {
+			if (p instanceof Photo) {
 				Photo ph = (Photo) p;
 				fotos.add(new File(ph.getPath()));
 			}
 		}
-		
+
 		ImageIcon imgIcon = Utilities.getIconAlbum(fotos);
 		BufferedImage icon = (BufferedImage) imgIcon.getImage();
 		File output = new File("src/umu/tds/photos/albumIcon" + titulo + ".png");
 		try {
-		    ImageIO.write(icon, "png", output); 
+			ImageIO.write(icon, "png", output);
 		} catch (IOException e) {
-		    System.err.println("Error al guardar la imagen: " + e.getMessage());
+			System.err.println("Error al guardar la imagen: " + e.getMessage());
 		}
 		Album a = usuario.createAlbum(titulo, descripcion, publicacionesAlbum, hashtags, output.getPath());
 		this.addNotificacionFollowers(usuario, a);
@@ -577,13 +574,13 @@ public class Controller implements PropertyChangeListener {
 		if (fecha == null) {
 			return p;
 		}
-		
+
 		for (Notification n : user.getNotifications()) {
 			if (n.getPublication() instanceof Photo && n.getDate().after(fecha)) {
 				p.addElement((Photo) n.getPublication());
 			}
 		}
-		
+
 		return p;
 	}
 
@@ -649,7 +646,8 @@ public class Controller implements PropertyChangeListener {
 	public void propertyChange(PropertyChangeEvent evt) {
 		Fotos fotos = MapperFotosXMLtoJava.cargarFotos(evt.getNewValue().toString());
 		for (Foto f : fotos.getFoto()) {
-			this.createPhoto(actualUser.get().getUsername(), f.getTitulo(), f.getDescripcion(), Utilities.guardarImagenRelativa(f.getPath()));
+			this.createPhoto(actualUser.get().getUsername(), f.getTitulo(), f.getDescripcion(),
+					Utilities.guardarImagenRelativa(f.getPath()));
 		}
 
 	}

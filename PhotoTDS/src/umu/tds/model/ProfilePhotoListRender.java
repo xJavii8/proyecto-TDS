@@ -1,7 +1,6 @@
 package umu.tds.model;
 
 import java.awt.Component;
-
 import java.awt.FlowLayout;
 import java.awt.Image;
 
@@ -25,11 +24,11 @@ public class ProfilePhotoListRender extends JPanel implements ListCellRenderer<P
 	}
 
 	@Override
-	public Component getListCellRendererComponent(JList<? extends Publication> list, Publication p, int index, boolean isSelected,
-			boolean cellHasFocus) {
-		Photo f = (Photo)p;
+	public Component getListCellRendererComponent(JList<? extends Publication> list, Publication p, int index,
+			boolean isSelected, boolean cellHasFocus) {
+		Photo f = (Photo) p;
 		ImageIcon publicationIcon = new ImageIcon(new ImageIcon(f.getPath()).getImage().getScaledInstance(
-						Constantes.PROFILE_PUBLICATION_PIC_SIZE, Constantes.PROFILE_PUBLICATION_PIC_SIZE, Image.SCALE_SMOOTH));
+				Constantes.PROFILE_PUBLICATION_PIC_SIZE, Constantes.PROFILE_PUBLICATION_PIC_SIZE, Image.SCALE_SMOOTH));
 		photoLabel.setIcon(publicationIcon);
 
 		if (isSelected) {

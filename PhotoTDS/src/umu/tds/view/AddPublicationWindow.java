@@ -1,57 +1,38 @@
 package umu.tds.view;
 
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import java.awt.GridBagLayout;
-
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import java.awt.GridBagConstraints;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.Insets;
-import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
-
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-
 import java.awt.Font;
-import javax.swing.JTextField;
-import javax.swing.LookAndFeel;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
-import umu.tds.controller.Controller;
-import umu.tds.model.Photo;
-import umu.tds.model.Publication;
-
-import javax.swing.JEditorPane;
-import javax.swing.JFileChooser;
-
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.EventObject;
 import java.util.Optional;
 import java.util.regex.Matcher;
 
-import javax.swing.SwingConstants;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JEditorPane;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import java.awt.Toolkit;
+import javax.swing.JTextField;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import pulsador.IEncendidoListener;
 import pulsador.Luz;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import umu.tds.controller.Controller;
+import umu.tds.model.Publication;
 
 public class AddPublicationWindow implements IEncendidoListener {
 
@@ -271,7 +252,8 @@ public class AddPublicationWindow implements IEncendidoListener {
 						JOptionPane.showMessageDialog(frame, "Ya existe una publicación con ese nombre", null,
 								JOptionPane.ERROR_MESSAGE);
 					} else if (publ.isEmpty()) {
-						Controller.getInstancia().createPhoto(user, titulo, descripArea.getText(), Utilities.guardarImagenRelativa(picPublication));
+						Controller.getInstancia().createPhoto(user, titulo, descripArea.getText(),
+								Utilities.guardarImagenRelativa(picPublication));
 						JOptionPane.showMessageDialog(frame, "Publicación subida", null,
 								JOptionPane.INFORMATION_MESSAGE);
 						DefaultListModel<Publication> photoList = Controller.getInstancia().getPhotosProfile(user);
@@ -322,7 +304,7 @@ public class AddPublicationWindow implements IEncendidoListener {
 		gbc_luz.gridy = 5;
 		panelCentral.add(luz, gbc_luz);
 	}
-	
+
 	@Override
 	public void enteradoCambioEncendido(EventObject arg0) {
 		JFileChooser chooser = new JFileChooser();
