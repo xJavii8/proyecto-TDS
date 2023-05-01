@@ -649,7 +649,7 @@ public class Controller implements PropertyChangeListener {
 	public void propertyChange(PropertyChangeEvent evt) {
 		Fotos fotos = MapperFotosXMLtoJava.cargarFotos(evt.getNewValue().toString());
 		for (Foto f : fotos.getFoto()) {
-			this.createPhoto(actualUser.get().getUsername(), f.getTitulo(), f.getDescripcion(), AddPublicationWindow.guardarImagenRelativa(f.getPath()));
+			this.createPhoto(actualUser.get().getUsername(), f.getTitulo(), f.getDescripcion(), Utilities.guardarImagenRelativa(f.getPath()));
 		}
 
 	}
