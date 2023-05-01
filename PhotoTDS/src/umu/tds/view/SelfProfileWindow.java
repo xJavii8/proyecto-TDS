@@ -1,9 +1,24 @@
 package umu.tds.view;
 
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Cursor;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.UIManager;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -11,31 +26,9 @@ import umu.tds.controller.Controller;
 import umu.tds.model.Album;
 import umu.tds.model.AlbumPublicationListRender;
 import umu.tds.model.Photo;
-import umu.tds.model.PhotoListRender;
 import umu.tds.model.ProfilePhotoListRender;
 import umu.tds.model.Publication;
 import umu.tds.model.User;
-import umu.tds.model.UserListRender;
-
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.Cursor;
-import java.awt.GridBagLayout;
-import java.awt.Image;
-
-import javax.swing.JLabel;
-import javax.swing.JList;
-
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import java.awt.Toolkit;
-import java.awt.Font;
-
-import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class SelfProfileWindow {
 
@@ -79,7 +72,6 @@ public class SelfProfileWindow {
 	public JList<Publication> getPublicationList() {
 		return publicationList;
 	}
-	
 
 	/**
 	 * Initialize the contents of the frame.
@@ -250,14 +242,14 @@ public class SelfProfileWindow {
 		gbc_fullname.gridx = 3;
 		gbc_fullname.gridy = 4;
 		panelPerfilPersonal.add(fullname, gbc_fullname);
-		
+
 		switchAlbum = new JButton("Álbumes");
 		GridBagConstraints gbc_switchAlbum = new GridBagConstraints();
 		gbc_switchAlbum.insets = new Insets(0, 0, 5, 5);
 		gbc_switchAlbum.gridx = 4;
 		gbc_switchAlbum.gridy = 4;
 		panelPerfilPersonal.add(switchAlbum, gbc_switchAlbum);
-		
+
 		newAlbum = new JButton("Nuevo álbum");
 		newAlbum.setVisible(false);
 		newAlbum.addMouseListener(new MouseAdapter() {
@@ -266,7 +258,7 @@ public class SelfProfileWindow {
 				AddAlbumWindow aaw = new AddAlbumWindow(user.getUsername(), SelfProfileWindow.this);
 				aaw.show();
 			}
-			
+
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				newAlbum.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -305,7 +297,7 @@ public class SelfProfileWindow {
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
 				if (!e.getValueIsAdjusting()) {
-					if(publicationList.getSelectedValue() instanceof Photo) {
+					if (publicationList.getSelectedValue() instanceof Photo) {
 						JPanel panelCentral = mw.getPanelCentral();
 						JPanel panelPublication = new PublicationWindow(user.getUsername(),
 								publicationList.getSelectedValue(), publicationList.getSelectedValue().getUser(), mw)
@@ -313,8 +305,9 @@ public class SelfProfileWindow {
 						panelCentral.add(panelPublication, "panelPublication");
 						CardLayout cL = (CardLayout) panelCentral.getLayout();
 						cL.show(panelCentral, "panelPublication");
-					} else if(publicationList.getSelectedValue() instanceof Album) {
-						AlbumWindow aw = new AlbumWindow((Album) publicationList.getSelectedValue(), user.getUsername(), mw);
+					} else if (publicationList.getSelectedValue() instanceof Album) {
+						AlbumWindow aw = new AlbumWindow((Album) publicationList.getSelectedValue(), user.getUsername(),
+								mw);
 						aw.show();
 					}
 				}
@@ -332,27 +325,29 @@ public class SelfProfileWindow {
 				publicationList.setCursor(Cursor.getDefaultCursor());
 			}
 		});
-		
+
 		switchAlbum.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(switchAlbum.getText().equals("Álbumes")) {
+				if (switchAlbum.getText().equals("Álbumes")) {
 					publicationList.setModel(new DefaultListModel<Publication>());
 					publicationList.setCellRenderer(new AlbumPublicationListRender());
-					DefaultListModel<Publication> albums = Controller.getInstancia().getAlbumsProfile(user.getUsername());
+					DefaultListModel<Publication> albums = Controller.getInstancia()
+							.getAlbumsProfile(user.getUsername());
 					publicationList.setModel(albums);
 					newAlbum.setVisible(true);
 					switchAlbum.setText("Fotos");
-				} else if(switchAlbum.getText().equals("Fotos")) {
+				} else if (switchAlbum.getText().equals("Fotos")) {
 					publicationList.setModel(new DefaultListModel<Publication>());
 					publicationList.setCellRenderer(new ProfilePhotoListRender());
-					DefaultListModel<Publication> fotos = Controller.getInstancia().getPhotosProfile(user.getUsername());
+					DefaultListModel<Publication> fotos = Controller.getInstancia()
+							.getPhotosProfile(user.getUsername());
 					publicationList.setModel(fotos);
 					newAlbum.setVisible(false);
 					switchAlbum.setText("Álbumes");
 				}
 			}
-			
+
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				switchAlbum.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -364,7 +359,7 @@ public class SelfProfileWindow {
 			}
 		});
 	}
-	
+
 	public void updateProfile(String username, String fullname, String profilePicPath) {
 		this.nickname.setText(username);
 		this.fullname.setText(fullname);

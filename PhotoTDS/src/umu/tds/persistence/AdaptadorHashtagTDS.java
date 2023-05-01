@@ -12,7 +12,7 @@ import tds.driver.ServicioPersistencia;
 import umu.tds.model.Hashtag;
 
 public class AdaptadorHashtagTDS implements IAdaptadorHashtagDAO {
-	
+
 	private static ServicioPersistencia serverPersistencia;
 	private static AdaptadorHashtagTDS unicaInstancia = null;
 
@@ -22,11 +22,11 @@ public class AdaptadorHashtagTDS implements IAdaptadorHashtagDAO {
 		} else
 			return unicaInstancia;
 	}
-	
+
 	private AdaptadorHashtagTDS() {
 		serverPersistencia = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
 	}
-	
+
 	@Override
 	public void createHashtag(Hashtag hashtag) {
 		Entidad eHashtag = null;

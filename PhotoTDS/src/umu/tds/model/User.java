@@ -1,7 +1,6 @@
 package umu.tds.model;
 
 import java.util.Date;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -101,18 +100,18 @@ public class User {
 
 	public List<Album> deletePhotoInAlbums(Photo p) {
 		List<Album> updatedAlbums = new LinkedList<>();
-		for(Album a : albums) {
+		for (Album a : albums) {
 			List<Photo> photos = a.getPhotos();
-			if(photos.removeIf(ph -> ph.getCodigo() == p.getCodigo())) {
+			if (photos.removeIf(ph -> ph.getCodigo() == p.getCodigo())) {
 				removeLike(p);
 				updatedAlbums.add(a);
 				a.setPhotos(photos);
 			}
-			
+
 		}
 		return updatedAlbums;
 	}
-	
+
 	public boolean deletePhoto(Publication p) {
 		this.publications.removeIf(ph -> ph.getCodigo() == p.getCodigo());
 		return true;
@@ -134,7 +133,8 @@ public class User {
 		return false;
 	}
 
-	public Album createAlbum(String titulo, String descripcion, List<Publication> pubs, List<Hashtag> hashtags, String iconAlbum) {
+	public Album createAlbum(String titulo, String descripcion, List<Publication> pubs, List<Hashtag> hashtags,
+			String iconAlbum) {
 		Album a = new Album(titulo, new Date(), descripcion, this.getUsername(), hashtags, pubs, iconAlbum);
 		this.albums.add(a);
 		return a;
@@ -145,14 +145,14 @@ public class User {
 		albums.remove(a);
 		return true;
 	}
-	
+
 	public boolean addNotification(Notification n) {
 		if (!notifications.contains(n)) {
 			notifications.add(n);
 			return true;
 		}
 		return false;
-		
+
 	}
 
 	// GETS AND SETS
@@ -263,27 +263,25 @@ public class User {
 	public List<Album> getAlbums() {
 		return albums;
 	}
-	
-	
 
 	public void setAlbums(List<Album> albums) {
 		this.albums = albums;
 	}
-	
-	public List<Notification> getNotifications(){
+
+	public List<Notification> getNotifications() {
 		return notifications;
 	}
-	
-	public void setNotifications(List<Notification> notifications){
+
+	public void setNotifications(List<Notification> notifications) {
 		this.notifications = notifications;
 	}
-	
+
 	public Date getLastLogin() {
 		return lastLogin;
 	}
-	
+
 	public void setLastLogin(Date lastLogin) {
 		this.lastLogin = lastLogin;
 	}
-	
+
 }

@@ -1,45 +1,37 @@
 package umu.tds.view;
 
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.regex.Matcher;
 
-import javax.swing.JPanel;
-import java.awt.BorderLayout;
-import java.awt.Cursor;
-
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JEditorPane;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-
-import java.awt.Font;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import umu.tds.controller.Controller;
 import umu.tds.model.User;
-
-import javax.swing.JScrollPane;
-import javax.swing.JEditorPane;
-import javax.swing.JFileChooser;
-import javax.swing.JButton;
-import javax.swing.JTextArea;
-import java.awt.CardLayout;
-import java.awt.Color;
-
-import javax.swing.JCheckBox;
-import javax.swing.JPasswordField;
-import javax.swing.JProgressBar;
 
 public class EditProfileVindow {
 
