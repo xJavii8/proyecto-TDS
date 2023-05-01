@@ -22,13 +22,13 @@ public class PDFGen {
 		}
 		doc.open();
 		PdfPTable tabla = new PdfPTable(3);
-		tabla.addCell("Usuario");
+		tabla.addCell("Nombre");
 		tabla.addCell("Email");
 		tabla.addCell("Descripción");
 
 		if (!followers.isEmpty()) {
 			for (User u : followers) {
-				tabla.addCell(u.getUsername());
+				tabla.addCell(u.getFullName());
 				tabla.addCell(u.getEmail());
 				tabla.addCell(u.getDescription());
 			}

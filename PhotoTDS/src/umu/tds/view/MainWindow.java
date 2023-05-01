@@ -66,6 +66,7 @@ public class MainWindow {
 	public MainWindow(String username, String profilePicPath) {
 		this.user = Controller.getInstancia().getUser(username);
 		photosLastLogin = Controller.getInstancia().getAllPhotosFromDate(user, user.getLastLogin());
+		Controller.getInstancia().actualizarLastLogin(username);
 		this.selfUsername = user.getUsername();
 
 		if (profilePicPath.contains("%")) {
