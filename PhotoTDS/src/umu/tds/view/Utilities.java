@@ -17,6 +17,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -251,6 +254,30 @@ public class Utilities {
 		publicationListPanel.setLocationRelativeTo(null);
 		publicationListPanel.getContentPane().add(scrollPubPanel);
 		publicationListPanel.setVisible(true);
+	}
+	
+	public static String guardarImagenRelativa(String origen) {
+		if (origen.contains("%")) {
+			try {
+				origen = URLDecoder.decode(origen, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		Path rutaOrigen = Paths.get(origen);
+	    String nombreArchivo = rutaOrigen.getFileName().toString();
+	    Path rutaDestino = Paths.get("src/umu/tds/photos/" + nombreArchivo);
+
+	    if (!Files.exists(rutaDestino)) {
+		    try {
+		        Files.copy(rutaOrigen, rutaDestino);
+		    } catch (Exception e) {
+		        System.err.println("Error al copiar el archivo: " + e.getMessage());
+		    }
+	    }
+	    
+	    return rutaDestino.toString();
 	}
 
 	public static void top10LikedPublications(MainWindow mw, String selfUser, DefaultListModel<Photo> photos,
