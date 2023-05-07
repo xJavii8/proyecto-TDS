@@ -71,6 +71,12 @@ public class UserRepository {
 		userAdapter.createUser(user);
 		users.put(user.getUsername(), user);
 	}
+	
+	// Borramos el usuario tanto en el adaptador como en la lista
+	public void removeUser (User user) {
+		userAdapter.deleteUser(user);
+		users.remove(user.getUsername());
+	}
 
 	public void editUser(String oldUsername, User newUser) {
 		users.remove(oldUsername);

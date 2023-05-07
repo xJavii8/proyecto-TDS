@@ -101,6 +101,19 @@ public class Controller implements PropertyChangeListener {
 
 		return true;
 	}
+	
+	public boolean removeUser(String nickname) {
+		User usuario = this.getUser(nickname);
+		if (usuario == null) {
+			return false;
+		}
+		this.userRepo.removeUser(usuario);
+		return true;
+	}
+	
+	
+	
+	
 
 	public boolean login(String username, String password) {
 		Matcher emailMatch = Constantes.EMAIL_PAT.matcher(username);
