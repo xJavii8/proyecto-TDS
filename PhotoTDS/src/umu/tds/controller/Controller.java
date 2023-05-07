@@ -403,6 +403,24 @@ public class Controller implements PropertyChangeListener {
 
 		User usuario = this.getUser(p.getUser());
 		usuario.deletePhoto(p);
+		List<Album> updatedAlbums = usuario.deletePhotoInAlbums((Photo) p);
+		if(updatedAlbums.size() != 0) {
+			for (Album a: updatedAlbums) {
+				List<File> fotos = new LinkedList<>();
+				for(Photo ph : a.getPhotos()) {
+					fotos.add(new File(ph.getPath()));
+				}
+				ImageIcon imgIcon = Utilities.getIconAlbum(fotos);
+				BufferedImage icon = (BufferedImage) imgIcon.getImage();
+				File output = new File("src/umu/tds/photos/albumIcon" + a.getTitle() + ".png");
+				try {
+					ImageIO.write(icon, "png", output);
+				} catch (IOException e) {
+					System.err.println("Error al guardar la imagen: " + e.getMessage());
+				}
+				this.publRepo.updatePublication(a);
+			}
+		}
 		this.publRepo.removePublication(p);
 		this.adaptadorUser.updateUser(usuario);
 		return true;
@@ -481,14 +499,18 @@ public class Controller implements PropertyChangeListener {
 	}
 
 	public List<String> deleteEmptyAlbums(String user) {
-		List<Album> albums = this.getUser(user).getAlbums();
+		User usuario = this.getUser(user);
+		List<Album> albums = usuario.getAlbums();
 		List<String> deletedAlbums = new LinkedList<>();
-		for (Album album : albums) {
+		for (int i = usuario.getAlbums().size() - 1; i >= 0; i--) {
+			Album album = albums.get(i);
 			if (album.getPhotos().isEmpty()) {
 				deletedAlbums.add(album.getTitle());
-				deleteAlbum(album);
+				usuario.deleteAlbum(album);
+				this.publRepo.removePublication(album);
 			}
 		}
+		this.adaptadorUser.updateUser(usuario);
 		return deletedAlbums;
 	}
 
