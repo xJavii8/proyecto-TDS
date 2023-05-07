@@ -9,10 +9,11 @@ import java.util.Date;
 import java.util.Optional;
 
 import org.junit.Test;
+
 import umu.tds.controller.*;
 import umu.tds.model.*;
 
-public class test {
+public class PhotoTDSTests {
 
 	/**
 	 * Verifica que un usuario pueda seguir y dejar de seguir a otro usuario
