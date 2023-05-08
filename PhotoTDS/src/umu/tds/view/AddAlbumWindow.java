@@ -219,7 +219,7 @@ public class AddAlbumWindow {
 						allPhotos.addElement((Photo) p);
 					}
 				}
-				Utilities.selectPhotosForAlbum(allPhotos, AddAlbumWindow.this);
+				Utilities.selectPhotosForNewAlbum(allPhotos, AddAlbumWindow.this);
 			}
 
 			@Override

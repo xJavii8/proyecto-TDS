@@ -8,8 +8,14 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
@@ -29,6 +35,7 @@ import umu.tds.controller.Controller;
 import umu.tds.model.Album;
 import umu.tds.model.Photo;
 import umu.tds.model.ProfilePhotoListRender;
+import umu.tds.model.Publication;
 
 public class AlbumWindow {
 
@@ -38,6 +45,7 @@ public class AlbumWindow {
 	private boolean liked;
 	private MainWindow mw;
 	private JPanel panelCentral;
+	private JList<Photo> publicationList;
 
 	/**
 	 * Create the application.
@@ -68,7 +76,7 @@ public class AlbumWindow {
 		for (Photo p : album.getPhotos()) {
 			photos.addElement(p);
 		}
-		JList<Photo> publicationList = new JList<>(photos);
+		publicationList = new JList<>(photos);
 		publicationList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 		publicationList.setVisibleRowCount(-1);
 		publicationList.ensureIndexIsVisible(publicationList.getHeight());
@@ -148,7 +156,11 @@ public class AlbumWindow {
 		});
 		panelSur.add(likeButton);
 
+		JLabel addPhoto = new JLabel();
+		addPhoto.setVisible(false);
+
 		if (album.getUser().equals(user)) {
+			addPhoto.setVisible(true);
 			JButton borrar = new JButton("Borrar");
 			borrar.addMouseListener(new MouseAdapter() {
 				@Override
@@ -205,12 +217,65 @@ public class AlbumWindow {
 
 		if (UIManager.getLookAndFeel().getName() == "FlatLaf Light") {
 			publicationList.setBackground(Constantes.LIGHT_BARS);
+			addPhoto.setIcon(new ImageIcon(MainWindow.class.getResource("/images/uploadPhoto.png")));
 		} else if (UIManager.getLookAndFeel().getName() == "FlatLaf Dark") {
 			publicationList.setBackground(Constantes.DARK_BARS);
+			addPhoto.setIcon(new ImageIcon(MainWindow.class.getResource("/images/uploadPhotoDark.png")));
 		}
+
+		addPhoto.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				List<Publication> allP = Collections.list(Controller.getInstancia().getPhotosProfile(user).elements());
+				List<Photo> actualPhotos = album.getPhotos();
+				allP.removeAll(actualPhotos);
+				DefaultListModel<Photo> allPhotos = new DefaultListModel<>();
+				for (Publication p : allP) {
+					if (p instanceof Photo) {
+						allPhotos.addElement((Photo) p);
+					}
+				}
+
+				Utilities.addPhotosToAlbum(actualPhotos, allPhotos, AlbumWindow.this);
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				addPhoto.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				addPhoto.setCursor(Cursor.getDefaultCursor());
+			}
+		});
+
+		panelSur.add(addPhoto, FlowLayout.RIGHT);
 
 		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindow.class.getResource("/images/ig64.png")));
 		frame.getContentPane().add(scrollPubPanel);
+	}
+
+	public void updateAlbum(List<Photo> photos) {
+		Controller.getInstancia().updateAlbum(album, photos);
+		DefaultListModel<Photo> ph = new DefaultListModel<>();
+		for (Photo p : album.getPhotos()) {
+			ph.addElement(p);
+		}
+		publicationList.setModel(ph);
+		List<File> fotos = new LinkedList<>();
+		for (Photo p : photos) {
+			fotos.add(new File(p.getPath()));
+		}
+
+		ImageIcon imgIcon = Utilities.getIconAlbum(fotos);
+		BufferedImage icon = (BufferedImage) imgIcon.getImage();
+		File output = new File("src/umu/tds/photos/albumIcon" + album.getTitle() + ".png");
+		try {
+			ImageIO.write(icon, "png", output);
+		} catch (IOException e) {
+			System.err.println("Error al guardar la imagen: " + e.getMessage());
+		}
 	}
 
 }

@@ -110,10 +110,6 @@ public class Controller implements PropertyChangeListener {
 		this.userRepo.removeUser(usuario);
 		return true;
 	}
-	
-	
-	
-	
 
 	public boolean login(String username, String password) {
 		Matcher emailMatch = Constantes.EMAIL_PAT.matcher(username);
@@ -525,6 +521,12 @@ public class Controller implements PropertyChangeListener {
 		}
 		this.adaptadorUser.updateUser(usuario);
 		return deletedAlbums;
+	}
+	
+	public boolean updateAlbum(Album album, List<Photo> photos) {
+		album.setPhotos(photos);
+		this.publRepo.updatePublication(album);
+		return true;
 	}
 
 	public boolean deleteAlbum(Album album) {
