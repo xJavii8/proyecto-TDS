@@ -101,7 +101,7 @@ public class Controller implements PropertyChangeListener {
 
 		return true;
 	}
-	
+
 	public boolean removeUser(String nickname) {
 		User usuario = this.getUser(nickname);
 		if (usuario == null) {
@@ -413,10 +413,10 @@ public class Controller implements PropertyChangeListener {
 		User usuario = this.getUser(p.getUser());
 		usuario.deletePhoto(p);
 		List<Album> updatedAlbums = usuario.deletePhotoInAlbums((Photo) p);
-		if(updatedAlbums.size() != 0) {
-			for (Album a: updatedAlbums) {
+		if (updatedAlbums.size() != 0) {
+			for (Album a : updatedAlbums) {
 				List<File> fotos = new LinkedList<>();
-				for(Photo ph : a.getPhotos()) {
+				for (Photo ph : a.getPhotos()) {
 					fotos.add(new File(ph.getPath()));
 				}
 				ImageIcon imgIcon = Utilities.getIconAlbum(fotos);
@@ -522,7 +522,7 @@ public class Controller implements PropertyChangeListener {
 		this.adaptadorUser.updateUser(usuario);
 		return deletedAlbums;
 	}
-	
+
 	public boolean updateAlbum(Album album, List<Photo> photos) {
 		album.setPhotos(photos);
 		this.publRepo.updatePublication(album);

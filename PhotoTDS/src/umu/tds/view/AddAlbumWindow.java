@@ -12,6 +12,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 
@@ -25,9 +26,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import umu.tds.controller.Controller;
 import umu.tds.model.Photo;
+import umu.tds.model.ProfilePhotoListRender;
 import umu.tds.model.Publication;
 
 public class AddAlbumWindow {
@@ -219,7 +224,7 @@ public class AddAlbumWindow {
 						allPhotos.addElement((Photo) p);
 					}
 				}
-				Utilities.selectPhotosForNewAlbum(allPhotos, AddAlbumWindow.this);
+				selectPhotosForNewAlbum(allPhotos);
 			}
 
 			@Override
@@ -252,6 +257,91 @@ public class AddAlbumWindow {
 		gbc_btnSubir.gridx = 2;
 		gbc_btnSubir.gridy = 5;
 		panelCentral.add(btnSubir, gbc_btnSubir);
+	}
+
+	public void selectPhotosForNewAlbum(DefaultListModel<Photo> photos) {
+		JList<Photo> publicationList = new JList<>(photos);
+		List<Publication> photosList = new LinkedList<>();
+		publicationList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+		publicationList.setVisibleRowCount(-1);
+		publicationList.ensureIndexIsVisible(publicationList.getHeight());
+		publicationList.setCellRenderer(new ProfilePhotoListRender());
+		JScrollPane scrollPubPanel = new JScrollPane(publicationList);
+		JFrame publicationListFrame = new JFrame();
+
+		publicationList.addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				if (!e.getValueIsAdjusting()) {
+					if (photosList.size() == Constantes.ALBUM_MAX_NUM_PHOTOS) {
+						JOptionPane.showMessageDialog(publicationListFrame,
+								"No puedes poner más de 16 fotos en un álbum", null, JOptionPane.ERROR_MESSAGE);
+					} else {
+						int selectedIndex = publicationList.getSelectedIndex();
+						if (selectedIndex != -1) {
+							photosList.add(publicationList.getSelectedValue());
+							photos.removeElementAt(selectedIndex);
+							publicationListFrame.getContentPane().revalidate();
+							publicationListFrame.getContentPane().repaint();
+						}
+					}
+				}
+			}
+		});
+
+		publicationList.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				publicationList.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				publicationList.setCursor(Cursor.getDefaultCursor());
+			}
+		});
+
+		JPanel panelNorte = new JPanel();
+		publicationListFrame.getContentPane().add(panelNorte, BorderLayout.NORTH);
+		JLabel selectPhotos = new JLabel("Seleccionar fotos para el álbum");
+		selectPhotos.setFont(new Font("Bahnschrift", Font.BOLD, 16));
+		panelNorte.add(selectPhotos);
+
+		if (UIManager.getLookAndFeel().getName() == "FlatLaf Light") {
+			publicationList.setBackground(Constantes.LIGHT_BARS);
+		} else if (UIManager.getLookAndFeel().getName() == "FlatLaf Dark") {
+			publicationList.setBackground(Constantes.DARK_BARS);
+		}
+
+		JPanel panelSur = new JPanel();
+		publicationListFrame.getContentPane().add(panelSur, BorderLayout.SOUTH);
+		JButton aceptarButton = new JButton("Aceptar");
+		aceptarButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				setPublicacionesAlbum(photosList);
+				publicationListFrame.dispose();
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				aceptarButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				aceptarButton.setCursor(Cursor.getDefaultCursor());
+			}
+		});
+		panelSur.add(aceptarButton);
+
+		publicationListFrame
+				.setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindow.class.getResource("/images/ig64.png")));
+		publicationListFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		publicationListFrame.setSize(560, 560);
+		publicationListFrame.setLocationRelativeTo(null);
+		publicationListFrame.getContentPane().add(scrollPubPanel);
+		publicationListFrame.setVisible(true);
 	}
 
 }

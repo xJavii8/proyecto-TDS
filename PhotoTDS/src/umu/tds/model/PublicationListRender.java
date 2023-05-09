@@ -3,9 +3,6 @@ package umu.tds.model;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Image;
-import java.io.File;
-import java.util.LinkedList;
-import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -14,7 +11,6 @@ import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 
 import umu.tds.view.Constantes;
-import umu.tds.view.Utilities;
 
 @SuppressWarnings("serial")
 public class PublicationListRender extends JPanel implements ListCellRenderer<Publication> {

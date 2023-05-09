@@ -1,6 +1,8 @@
 package umu.tds.tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -10,8 +12,8 @@ import java.util.Optional;
 
 import org.junit.Test;
 
-import umu.tds.controller.*;
-import umu.tds.model.*;
+import umu.tds.controller.Controller;
+import umu.tds.model.User;
 
 public class PhotoTDSTests {
 

@@ -236,7 +236,7 @@ public class AlbumWindow {
 					}
 				}
 
-				Utilities.addPhotosToAlbum(actualPhotos, allPhotos, AlbumWindow.this);
+				addPhotosToAlbum(actualPhotos, allPhotos);
 			}
 
 			@Override
@@ -254,6 +254,93 @@ public class AlbumWindow {
 
 		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindow.class.getResource("/images/ig64.png")));
 		frame.getContentPane().add(scrollPubPanel);
+	}
+
+	public void addPhotosToAlbum(List<Photo> actualPhotos, DefaultListModel<Photo> photos) {
+		JList<Photo> publicationList = new JList<>(photos);
+		List<Photo> photosList = actualPhotos;
+		publicationList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+		publicationList.setVisibleRowCount(-1);
+		publicationList.ensureIndexIsVisible(publicationList.getHeight());
+		publicationList.setCellRenderer(new ProfilePhotoListRender());
+		JScrollPane scrollPubPanel = new JScrollPane(publicationList);
+		JFrame publicationListFrame = new JFrame();
+
+		publicationList.addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				if (!e.getValueIsAdjusting()) {
+					if (photosList.size() == Constantes.ALBUM_MAX_NUM_PHOTOS) {
+						JOptionPane.showMessageDialog(publicationListFrame,
+								"No puedes poner más de 16 fotos en un álbum", null, JOptionPane.ERROR_MESSAGE);
+					} else {
+						int selectedIndex = publicationList.getSelectedIndex();
+						if (selectedIndex != -1) {
+							photosList.add(publicationList.getSelectedValue());
+							photos.removeElementAt(selectedIndex);
+							publicationListFrame.getContentPane().revalidate();
+							publicationListFrame.getContentPane().repaint();
+						}
+					}
+				}
+			}
+		});
+
+		publicationList.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				publicationList.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				publicationList.setCursor(Cursor.getDefaultCursor());
+			}
+		});
+
+		JPanel panelNorte = new JPanel();
+		publicationListFrame.getContentPane().add(panelNorte, BorderLayout.NORTH);
+		JLabel selectPhotos = new JLabel("Seleccionar fotos para el álbum");
+		selectPhotos.setFont(new Font("Bahnschrift", Font.BOLD, 16));
+		panelNorte.add(selectPhotos);
+
+		if (UIManager.getLookAndFeel().getName() == "FlatLaf Light") {
+			publicationList.setBackground(Constantes.LIGHT_BARS);
+		} else if (UIManager.getLookAndFeel().getName() == "FlatLaf Dark") {
+			publicationList.setBackground(Constantes.DARK_BARS);
+		}
+
+		JPanel panelSur = new JPanel();
+		publicationListFrame.getContentPane().add(panelSur, BorderLayout.SOUTH);
+		JButton aceptarButton = new JButton("Actualizar");
+		aceptarButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				updateAlbum(photosList);
+				JOptionPane.showMessageDialog(publicationListFrame, "Álbum actualizado", null,
+						JOptionPane.INFORMATION_MESSAGE);
+				publicationListFrame.dispose();
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				aceptarButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				aceptarButton.setCursor(Cursor.getDefaultCursor());
+			}
+		});
+		panelSur.add(aceptarButton);
+
+		publicationListFrame
+				.setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindow.class.getResource("/images/ig64.png")));
+		publicationListFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		publicationListFrame.setSize(560, 560);
+		publicationListFrame.setLocationRelativeTo(null);
+		publicationListFrame.getContentPane().add(scrollPubPanel);
+		publicationListFrame.setVisible(true);
 	}
 
 	public void updateAlbum(List<Photo> photos) {

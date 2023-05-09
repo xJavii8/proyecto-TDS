@@ -20,17 +20,14 @@ import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
@@ -40,7 +37,6 @@ import javax.swing.event.ListSelectionListener;
 
 import umu.tds.model.Album;
 import umu.tds.model.Photo;
-import umu.tds.model.ProfilePhotoListRender;
 import umu.tds.model.Publication;
 import umu.tds.model.PublicationListRender;
 import umu.tds.model.User;
@@ -209,13 +205,13 @@ public class Utilities {
 			public void valueChanged(ListSelectionEvent e) {
 				if (!e.getValueIsAdjusting()) {
 					JPanel panelCentral = mw.getPanelCentral();
-					if(publicationList.getSelectedValue() instanceof Photo) {
+					if (publicationList.getSelectedValue() instanceof Photo) {
 						JPanel panelPublication = new PublicationWindow(selfUser, publicationList.getSelectedValue(),
 								publicationList.getSelectedValue().getUser(), mw).getPublicationPanel();
 						panelCentral.add(panelPublication, "panelPublication");
 						CardLayout cL = (CardLayout) panelCentral.getLayout();
 						cL.show(panelCentral, "panelPublication");
-					} else if(publicationList.getSelectedValue() instanceof Album) {
+					} else if (publicationList.getSelectedValue() instanceof Album) {
 						AlbumWindow aw = new AlbumWindow((Album) publicationList.getSelectedValue(), selfUser, mw);
 						aw.show();
 					}
@@ -279,238 +275,6 @@ public class Utilities {
 		}
 
 		return rutaDestino.toString();
-	}
-
-	public static void top10LikedPublications(MainWindow mw, String selfUser, DefaultListModel<Photo> photos,
-			PremiumMenuWindow pmw) {
-		JList<Photo> publicationList = new JList<>(photos);
-		publicationList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-		publicationList.setVisibleRowCount(-1);
-		publicationList.ensureIndexIsVisible(publicationList.getHeight());
-		publicationList.setCellRenderer(new ProfilePhotoListRender());
-		JScrollPane scrollPubPanel = new JScrollPane(publicationList);
-		JFrame publicationListPanel = new JFrame();
-
-		publicationList.addListSelectionListener(new ListSelectionListener() {
-
-			@Override
-			public void valueChanged(ListSelectionEvent e) {
-				if (!e.getValueIsAdjusting()) {
-					JPanel panelCentral = mw.getPanelCentral();
-					JPanel panelPublication = new PublicationWindow(selfUser, publicationList.getSelectedValue(),
-							publicationList.getSelectedValue().getUser(), mw).getPublicationPanel();
-					panelCentral.add(panelPublication, "panelPublication");
-					CardLayout cL = (CardLayout) panelCentral.getLayout();
-					cL.show(panelCentral, "panelPublication");
-					publicationListPanel.dispose();
-					pmw.dispose();
-				}
-			}
-		});
-
-		publicationList.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				publicationList.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				publicationList.setCursor(Cursor.getDefaultCursor());
-			}
-		});
-
-		JPanel panelNorte = new JPanel();
-		publicationListPanel.getContentPane().add(panelNorte, BorderLayout.NORTH);
-		JLabel foundUsers = new JLabel("Top 10 publicaciones por likes");
-		foundUsers.setFont(new Font("Bahnschrift", Font.BOLD, 16));
-		panelNorte.add(foundUsers);
-
-		if (UIManager.getLookAndFeel().getName() == "FlatLaf Light") {
-			publicationList.setBackground(Constantes.LIGHT_BARS);
-		} else if (UIManager.getLookAndFeel().getName() == "FlatLaf Dark") {
-			publicationList.setBackground(Constantes.DARK_BARS);
-		}
-
-		publicationListPanel
-				.setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindow.class.getResource("/images/ig64.png")));
-		publicationListPanel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		publicationListPanel.setSize(560, 560);
-		publicationListPanel.setLocationRelativeTo(null);
-		publicationListPanel.getContentPane().add(scrollPubPanel);
-		publicationListPanel.setVisible(true);
-	}
-
-	public static void selectPhotosForNewAlbum(DefaultListModel<Photo> photos, AddAlbumWindow aaw) {
-		JList<Photo> publicationList = new JList<>(photos);
-		List<Publication> photosList = new LinkedList<>();
-		publicationList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-		publicationList.setVisibleRowCount(-1);
-		publicationList.ensureIndexIsVisible(publicationList.getHeight());
-		publicationList.setCellRenderer(new ProfilePhotoListRender());
-		JScrollPane scrollPubPanel = new JScrollPane(publicationList);
-		JFrame publicationListFrame = new JFrame();
-
-		publicationList.addListSelectionListener(new ListSelectionListener() {
-			@Override
-			public void valueChanged(ListSelectionEvent e) {
-				if (!e.getValueIsAdjusting()) {
-					if (photosList.size() == Constantes.ALBUM_MAX_NUM_PHOTOS) {
-						JOptionPane.showMessageDialog(publicationListFrame,
-								"No puedes poner más de 16 fotos en un álbum", null, JOptionPane.ERROR_MESSAGE);
-					} else {
-						int selectedIndex = publicationList.getSelectedIndex();
-						if (selectedIndex != -1) {
-							photosList.add(publicationList.getSelectedValue());
-							photos.removeElementAt(selectedIndex);
-							publicationListFrame.getContentPane().revalidate();
-							publicationListFrame.getContentPane().repaint();
-						}
-					}
-				}
-			}
-		});
-
-		publicationList.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				publicationList.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				publicationList.setCursor(Cursor.getDefaultCursor());
-			}
-		});
-
-		JPanel panelNorte = new JPanel();
-		publicationListFrame.getContentPane().add(panelNorte, BorderLayout.NORTH);
-		JLabel selectPhotos = new JLabel("Seleccionar fotos para el álbum");
-		selectPhotos.setFont(new Font("Bahnschrift", Font.BOLD, 16));
-		panelNorte.add(selectPhotos);
-
-		if (UIManager.getLookAndFeel().getName() == "FlatLaf Light") {
-			publicationList.setBackground(Constantes.LIGHT_BARS);
-		} else if (UIManager.getLookAndFeel().getName() == "FlatLaf Dark") {
-			publicationList.setBackground(Constantes.DARK_BARS);
-		}
-
-		JPanel panelSur = new JPanel();
-		publicationListFrame.getContentPane().add(panelSur, BorderLayout.SOUTH);
-		JButton aceptarButton = new JButton("Aceptar");
-		aceptarButton.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				aaw.setPublicacionesAlbum(photosList);
-				publicationListFrame.dispose();
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				aceptarButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				aceptarButton.setCursor(Cursor.getDefaultCursor());
-			}
-		});
-		panelSur.add(aceptarButton);
-
-		publicationListFrame
-				.setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindow.class.getResource("/images/ig64.png")));
-		publicationListFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		publicationListFrame.setSize(560, 560);
-		publicationListFrame.setLocationRelativeTo(null);
-		publicationListFrame.getContentPane().add(scrollPubPanel);
-		publicationListFrame.setVisible(true);
-	}
-	
-	public static void addPhotosToAlbum(List<Photo> actualPhotos, DefaultListModel<Photo> photos, AlbumWindow aw) {
-		JList<Photo> publicationList = new JList<>(photos);
-		List<Photo> photosList = actualPhotos;
-		publicationList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-		publicationList.setVisibleRowCount(-1);
-		publicationList.ensureIndexIsVisible(publicationList.getHeight());
-		publicationList.setCellRenderer(new ProfilePhotoListRender());
-		JScrollPane scrollPubPanel = new JScrollPane(publicationList);
-		JFrame publicationListFrame = new JFrame();
-
-		publicationList.addListSelectionListener(new ListSelectionListener() {
-			@Override
-			public void valueChanged(ListSelectionEvent e) {
-				if (!e.getValueIsAdjusting()) {
-					if (photosList.size() == Constantes.ALBUM_MAX_NUM_PHOTOS) {
-						JOptionPane.showMessageDialog(publicationListFrame,
-								"No puedes poner más de 16 fotos en un álbum", null, JOptionPane.ERROR_MESSAGE);
-					} else {
-						int selectedIndex = publicationList.getSelectedIndex();
-						if (selectedIndex != -1) {
-							photosList.add(publicationList.getSelectedValue());
-							photos.removeElementAt(selectedIndex);
-							publicationListFrame.getContentPane().revalidate();
-							publicationListFrame.getContentPane().repaint();
-						}
-					}
-				}
-			}
-		});
-
-		publicationList.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				publicationList.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				publicationList.setCursor(Cursor.getDefaultCursor());
-			}
-		});
-
-		JPanel panelNorte = new JPanel();
-		publicationListFrame.getContentPane().add(panelNorte, BorderLayout.NORTH);
-		JLabel selectPhotos = new JLabel("Seleccionar fotos para el álbum");
-		selectPhotos.setFont(new Font("Bahnschrift", Font.BOLD, 16));
-		panelNorte.add(selectPhotos);
-
-		if (UIManager.getLookAndFeel().getName() == "FlatLaf Light") {
-			publicationList.setBackground(Constantes.LIGHT_BARS);
-		} else if (UIManager.getLookAndFeel().getName() == "FlatLaf Dark") {
-			publicationList.setBackground(Constantes.DARK_BARS);
-		}
-
-		JPanel panelSur = new JPanel();
-		publicationListFrame.getContentPane().add(panelSur, BorderLayout.SOUTH);
-		JButton aceptarButton = new JButton("Actualizar");
-		aceptarButton.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				aw.updateAlbum(photosList);
-				JOptionPane.showMessageDialog(publicationListFrame,
-						"Álbum actualizado", null, JOptionPane.INFORMATION_MESSAGE);
-				publicationListFrame.dispose();
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				aceptarButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				aceptarButton.setCursor(Cursor.getDefaultCursor());
-			}
-		});
-		panelSur.add(aceptarButton);
-
-		publicationListFrame
-				.setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindow.class.getResource("/images/ig64.png")));
-		publicationListFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		publicationListFrame.setSize(560, 560);
-		publicationListFrame.setLocationRelativeTo(null);
-		publicationListFrame.getContentPane().add(scrollPubPanel);
-		publicationListFrame.setVisible(true);
 	}
 
 	public static ImageIcon getIconAlbum(List<File> fotos) {

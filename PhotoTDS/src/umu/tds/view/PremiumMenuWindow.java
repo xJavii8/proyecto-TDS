@@ -16,13 +16,19 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import umu.tds.controller.Controller;
 import umu.tds.model.Photo;
+import umu.tds.model.ProfilePhotoListRender;
 
 public class PremiumMenuWindow {
 
@@ -43,10 +49,6 @@ public class PremiumMenuWindow {
 
 	public void show() {
 		frame.setVisible(true);
-	}
-
-	public void dispose() {
-		frame.dispose();
 	}
 
 	/**
@@ -193,7 +195,7 @@ public class PremiumMenuWindow {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				DefaultListModel<Photo> top10 = Controller.getInstancia().getTop10LikedPhotos(nickname);
-				Utilities.top10LikedPublications(mw, nickname, top10, PremiumMenuWindow.this);
+				top10LikedPublications(mw, nickname, top10);
 			}
 
 			@Override
@@ -283,6 +285,65 @@ public class PremiumMenuWindow {
 				getPremium.setCursor(Cursor.getDefaultCursor());
 			}
 		});
+	}
+
+	public void top10LikedPublications(MainWindow mw, String selfUser, DefaultListModel<Photo> photos) {
+		JList<Photo> publicationList = new JList<>(photos);
+		publicationList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+		publicationList.setVisibleRowCount(-1);
+		publicationList.ensureIndexIsVisible(publicationList.getHeight());
+		publicationList.setCellRenderer(new ProfilePhotoListRender());
+		JScrollPane scrollPubPanel = new JScrollPane(publicationList);
+		JFrame publicationListPanel = new JFrame();
+
+		publicationList.addListSelectionListener(new ListSelectionListener() {
+
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				if (!e.getValueIsAdjusting()) {
+					JPanel panelCentral = mw.getPanelCentral();
+					JPanel panelPublication = new PublicationWindow(selfUser, publicationList.getSelectedValue(),
+							publicationList.getSelectedValue().getUser(), mw).getPublicationPanel();
+					panelCentral.add(panelPublication, "panelPublication");
+					CardLayout cL = (CardLayout) panelCentral.getLayout();
+					cL.show(panelCentral, "panelPublication");
+					publicationListPanel.dispose();
+					frame.dispose();
+				}
+			}
+		});
+
+		publicationList.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				publicationList.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				publicationList.setCursor(Cursor.getDefaultCursor());
+			}
+		});
+
+		JPanel panelNorte = new JPanel();
+		publicationListPanel.getContentPane().add(panelNorte, BorderLayout.NORTH);
+		JLabel foundUsers = new JLabel("Top 10 publicaciones por likes");
+		foundUsers.setFont(new Font("Bahnschrift", Font.BOLD, 16));
+		panelNorte.add(foundUsers);
+
+		if (UIManager.getLookAndFeel().getName() == "FlatLaf Light") {
+			publicationList.setBackground(Constantes.LIGHT_BARS);
+		} else if (UIManager.getLookAndFeel().getName() == "FlatLaf Dark") {
+			publicationList.setBackground(Constantes.DARK_BARS);
+		}
+
+		publicationListPanel
+				.setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindow.class.getResource("/images/ig64.png")));
+		publicationListPanel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		publicationListPanel.setSize(560, 560);
+		publicationListPanel.setLocationRelativeTo(null);
+		publicationListPanel.getContentPane().add(scrollPubPanel);
+		publicationListPanel.setVisible(true);
 	}
 
 }
