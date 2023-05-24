@@ -64,9 +64,9 @@ public class MainWindow {
 	 * Create the application.
 	 */
 	public MainWindow(String username, String profilePicPath) {
-		this.user = Controller.getInstancia().getUser(username);
-		photosLastLogin = Controller.getInstancia().getAllPhotosFromDate(user, user.getLastLogin());
-		Controller.getInstancia().actualizarLastLogin(username);
+		this.user = Controller.INSTANCE.getUser(username);
+		photosLastLogin = Controller.INSTANCE.getAllPhotosFromDate(user, user.getLastLogin());
+		Controller.INSTANCE.actualizarLastLogin(username);
 		this.selfUsername = user.getUsername();
 
 		if (profilePicPath.contains("%")) {
@@ -292,7 +292,7 @@ public class MainWindow {
 					calendar.set(Calendar.MILLISECOND, 0);
 					Date newDate = calendar.getTime();
 
-					DefaultListModel<Photo> photosSince = Controller.getInstancia().getAllPhotosFromDate(user, newDate);
+					DefaultListModel<Photo> photosSince = Controller.INSTANCE.getAllPhotosFromDate(user, newDate);
 					if (!photosSince.isEmpty()) {
 						SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 						String fechaFormateada = format.format(newDate);
@@ -420,11 +420,11 @@ public class MainWindow {
 	private void buscar(String texto) {
 		if (texto.isEmpty() == false) {
 			if (texto.contains("#")) {
-				DefaultListModel<Publication> matchingPublications = Controller.getInstancia()
+				DefaultListModel<Publication> matchingPublications = Controller.INSTANCE
 						.searchPublicationsByHashtags(texto);
 				Utilities.listaPublicaciones(MainWindow.this, selfUsername, matchingPublications);
 			} else {
-				DefaultListModel<User> matchingUsers = Controller.getInstancia().search(selfUsername, texto);
+				DefaultListModel<User> matchingUsers = Controller.INSTANCE.search(selfUsername, texto);
 				Utilities.listaUsuarios(MainWindow.this, selfUsername, matchingUsers);
 			}
 		}

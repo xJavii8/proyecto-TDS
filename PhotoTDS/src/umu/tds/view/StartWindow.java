@@ -210,9 +210,9 @@ public class StartWindow {
 							"La contraseña ha de tener mínimo " + Constantes.MIN_PASSWORD_LENGTH + " caracteres.", null,
 							JOptionPane.ERROR_MESSAGE);
 				} else {
-					if (Controller.getInstancia().login(userField_Login.getText(),
+					if (Controller.INSTANCE.login(userField_Login.getText(),
 							String.valueOf(passwordField_Login.getPassword()))) {
-						String profilePicPath = Controller.getInstancia().getUser(userField_Login.getText())
+						String profilePicPath = Controller.INSTANCE.getUser(userField_Login.getText())
 								.getProfilePic();
 						MainWindow mainView = new MainWindow(userField_Login.getText(), profilePicPath);
 						frame.setVisible(false);

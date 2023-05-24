@@ -83,7 +83,7 @@ public class CommentsWindow {
 		gbc_scrollPane.gridy = 2;
 		frame.getContentPane().add(scrollPane, gbc_scrollPane);
 
-		DefaultListModel<Comment> comments = Controller.getInstancia().getComments(pub.getTitle());
+		DefaultListModel<Comment> comments = Controller.INSTANCE.getComments(pub.getTitle());
 		commentsList = new JList<>(comments);
 
 		scrollPane.setViewportView(commentsList);
@@ -107,8 +107,8 @@ public class CommentsWindow {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (btnEnviar.getText().equals("Enviar")) {
-					Controller.getInstancia().addComment(pub, textoComentario.getText(), user.getUsername());
-					DefaultListModel<Comment> comments = Controller.getInstancia().getComments(pub.getTitle());
+					Controller.INSTANCE.addComment(pub, textoComentario.getText(), user.getUsername());
+					DefaultListModel<Comment> comments = Controller.INSTANCE.getComments(pub.getTitle());
 					commentsList.setModel(comments);
 					textoComentario.setText(null);
 					publicationW.updateCommentsNumber();
@@ -116,7 +116,7 @@ public class CommentsWindow {
 					DefaultListModel<Comment> commentBo = (DefaultListModel<Comment>) commentsList.getModel();
 					if (user.getUsername().equals(removeComment.getAuthor())
 							|| user.getUsername().equals(pub.getUser())) {
-						Controller.getInstancia().removeComment(pub, removeComment);
+						Controller.INSTANCE.removeComment(pub, removeComment);
 						removeComment = null;
 						publicationW.updateCommentsNumber();
 						int selectedIndex = commentsList.getSelectedIndex();

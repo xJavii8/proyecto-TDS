@@ -375,7 +375,7 @@ public class RegisterWindow {
 					if (profilePic_Register == null)
 						profilePic_Register = StartWindow.class.getResource("/images/defaultUserPic128.png").getPath()
 								.substring(1);
-					if (Controller.getInstancia().createUser(emailField_Register.getText(),
+					if (Controller.INSTANCE.createUser(emailField_Register.getText(),
 							fullnameField_Register.getText(), userField_Register.getText(),
 							String.valueOf(passwordField_Register.getPassword()), dateChooser_Register.getDate(),
 							Utilities.guardarImagenRelativa(profilePic_Register),

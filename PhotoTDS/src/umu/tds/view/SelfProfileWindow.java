@@ -51,7 +51,7 @@ public class SelfProfileWindow {
 	 * Create the application.
 	 */
 	public SelfProfileWindow(String user, MainWindow mw) {
-		this.user = Controller.getInstancia().getUser(user);
+		this.user = Controller.INSTANCE.getUser(user);
 		this.selfProfile = mw.getSelfProfile();
 		this.mw = mw;
 		initialize();
@@ -178,7 +178,7 @@ public class SelfProfileWindow {
 		siguiendo.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				DefaultListModel<User> following = Controller.getInstancia().getFollowingUsers(user.getUsername());
+				DefaultListModel<User> following = Controller.INSTANCE.getFollowingUsers(user.getUsername());
 				Utilities.listaUsuarios(mw, user.getUsername(), following);
 			}
 
@@ -208,7 +208,7 @@ public class SelfProfileWindow {
 		seguidores.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				DefaultListModel<User> followers = Controller.getInstancia().getFollowers(user.getUsername());
+				DefaultListModel<User> followers = Controller.INSTANCE.getFollowers(user.getUsername());
 				Utilities.listaUsuarios(mw, user.getUsername(), followers);
 			}
 
@@ -284,7 +284,7 @@ public class SelfProfileWindow {
 		gbc_scrollPane.gridy = 5;
 		panelPerfilPersonal.add(scrollPane, gbc_scrollPane);
 
-		DefaultListModel<Publication> photoList = Controller.getInstancia().getPhotosProfile(user.getUsername());
+		DefaultListModel<Publication> photoList = Controller.INSTANCE.getPhotosProfile(user.getUsername());
 
 		publicationList = new JList<>(photoList);
 		scrollPane.setViewportView(publicationList);
@@ -332,7 +332,7 @@ public class SelfProfileWindow {
 				if (switchAlbum.getText().equals("Álbumes")) {
 					publicationList.setModel(new DefaultListModel<Publication>());
 					publicationList.setCellRenderer(new AlbumPublicationListRender());
-					DefaultListModel<Publication> albums = Controller.getInstancia()
+					DefaultListModel<Publication> albums = Controller.INSTANCE
 							.getAlbumsProfile(user.getUsername());
 					publicationList.setModel(albums);
 					newAlbum.setVisible(true);
@@ -340,7 +340,7 @@ public class SelfProfileWindow {
 				} else if (switchAlbum.getText().equals("Fotos")) {
 					publicationList.setModel(new DefaultListModel<Publication>());
 					publicationList.setCellRenderer(new ProfilePhotoListRender());
-					DefaultListModel<Publication> fotos = Controller.getInstancia()
+					DefaultListModel<Publication> fotos = Controller.INSTANCE
 							.getPhotosProfile(user.getUsername());
 					publicationList.setModel(fotos);
 					newAlbum.setVisible(false);
@@ -376,7 +376,7 @@ public class SelfProfileWindow {
 					Constantes.SELF_USER_PIC_SIZE, Image.SCALE_DEFAULT));
 		}
 		this.selfProfile.setIcon(pic);
-		this.user = Controller.getInstancia().getUser(username);
+		this.user = Controller.INSTANCE.getUser(username);
 	}
 
 }

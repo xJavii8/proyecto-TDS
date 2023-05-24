@@ -50,10 +50,10 @@ public class PublicationWindow {
 	 * Create the application.
 	 */
 	public PublicationWindow(String usernameLogged, Publication p, String username, MainWindow mw) {
-		this.userLogged = Controller.getInstancia().getUser(usernameLogged);
+		this.userLogged = Controller.INSTANCE.getUser(usernameLogged);
 		this.p = (Photo) p;
-		this.user = Controller.getInstancia().getUser(username);
-		this.liked = Controller.getInstancia().userLikedPub(userLogged.getUsername(), p);
+		this.user = Controller.INSTANCE.getUser(username);
+		this.liked = Controller.INSTANCE.userLikedPub(userLogged.getUsername(), p);
 		this.mw = mw;
 		this.panelCentral = mw.getPanelCentral();
 		this.panelPerfilPersonal = mw.getSPW().getPanelPerfilPersonal();
@@ -158,10 +158,10 @@ public class PublicationWindow {
 		borrar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (Controller.getInstancia().deletePhoto(p)) {
+				if (Controller.INSTANCE.deletePhoto(p)) {
 					JOptionPane.showMessageDialog(frame, "La publicación " + p.getTitle() + " ha sido borrada.", null,
 							JOptionPane.INFORMATION_MESSAGE);
-					List<String> deletedAlbums = Controller.getInstancia().deleteEmptyAlbums(userLogged.getUsername());
+					List<String> deletedAlbums = Controller.INSTANCE.deleteEmptyAlbums(userLogged.getUsername());
 					if (!deletedAlbums.isEmpty()) {
 						String message = "Se han borrado los siguientes álbumes, ya que estaban vacíos: ";
 						for (int i = 0; i < deletedAlbums.size(); i++) {
@@ -229,7 +229,7 @@ public class PublicationWindow {
 		likes.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				DefaultListModel<User> users = Controller.getInstancia().getUsersWhoLikedPublication(p);
+				DefaultListModel<User> users = Controller.INSTANCE.getUsersWhoLikedPublication(p);
 				Utilities.listaUsuarios(mw, userLogged.getUsername(), users);
 			}
 
@@ -284,7 +284,7 @@ public class PublicationWindow {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (liked) {
-					Controller.getInstancia().dislike(userLogged.getUsername(), p);
+					Controller.INSTANCE.dislike(userLogged.getUsername(), p);
 					likeButton.setIcon(new ImageIcon(PublicationWindow.class.getResource("/images/notLiked.png")));
 					liked = false;
 					if (p.getLikes() == 1) {
@@ -293,7 +293,7 @@ public class PublicationWindow {
 						likes.setText(p.getLikes() + " likes");
 					}
 				} else {
-					Controller.getInstancia().like(userLogged.getUsername(), p);
+					Controller.INSTANCE.like(userLogged.getUsername(), p);
 					likeButton.setIcon(new ImageIcon(PublicationWindow.class.getResource("/images/liked.png")));
 					liked = true;
 					if (p.getLikes() == 1) {

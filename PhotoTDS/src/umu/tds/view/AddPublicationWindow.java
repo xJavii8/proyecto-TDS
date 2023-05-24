@@ -246,19 +246,19 @@ public class AddPublicationWindow implements IEncendidoListener {
 				else if (picPublication == null)
 					JOptionPane.showMessageDialog(frame, "Debes seleccionar una foto", null, JOptionPane.ERROR_MESSAGE);
 				else {
-					Optional<Publication> publ = Controller.getInstancia().getPublication(titulo);
+					Optional<Publication> publ = Controller.INSTANCE.getPublication(titulo);
 
 					if (!publ.isEmpty() && publ.get().getTitle().equals(titulo)) {
 						JOptionPane.showMessageDialog(frame, "Ya existe una publicación con ese nombre", null,
 								JOptionPane.ERROR_MESSAGE);
 					} else if (publ.isEmpty()) {
-						Controller.getInstancia().createPhoto(user, titulo, descripArea.getText(),
+						Controller.INSTANCE.createPhoto(user, titulo, descripArea.getText(),
 								Utilities.guardarImagenRelativa(picPublication));
 						JOptionPane.showMessageDialog(frame, "Publicación subida", null,
 								JOptionPane.INFORMATION_MESSAGE);
-						DefaultListModel<Publication> photoList = Controller.getInstancia().getPhotosProfile(user);
+						DefaultListModel<Publication> photoList = Controller.INSTANCE.getPhotosProfile(user);
 						publicationList.setModel(photoList);
-						int numSelfPub = Controller.getInstancia().getUser(user).getPublications().size();
+						int numSelfPub = Controller.INSTANCE.getUser(user).getPublications().size();
 						if (numSelfPub == 1)
 							publications.setText(numSelfPub + " publicación");
 						else
@@ -312,15 +312,15 @@ public class AddPublicationWindow implements IEncendidoListener {
 		chooser.setFileFilter(filtro);
 		int resultado = chooser.showOpenDialog(frame);
 		if (resultado == JFileChooser.APPROVE_OPTION) {
-			Controller.getInstancia().uploadPhotosXML(chooser.getSelectedFile().getAbsolutePath());
+			Controller.INSTANCE.uploadPhotosXML(chooser.getSelectedFile().getAbsolutePath());
 			JOptionPane.showMessageDialog(frame, "Publicación/es subidas a través del XML", null,
 					JOptionPane.INFORMATION_MESSAGE);
-			int numSelfPub = Controller.getInstancia().getUser(user).getPublications().size();
+			int numSelfPub = Controller.INSTANCE.getUser(user).getPublications().size();
 			if (numSelfPub == 1)
 				publications.setText(numSelfPub + " publicación");
 			else
 				publications.setText(numSelfPub + " publicaciones");
-			DefaultListModel<Publication> photoList = Controller.getInstancia().getPhotosProfile(user);
+			DefaultListModel<Publication> photoList = Controller.INSTANCE.getPhotosProfile(user);
 			publicationList.setModel(photoList);
 			frame.dispose();
 		}

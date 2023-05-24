@@ -42,7 +42,7 @@ public class PremiumMenuWindow {
 	 */
 	public PremiumMenuWindow(String nickname, MainWindow mw) {
 		this.nickname = nickname;
-		this.isPremium = Controller.getInstancia().getUser(nickname).isPremium();
+		this.isPremium = Controller.INSTANCE.getUser(nickname).isPremium();
 		this.mw = mw;
 		initialize();
 	}
@@ -75,7 +75,7 @@ public class PremiumMenuWindow {
 		gbl_panelNoPremium.rowWeights = new double[] { 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		panelNoPremium.setLayout(gbl_panelNoPremium);
 
-		JLabel price = new JLabel("Precio: " + Controller.getInstancia().getUser(nickname).getFinalPrice() + "€");
+		JLabel price = new JLabel("Precio: " + Controller.INSTANCE.getUser(nickname).getFinalPrice() + "€");
 		price.setFont(new Font("Bahnschrift", Font.BOLD, 16));
 		price.setHorizontalAlignment(SwingConstants.CENTER);
 		GridBagConstraints gbc_price = new GridBagConstraints();
@@ -130,7 +130,7 @@ public class PremiumMenuWindow {
 					} else {
 						fichero = fichero.substring(0, extension) + ".xls";
 					}
-					if (Controller.getInstancia().createExcel(nickname, fichero))
+					if (Controller.INSTANCE.createExcel(nickname, fichero))
 						JOptionPane.showMessageDialog(frame, "Archivo Excel generado", null,
 								JOptionPane.INFORMATION_MESSAGE);
 					else
@@ -163,7 +163,7 @@ public class PremiumMenuWindow {
 					} else {
 						fichero = fichero.substring(0, extension) + ".pdf";
 					}
-					if (Controller.getInstancia().createPDF(nickname, fichero))
+					if (Controller.INSTANCE.createPDF(nickname, fichero))
 						JOptionPane.showMessageDialog(frame, "Archivo PDF generado", null,
 								JOptionPane.INFORMATION_MESSAGE);
 					else
@@ -194,7 +194,7 @@ public class PremiumMenuWindow {
 		top10.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				DefaultListModel<Photo> top10 = Controller.getInstancia().getTop10LikedPhotos(nickname);
+				DefaultListModel<Photo> top10 = Controller.INSTANCE.getTop10LikedPhotos(nickname);
 				top10LikedPublications(mw, nickname, top10);
 			}
 
@@ -267,7 +267,7 @@ public class PremiumMenuWindow {
 		getPremium.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				Controller.getInstancia().setPremium(nickname);
+				Controller.INSTANCE.setPremium(nickname);
 				JOptionPane.showMessageDialog(frame, "Has adquirido el estado premium", null,
 						JOptionPane.INFORMATION_MESSAGE);
 				status.setText("Estado: premium");

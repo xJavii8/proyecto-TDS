@@ -12,11 +12,10 @@ import umu.tds.persistence.DAOException;
 import umu.tds.persistence.DAOFactory;
 import umu.tds.persistence.IAdaptadorPublicationDAO;
 
-public class PublicationRepository {
-
+public enum PublicationRepository {
+	INSTANCE;
+	
 	private Map<String, Publication> publications;
-	private static PublicationRepository uniqueInstance;
-
 	private DAOFactory dao;
 	private IAdaptadorPublicationDAO publicationAdapter;
 
@@ -31,13 +30,6 @@ public class PublicationRepository {
 		}
 	}
 
-	// Obtener la unica instacia de la clase ---> SINGLETONE
-	public static PublicationRepository getInstancia() {
-		if (uniqueInstance == null) {
-			uniqueInstance = new PublicationRepository();
-		}
-		return uniqueInstance;
-	}
 
 	/*
 	 * Si obtenemos la publicación devuelve el objeto, si no la encuentra devuelve

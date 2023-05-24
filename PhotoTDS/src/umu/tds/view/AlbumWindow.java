@@ -55,7 +55,7 @@ public class AlbumWindow {
 		this.user = userLogged;
 		this.mw = mw;
 		this.panelCentral = mw.getPanelCentral();
-		this.liked = Controller.getInstancia().userLikedPub(userLogged, album);
+		this.liked = Controller.INSTANCE.userLikedPub(userLogged, album);
 		initialize();
 	}
 
@@ -133,11 +133,11 @@ public class AlbumWindow {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (liked) {
-					Controller.getInstancia().dislike(user, album);
+					Controller.INSTANCE.dislike(user, album);
 					likeButton.setIcon(new ImageIcon(PublicationWindow.class.getResource("/images/notLiked.png")));
 					liked = false;
 				} else {
-					Controller.getInstancia().like(user, album);
+					Controller.INSTANCE.like(user, album);
 					likeButton.setIcon(new ImageIcon(PublicationWindow.class.getResource("/images/liked.png")));
 					liked = true;
 				}
@@ -170,10 +170,10 @@ public class AlbumWindow {
 									+ "? Las fotos también se borrarán.",
 							null, JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
 					if (option == JOptionPane.YES_OPTION) {
-						if (Controller.getInstancia().deleteAlbum(album)) {
+						if (Controller.INSTANCE.deleteAlbum(album)) {
 							JOptionPane.showMessageDialog(frame, "El álbum " + album.getTitle() + " ha sido borrado.",
 									null, JOptionPane.INFORMATION_MESSAGE);
-							List<String> deletedAlbums = Controller.getInstancia().deleteEmptyAlbums(user);
+							List<String> deletedAlbums = Controller.INSTANCE.deleteEmptyAlbums(user);
 							if (!deletedAlbums.isEmpty()) {
 								String message = "Se han borrado los siguientes álbumes, ya que estaban vacíos: ";
 								for (int i = 0; i < deletedAlbums.size(); i++) {
@@ -226,7 +226,7 @@ public class AlbumWindow {
 		addPhoto.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				List<Publication> allP = Collections.list(Controller.getInstancia().getPhotosProfile(user).elements());
+				List<Publication> allP = Collections.list(Controller.INSTANCE.getPhotosProfile(user).elements());
 				List<Photo> actualPhotos = album.getPhotos();
 				allP.removeAll(actualPhotos);
 				DefaultListModel<Photo> allPhotos = new DefaultListModel<>();
@@ -344,7 +344,7 @@ public class AlbumWindow {
 	}
 
 	public void updateAlbum(List<Photo> photos) {
-		Controller.getInstancia().updateAlbum(album, photos);
+		Controller.INSTANCE.updateAlbum(album, photos);
 		DefaultListModel<Photo> ph = new DefaultListModel<>();
 		for (Photo p : album.getPhotos()) {
 			ph.addElement(p);

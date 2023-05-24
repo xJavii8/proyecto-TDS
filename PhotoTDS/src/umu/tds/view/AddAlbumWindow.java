@@ -187,15 +187,15 @@ public class AddAlbumWindow {
 				else if (publicacionesAlbum == null)
 					JOptionPane.showMessageDialog(frame, "Debes seleccionar fotos", null, JOptionPane.ERROR_MESSAGE);
 				else {
-					boolean albumExist = Controller.getInstancia().albumExist(user, titulo);
+					boolean albumExist = Controller.INSTANCE.albumExist(user, titulo);
 
 					if (albumExist) {
 						JOptionPane.showMessageDialog(frame, "Ya existe un álbum con ese nombre", null,
 								JOptionPane.ERROR_MESSAGE);
 					} else {
-						Controller.getInstancia().createAlbum(user, titulo, descripArea.getText(), publicacionesAlbum);
+						Controller.INSTANCE.createAlbum(user, titulo, descripArea.getText(), publicacionesAlbum);
 						JOptionPane.showMessageDialog(frame, "Álbum creado", null, JOptionPane.INFORMATION_MESSAGE);
-						DefaultListModel<Publication> albumList = Controller.getInstancia().getAlbumsProfile(user);
+						DefaultListModel<Publication> albumList = Controller.INSTANCE.getAlbumsProfile(user);
 						publicationList.setModel(albumList);
 						frame.dispose();
 					}
@@ -217,7 +217,7 @@ public class AddAlbumWindow {
 		btnSeleccionar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				List<Publication> allP = Collections.list(Controller.getInstancia().getPhotosProfile(user).elements());
+				List<Publication> allP = Collections.list(Controller.INSTANCE.getPhotosProfile(user).elements());
 				DefaultListModel<Photo> allPhotos = new DefaultListModel<>();
 				for (Publication p : allP) {
 					if (p instanceof Photo) {

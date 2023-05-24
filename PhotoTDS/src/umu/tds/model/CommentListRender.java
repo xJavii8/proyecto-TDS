@@ -29,7 +29,7 @@ public class CommentListRender extends JPanel implements ListCellRenderer<Commen
 	public Component getListCellRendererComponent(JList<? extends Comment> list, Comment value, int index,
 			boolean isSelected, boolean cellHasFocus) {
 
-		User usuario = Controller.getInstancia().getUser(value.getAuthor());
+		User usuario = Controller.INSTANCE.getUser(value.getAuthor());
 		ImageIcon pic = Utilities.getCircleIcon(usuario.getProfilePic());
 		if (pic.getIconHeight() != Constantes.SELF_USER_PIC_SIZE
 				|| pic.getIconWidth() != Constantes.SELF_USER_PIC_SIZE) {

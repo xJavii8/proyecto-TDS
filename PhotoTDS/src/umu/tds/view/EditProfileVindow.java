@@ -49,7 +49,7 @@ public class EditProfileVindow {
 	 * Create the application.
 	 */
 	public EditProfileVindow(String username, SelfProfileWindow spw) {
-		this.user = Controller.getInstancia().getUser(username);
+		this.user = Controller.INSTANCE.getUser(username);
 		this.spw = spw;
 		initialize();
 	}
@@ -235,11 +235,11 @@ public class EditProfileVindow {
 					JOptionPane.showMessageDialog(frame, "El campo \"Usuario\" no puede estar vacío.", null,
 							JOptionPane.ERROR_MESSAGE);
 				} else if (!user.getUsername().equals(usernameField.getText())
-						&& Controller.getInstancia().getUser(usernameField.getText()) != null) {
+						&& Controller.INSTANCE.getUser(usernameField.getText()) != null) {
 					JOptionPane.showMessageDialog(frame, "Este nombre de usuario ya existe. Escoge otro.", null,
 							JOptionPane.ERROR_MESSAGE);
 				} else {
-					if (Controller.getInstancia().updateUser(user, fullnameField.getText(), usernameField.getText(),
+					if (Controller.INSTANCE.updateUser(user, fullnameField.getText(), usernameField.getText(),
 							textArea.getText(), newProfilePic)) {
 						JOptionPane.showMessageDialog(frame, "Perfil actualizado.", null,
 								JOptionPane.INFORMATION_MESSAGE);
@@ -414,7 +414,7 @@ public class EditProfileVindow {
 							"La contraseña ha de tener mínimo " + Constantes.MIN_PASSWORD_LENGTH + " caracteres.", null,
 							JOptionPane.ERROR_MESSAGE);
 				} else {
-					if (Controller.getInstancia().updateUserSensibleInfo(user, correoField.getText(),
+					if (Controller.INSTANCE.updateUserSensibleInfo(user, correoField.getText(),
 							String.valueOf(contraseñaField.getPassword()))) {
 						JOptionPane.showMessageDialog(frame, "Correo y contraseña actualizados.", null,
 								JOptionPane.INFORMATION_MESSAGE);

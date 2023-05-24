@@ -45,7 +45,7 @@ public class ProfileWindow {
 	public ProfileWindow(String selfUser, String searchedUser, MainWindow mw) {
 		this.selfUser = selfUser;
 		this.searchedUser = searchedUser;
-		this.profileUser = Controller.getInstancia().getUser(searchedUser);
+		this.profileUser = Controller.INSTANCE.getUser(searchedUser);
 		this.mw = mw;
 		initialize();
 	}
@@ -93,7 +93,7 @@ public class ProfileWindow {
 		panelPerfil.add(nickname, gbc_nickname);
 
 		JButton followButton = new JButton("");
-		if (Controller.getInstancia().userIsFollower(selfUser, searchedUser))
+		if (Controller.INSTANCE.userIsFollower(selfUser, searchedUser))
 			followButton.setText("Dejar de seguir");
 		else
 			followButton.setText("Seguir");
@@ -115,7 +115,7 @@ public class ProfileWindow {
 		following.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				DefaultListModel<User> followingList = Controller.getInstancia().getFollowingUsers(searchedUser);
+				DefaultListModel<User> followingList = Controller.INSTANCE.getFollowingUsers(searchedUser);
 				Utilities.listaUsuarios(mw, searchedUser, followingList);
 			}
 
@@ -140,7 +140,7 @@ public class ProfileWindow {
 		followers.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				DefaultListModel<User> followersList = Controller.getInstancia().getFollowers(searchedUser);
+				DefaultListModel<User> followersList = Controller.INSTANCE.getFollowers(searchedUser);
 				Utilities.listaUsuarios(mw, searchedUser, followersList);
 			}
 
@@ -186,7 +186,7 @@ public class ProfileWindow {
 		gbc_scrollPane.gridy = 5;
 		panelPerfil.add(scrollPane, gbc_scrollPane);
 
-		DefaultListModel<Publication> photoList = Controller.getInstancia().getPhotosProfile(searchedUser);
+		DefaultListModel<Publication> photoList = Controller.INSTANCE.getPhotosProfile(searchedUser);
 
 		JList<Publication> publicationList = new JList<>(photoList);
 		scrollPane.setViewportView(publicationList);
@@ -250,19 +250,19 @@ public class ProfileWindow {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (followButton.getText().equals("Seguir")) {
-					Controller.getInstancia().follow(selfUser, searchedUser);
+					Controller.INSTANCE.follow(selfUser, searchedUser);
 					followButton.setText("Dejar de seguir");
 				} else if (followButton.getText().equals("Dejar de seguir")) {
-					Controller.getInstancia().unfollow(selfUser, searchedUser);
+					Controller.INSTANCE.unfollow(selfUser, searchedUser);
 					followButton.setText("Seguir");
 				}
 
-				DefaultListModel<Photo> newMWPhotos = Controller.getInstancia()
-						.getAllPhotos(Controller.getInstancia().getUser(selfUser).getUsersFollowing());
+				DefaultListModel<Photo> newMWPhotos = Controller.INSTANCE
+						.getAllPhotos(Controller.INSTANCE.getUser(selfUser).getUsersFollowing());
 
 				mw.getPhotosList().setModel(newMWPhotos);
 
-				int numFollowingUsers = Controller.getInstancia().getUser(selfUser).getUsersFollowing().size();
+				int numFollowingUsers = Controller.INSTANCE.getUser(selfUser).getUsersFollowing().size();
 				if (numFollowingUsers == 1)
 					mw.getSPW().getFollowingLabel().setText(numFollowingUsers + " seguido");
 				else
@@ -292,13 +292,13 @@ public class ProfileWindow {
 				if (switchAlbum.getText().equals("Álbumes")) {
 					publicationList.setModel(new DefaultListModel<Publication>());
 					publicationList.setCellRenderer(new AlbumPublicationListRender());
-					DefaultListModel<Publication> albums = Controller.getInstancia().getAlbumsProfile(searchedUser);
+					DefaultListModel<Publication> albums = Controller.INSTANCE.getAlbumsProfile(searchedUser);
 					publicationList.setModel(albums);
 					switchAlbum.setText("Fotos");
 				} else if (switchAlbum.getText().equals("Fotos")) {
 					publicationList.setModel(new DefaultListModel<Publication>());
 					publicationList.setCellRenderer(new ProfilePhotoListRender());
-					DefaultListModel<Publication> fotos = Controller.getInstancia().getPhotosProfile(searchedUser);
+					DefaultListModel<Publication> fotos = Controller.INSTANCE.getPhotosProfile(searchedUser);
 					publicationList.setModel(fotos);
 					switchAlbum.setText("Álbumes");
 				}

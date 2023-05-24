@@ -10,10 +10,10 @@ import umu.tds.persistence.DAOException;
 import umu.tds.persistence.DAOFactory;
 import umu.tds.persistence.IAdaptadorUserDAO;
 
-public class UserRepository {
+public enum UserRepository {
+	INSTANCE;
+	
 	private Map<String, User> users;
-	private static UserRepository uniqueInstance;
-
 	private DAOFactory dao;
 	private IAdaptadorUserDAO userAdapter;
 
@@ -43,14 +43,6 @@ public class UserRepository {
 
 	public Optional<User> getUserFromEmail(String email) {
 		return users.values().stream().filter(u -> u.getEmail().equals(email)).findFirst();
-	}
-
-	// Obtener la unica instancia de la clase ---> SINGLETONE
-	public static UserRepository getInstancia() {
-		if (uniqueInstance == null) {
-			uniqueInstance = new UserRepository();
-		}
-		return uniqueInstance;
 	}
 
 	// Devolver todos los usuarios

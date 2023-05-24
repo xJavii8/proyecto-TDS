@@ -41,8 +41,8 @@ import umu.tds.persistence.IAdaptadorUserDAO;
 import umu.tds.view.Constantes;
 import umu.tds.view.Utilities;
 
-public class Controller implements PropertyChangeListener {
-	private static Controller unicaInstancia;
+public enum Controller implements PropertyChangeListener {
+	INSTANCE;
 
 	private IAdaptadorUserDAO adaptadorUser;
 	private IAdaptadorPublicationDAO adaptadorPublication;
@@ -58,14 +58,6 @@ public class Controller implements PropertyChangeListener {
 		CargadorFotos.getInstancia().addListener(this);
 		inicializarAdaptadores();
 		inicializarRepos();
-	}
-
-	public static Controller getInstancia() {
-		if (unicaInstancia == null) {
-			unicaInstancia = new Controller();
-		}
-
-		return unicaInstancia;
 	}
 
 	private void inicializarAdaptadores() {
@@ -84,8 +76,8 @@ public class Controller implements PropertyChangeListener {
 	}
 
 	private void inicializarRepos() {
-		userRepo = UserRepository.getInstancia();
-		publRepo = PublicationRepository.getInstancia();
+		userRepo = UserRepository.INSTANCE;
+		publRepo = PublicationRepository.INSTANCE;
 	}
 
 	public boolean createUser(String email, String fullname, String username, String password, Date birthday,
