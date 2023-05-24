@@ -291,17 +291,17 @@ public class MainWindow {
 					calendar.set(Calendar.SECOND, 0);
 					calendar.set(Calendar.MILLISECOND, 0);
 					Date newDate = calendar.getTime();
+					SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+					String fechaFormateada = format.format(newDate);
 
 					DefaultListModel<Photo> photosSince = Controller.INSTANCE.getAllPhotosFromDate(user, newDate);
 					if (!photosSince.isEmpty()) {
-						SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-						String fechaFormateada = format.format(newDate);
 						newPubs.setText("Publicaciones desde la fecha " + fechaFormateada);
 						photosList.setModel(photosSince);
 						photosList.setVisible(true);
 						scrollPane.setVisible(true);
 					} else {
-						newPubs.setText("No hay publicaciones");
+						newPubs.setText("No hay publicaciones desde el " + fechaFormateada);
 						photosList.setVisible(false);
 						scrollPane.setVisible(false);
 					}
