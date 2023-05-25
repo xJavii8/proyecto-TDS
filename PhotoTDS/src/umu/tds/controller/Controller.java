@@ -22,6 +22,7 @@ import javax.swing.ImageIcon;
 import umu.tds.fotos.CargadorFotos;
 import umu.tds.fotos.Foto;
 import umu.tds.fotos.Fotos;
+import umu.tds.fotos.HashTag;
 import umu.tds.fotos.MapperFotosXMLtoJava;
 import umu.tds.model.Album;
 import umu.tds.model.Comment;
@@ -630,7 +631,13 @@ public enum Controller implements PropertyChangeListener {
 	public void propertyChange(PropertyChangeEvent evt) {
 		Fotos fotos = MapperFotosXMLtoJava.cargarFotos(evt.getNewValue().toString());
 		for (Foto f : fotos.getFoto()) {
-			this.createPhoto(actualUser.get().getUsername(), f.getTitulo(), f.getDescripcion(),
+			String descripcion = f.getDescripcion();
+			for(HashTag h : f.getHashTags()) {
+				for(String hString : h.getHashTag()) {
+					descripcion += "  #" + hString;
+				}
+			}
+			this.createPhoto(actualUser.get().getUsername(), f.getTitulo(), descripcion,
 					Utilities.guardarImagenRelativa(f.getPath()));
 		}
 
