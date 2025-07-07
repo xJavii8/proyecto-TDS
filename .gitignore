@@ -1,2 +1,5 @@
 .metadata/
-PhotoTDS/.classpath
+bin/
+target/
+.classpath
+src/umu/tds/photos/
